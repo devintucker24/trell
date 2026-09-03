@@ -6,6 +6,7 @@ mod parser;
 use anyhow::{anyhow, Context as AnyhowContext, Result};
 use inkwell::context::Context;
 use inkwell::module::Module;
+use inkwell::targets::TargetMachine;
 use inkwell::values::FunctionValue;
 use std::env;
 use std::fs;
@@ -53,6 +54,7 @@ fn compile(source_path: &Path) -> Result<()> {
 
     let context = Context::create();
     let module = context.create_module("trell");
+    module.set_triple(&TargetMachine::get_default_triple());
 
     let main_fn = build_main(&context, &module, &expression)?;
 
