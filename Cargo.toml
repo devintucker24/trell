@@ -1,0 +1,8 @@
+[package]
+name = "trell"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+inkwell = { version = "0.6", features = ["llvm18-1"] }
