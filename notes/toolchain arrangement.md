@@ -18,40 +18,41 @@ inkwell 0.6 with the `llvm18-1` feature talks to `llvm-sys` 181. That crate
 expects `LLVM_SYS_181_PREFIX` to point at an LLVM 18 prefix, and `llvm-config`
 on `PATH`.
 
-`env.sh` (sourced by `env.zsh` from the repo root) looks for, in order:
+`env.sh` (sourced by `env.zsh`) looks for, in order:
 
 1. An already-set `LLVM_SYS_181_PREFIX`
-2. Homebrew `llvm@18` (`brew --prefix llvm@18`) — macOS
+2. Homebrew `llvm@18`, but only if `$prefix/bin/llvm-config` exists — macOS
 3. `/usr/lib/llvm-18` — Ubuntu / Debian
 4. `llvm-config-18` or `llvm-config` on `PATH`
 
-macOS install:
+macOS install (unchanged from the original workflow):
 
     brew install llvm@18 rustup
     rustup toolchain install 1.85.0
+    source ./env.zsh
+    cargo build
 
 Ubuntu / Debian install:
 
     sudo apt-get install -y llvm-18-dev llvm-18 libpolly-18-dev libzstd-dev g++
     rustup toolchain install 1.85.0
-
-Then:
-
-    source ./env.sh   # or ./env.zsh from zsh
+    source ./env.sh
     cargo build
+
+`LIBRARY_PATH` is adjusted for GCC `libstdc++` **only on Linux**. macOS keeps
+Apple clang + libc++ and must not inherit a Homebrew g++ search path.
 
 ## Native backend
 
-`cargo run -- examples/42.trell` only writes `out.ll`. Turning that into a
-host binary is a second step:
+`cargo run -- examples/42.trell` only writes `out.ll`. `link-trell.sh` turns
+that into `./trell-program`:
 
-- Preferred: `clang out.ll -o trell-program`
-- Fallback: `llc -filetype=obj out.ll -o trell-program.o` then `cc` to link
+- **macOS:** `llc` (Homebrew LLVM) then `xcrun clang` (Xcode SDK). On Apple
+  Silicon this still passes `-mtriple=arm64-apple-macosx15.2`, matching the
+  original `run-trell.zsh`. Do not compile `out.ll` with Homebrew `clang`;
+  that binary cannot see the Apple SDK.
+- **Linux:** host `clang out.ll -o trell-program`.
 
-The old `run-trell.zsh` hardcoded `arm64-apple-macosx15.2` and `xcrun clang`.
-That is the author's Mac. Linux (and any other host) should let `llc`/`clang`
-use the default triple.
-
-`run-trell.sh` and `run-trell.zsh` now compile for the host and print the
-program's exit status. That status *is* the value of the Trell expression
-(truncated to 8 bits on Unix).
+`run-trell.zsh` / `run-trell.sh` call that helper and print the program's
+exit status. That status *is* the value of the Trell expression (truncated
+to 8 bits on Unix).

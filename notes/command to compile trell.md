@@ -1,19 +1,18 @@
 # Command to compile Trell
 
-From the repo root:
+## macOS (zsh)
+
+    source ./env.zsh
+    cargo build
+    cargo run -- examples/42.trell          # writes out.ll
+    ./run-trell.zsh examples/42.trell       # llc + xcrun clang, print Result
+
+## Linux (bash)
 
     source ./env.sh
     cargo build
-
-Compile one program to LLVM IR:
-
     cargo run -- examples/42.trell
-    # writes out.ll with the host target triple
-
-Compile and run on the host (prints `Result: <exit status>`):
-
-    ./run-trell.sh examples/42.trell          # bash
-    ./run-trell.zsh examples/42.trell         # zsh
+    ./run-trell.sh examples/42.trell
 
 Expected results for the examples:
 
