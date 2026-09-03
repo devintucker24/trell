@@ -8,26 +8,38 @@ returns the result.
 
 Needs **Rust 1.85+** (edition 2024) and **LLVM 18** (`llvm-config` on `PATH`).
 
-```bash
-# macOS
+### macOS
+
+Same tools as before: Homebrew `llvm@18` and Xcode `clang` via `xcrun`.
+
+```zsh
 brew install llvm@18
 rustup toolchain install 1.85.0
 
-# Ubuntu / Debian
+source ./env.zsh
+cargo build
+./run-trell.zsh examples/42.trell
+```
+
+`env.zsh` still points `LLVM_SYS_181_PREFIX` at `$(brew --prefix llvm@18)`.
+Native binaries are still `llc` → `trell-program.o` → `xcrun clang`. Homebrew
+clang is not used to link, because it does not see the Apple SDK.
+
+### Ubuntu / Debian
+
+```bash
 sudo apt-get install -y llvm-18-dev llvm-18 libpolly-18-dev libzstd-dev g++
 rustup toolchain install 1.85.0
 
 source ./env.sh
 cargo build
+./run-trell.sh examples/42.trell
 ```
-
-`env.sh` sets `LLVM_SYS_181_PREFIX` from Homebrew `llvm@18` or `/usr/lib/llvm-18`.
 
 ## Compile a program
 
 ```bash
 cargo run -- examples/42.trell    # writes out.ll
-./run-trell.sh examples/42.trell  # IR → host binary → print Result
 ```
 
 The process exit status is the value of the expression.

@@ -12,16 +12,7 @@ fi
 source_file="$1"
 
 cargo run -- "$source_file"
-
-if command -v clang >/dev/null 2>&1; then
-  clang out.ll -o trell-program
-elif command -v llc >/dev/null 2>&1; then
-  llc -filetype=obj out.ll -o trell-program.o
-  cc trell-program.o -o trell-program
-else
-  echo "Need clang or llc to produce a native binary from out.ll" >&2
-  exit 1
-fi
+./link-trell.sh
 
 set +e
 ./trell-program
