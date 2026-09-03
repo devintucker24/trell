@@ -1,7 +1,8 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
-cd "${0:A:h}"
+cd "$(dirname "$0")"
+# shellcheck source=env.sh
 source ./env.sh
 
 if [[ $# -ne 1 ]]; then
