@@ -8,7 +8,7 @@ From the repo root:
 Compile one program to LLVM IR:
 
     cargo run -- examples/42.trell
-    # writes out.ll
+    # writes out.ll with the host target triple
 
 Compile and run on the host (prints `Result: <exit status>`):
 
