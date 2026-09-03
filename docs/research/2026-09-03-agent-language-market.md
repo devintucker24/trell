@@ -33,34 +33,36 @@ Names below are taken from first-party docs, not recaps.
 
 ### 2.1 LangChain / LangGraph / LangSmith
 
-LangChain Inc. now splits the stack in its own LangGraph overview ([docs.langchain.com](https://docs.langchain.com/oss/python/langgraph/overview)):
+LangChain Inc. now splits the stack in its own docs ([LangGraph overview](https://docs.langchain.com/oss/python/langgraph/overview), [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview)):
 
-- **LangChain** — “the agent framework: abstractions and integrations for models, tools, and agent loops.”
-- **LangGraph** — “the orchestration runtime: durable execution, streaming, human-in-the-loop, and persistence.” It is explicitly “very low-level, and focused entirely on agent orchestration.” Graphs mix “deterministic, hand-coded steps with LLM-driven agentic steps.”
-- **LangSmith** — “the platform for tracing, evaluation, prompts, and deployment across frameworks.”
+- **LangChain** — agent harness / framework: abstractions and integrations for models, tools, and agent loops. v1 centers on `create_agent` (model + harness). Legacy chains (`LLMChain`, etc.) moved to classic packages ([LangChain v1 release notes](https://docs.langchain.com/oss/python/releases/langchain-v1)).
+- **LangGraph** — “the orchestration runtime: durable execution, streaming, human-in-the-loop, and persistence.” It is explicitly “very low-level, and focused entirely on agent orchestration.” Graphs mix “deterministic, hand-coded steps with LLM-driven agentic steps.” Official docs warn beginners that LangGraph is low-level and often recommend starting with LangChain agents instead.
+- **LangSmith** — “the platform for tracing, evaluation, prompts, and deployment across frameworks.” Works with many frameworks, not only LangChain.
 - **Deep Agents** — a harness (planning, subagents, filesystem tools) *on top of* LangGraph.
 
 LangGraph models a program as `State`, `Nodes` (Python functions), and `Edges` ([Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md)). Persistence is checkpoints on a thread, not a separate language.
 
 **Implication for Trell:** LangGraph already *is* the orchestration runtime in Python. Competing with “we also have nodes and edges” is a loss. Competing with “the graph is a reviewable, capability-checked *source file* that is not Python” is a different product. You would more likely *target* LangGraph as a backend than replace it.
 
-### 2.2 OpenAI Agents SDK
+### 2.2 OpenAI Agents SDK (and other vendor SDKs)
 
 Official docs ([openai.github.io/openai-agents-python](https://openai.github.io/openai-agents-python/)): a “lightweight, easy-to-use package with very few abstractions,” evolved from Swarm. Primitives: Agents (LLM + instructions + tools), handoffs, guardrails. Design principle: “Python-first: Use built-in language features to orchestrate and chain agents, rather than needing to learn new abstractions.” Also: sandbox agents in isolated workspaces, MCP tools, tracing.
 
-**Implication:** The vendor SDK’s pitch is *stay in Python*. A language that asks people to leave Python is swimming upstream unless the program must not *be* Python (untrusted generated code, WASM, git-reviewed policy).
+Same pattern elsewhere: Anthropic’s Claude Agent SDK exposes the Claude Code agent loop as a Python/TypeScript library ([code.claude.com docs](https://code.claude.com/docs/en/agent-sdk/overview.md)). Microsoft folded Semantic Kernel and AutoGen into a single Agent Framework and put AutoGen into maintenance mode ([Agent Framework overview](https://learn.microsoft.com/en-us/agent-framework/overview/), [AutoGen](https://github.com/microsoft/autogen)). Vendors are consolidating *libraries*, not inventing new languages.
+
+**Implication:** The vendor SDK’s pitch is *stay in Python/TS*. A language that asks people to leave the host language is swimming upstream unless the program must not *be* host code (untrusted generated code, WASM, git-reviewed policy).
 
 ### 2.3 BAML (BoundaryML)
 
-GitHub describes BAML as “The programming language for agents” ([github.com/BoundaryML/baml](https://github.com/BoundaryML/baml)). Docs: a DSL for **type-safe LLM functions** — inputs, return types, client, Jinja prompt — then generate clients in Python, TypeScript, Go, etc. ([docs.boundaryml.com](https://docs.boundaryml.com/)). Analogy they use: TSX for the web, BAML for prompt engineering.
+GitHub describes BAML as “The programming language for agents” ([github.com/BoundaryML/baml](https://github.com/BoundaryML/baml)). Docs: a DSL for **type-safe LLM functions** — inputs, return types, client, Jinja prompt — then generate clients in Python, TypeScript, Go, etc. ([docs.boundaryml.com](https://docs.boundaryml.com/)). Analogy they use: TSX for the web, BAML for prompt engineering. Public messaging still centers on that function/schema job; the project has also been evolving a fuller language compiler in-repo. Parsing and JSON repair still happen at runtime — schemas are checked, the model is not proven correct without a parser.
 
-**Implication:** BAML already took “language, not a prompt string” for the *call*. Trell should not clone `function ExtractEmail(...) -> Email`. If Trell is a language, its extra job is **workflow + permissions + spawn**, with typed `ask` as one primitive (interop with BAML is allowed).
+**Implication:** BAML already took “language, not a prompt string” for the *call*. Trell should not clone `function ExtractEmail(...) -> Email`. If Trell is a language, its extra job is **workflow + permissions + spawn**, with typed `ask` as one primitive (interop with BAML is allowed: BAML extracts structure; Trell checks authority / runs sandboxed compute).
 
 ### 2.4 Weft (WeaveMindAI)
 
-First-party docs ([weavemind.ai/docs](https://weavemind.ai/docs)): “A programming language for AI systems.” Dual view: dense code for AI, visual graph for humans. “If it compiles, it runs.” LLMs, humans, and services as primitives. Compiler + type system + durable executor described as the stable core; node catalog still small (beta, breaking changes expected). Built in Rust; durability via Restate (widely reported; Restate’s own docs are the durable-execution primary source below).
+First-party docs ([weavemind.ai/docs](https://weavemind.ai/docs)): “A programming language for AI systems.” Dual view: dense code for AI, visual graph for humans. “If it compiles, it runs.” LLMs, humans, and services as primitives. Compiler + type system + durable executor described as the stable core; node catalog still small (beta, breaking changes expected). Built in Rust; durable execution via Restate. GitHub README treats the project as early / POC-grade, with an active rebuild and production caution ([github.com/WeaveMindAI/weft](https://github.com/WeaveMindAI/weft)).
 
-**Implication:** Weft is the closest *full-stack* competitor to the “language for AI orchestration” dream. Trell should not try to out-catalog Weft (Slack, WhatsApp, Postgres nodes). Differentiate on **untrusted spawn + capabilities + a grammar small enough to constrain-decode**, and on staying tiny.
+**Implication:** Weft is the closest *full-stack* competitor to the “language for AI orchestration” dream, but it is not a finished incumbent. Trell should not try to out-catalog Weft (Slack, WhatsApp, Postgres nodes). Differentiate on **untrusted spawn + capabilities + a grammar small enough to constrain-decode**, and on staying tiny.
 
 ### 2.5 DSPy
 
@@ -237,3 +239,30 @@ Non-goals for the niche: replacing Python for RAG, notebooks, or general program
 ## 10. One-line strategy
 
 **Trell’s market is not “LangChain in Rust.” It is Terraform-for-agent-authority: a small language models can be forced to write, humans can review in git, and a checker (later a WASM jailer) can refuse before anything spends or spawns.**
+
+---
+
+## 11. Appendix: near-term wedge from deeper primary-source pass
+
+A follow-up pass over the same market (vendor SDKs, BAML, Weft, constrained decoding, Wasmtime) supports the verdict above and adds a **staging** note that matches Trell’s *current* code:
+
+**Year-zero wedge (honest to today’s compiler):** ship Trell as a **deterministic numeric/WASM tool**, not as an agent framework. Freeze a tiny grammar, publish `trell.gbnf` (or XGrammar), compile to Wasm with **no ambient imports**, expose `trell.eval(...)` / `trell.run` to Python or TypeScript SDKs and MCP. Demo: an agent must compute a fee schedule; Python `eval` is forbidden; Trell is required. That is Starlark-shaped (restricted, hermetic) and Wasmtime-shaped (sandbox), and it does not require a connector catalog.
+
+**Year-one product (this document’s niche):** grow the same grammar into **capability-checked workflow source** (`ask`, tool grants, `approve`, `spawn` ceilings) with `trell check` in CI. Keep LangChain / OpenAI Agents SDK / Claude Agent SDK / Restate as *backends*.
+
+**Do not confuse the wedge with the market.** Arithmetic-in-WASM is how a learning compiler *enters* without lying. Authority-checked workflows are how it *matters*. Rebuilding journals, traces, or 1,000 integrations is how it dies.
+
+Additional primary links from that pass:
+
+- LangChain overview: https://docs.langchain.com/oss/python/langchain/overview
+- LangChain v1: https://docs.langchain.com/oss/python/releases/langchain-v1
+- Claude Agent SDK: https://code.claude.com/docs/en/agent-sdk/overview.md
+- Microsoft Agent Framework: https://learn.microsoft.com/en-us/agent-framework/overview/
+- Outlines paper: https://arxiv.org/abs/2307.09702
+- LMQL: https://lmql.ai/
+- llama.cpp GBNF: https://github.com/ggml-org/llama.cpp/blob/HEAD/grammars/README.md
+- Temporal (durable execution): https://docs.temporal.io/evaluate/understanding-temporal
+- PydanticAI: https://ai.pydantic.dev/
+- Mastra: https://mastra.ai/docs
+- CUE: https://cuelang.org/docs/introduction/
+- OPA Rego: https://www.openpolicyagent.org/docs/latest/policy-language/
