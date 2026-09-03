@@ -149,7 +149,8 @@ Agent workflows today are still in the boto3 era: objects in Python that *can* e
 
 **Beachhead ranking (what to own first):**
 
-1. **Git-native agent workflows for software repos** (highest “easy entrance”). Coding agents already write files. Give them a grammar, a checker, and mock execution. Human reviews the diff. Closest analog: Terraform for “what the agent is allowed to do in this repository.”
+0. **Compiled sandbox tool (year-zero).** Integer (then small) expressions → Wasm, GBNF, one SDK/MCP tool. Matches Trell today; proves constrained decode + sandbox without claiming orchestration.
+1. **Git-native agent workflows for software repos** (highest “easy entrance” for the real niche). Coding agents already write files. Give them a grammar, a checker, and mock execution. Human reviews the diff. Closest analog: Terraform for “what the agent is allowed to do in this repository.”
 2. **Sandboxed multi-agent spawn** (the Rust/WASM story). Second, because it needs a host. This is where Python SDKs are structurally wrong (eval, subprocess, hope).
 3. **Typed `ask` only** — do not lead with this; BAML is there.
 
