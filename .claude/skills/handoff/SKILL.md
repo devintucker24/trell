@@ -12,5 +12,3 @@ Follow the canonical playbook:
 ```text
 skills/handoff/SKILL.md
 ```
-
-Compact this conversation into a disposable markdown handoff in the OS temp directory (not the workspace). Reference artifacts by path; suggest skills for the next agent; redact secrets.

@@ -60,7 +60,7 @@ python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 | Health | `wiki-doctor` → `wiki-heal` |
 | Code ↔ wiki sync | `wiki-maintain` |
 | Rust verify | `cargo-verify` |
-| Reset / new chat with summary | `/handoff` → `skills/handoff` |
+| Session handoff | `/handoff` |
 
 Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Write an episode”*, *“Handoff…”* / `/handoff`.
 

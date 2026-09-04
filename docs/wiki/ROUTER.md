@@ -74,7 +74,6 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
 | health / orphans / doctor / heal | run `skills/wiki/doctor` (then `heal` if score < 95) |
 | session / decisions / what happened / episodic | `episodic/INDEX.md` + latest episode |
-| handoff / new chat / clear context / reset session | run `/handoff` (`skills/handoff`) — temp doc, not wiki dump |
 | timeline / when / as-of / what changed / temporal | `temporal/TIMELINE.md` + retrieve with `--as-of` |
 
 After seeding, expand **one hop** via frontmatter `edges` or `GRAPH.yaml` — not whole categories.

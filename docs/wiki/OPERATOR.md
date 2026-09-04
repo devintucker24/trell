@@ -270,7 +270,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal | handoff`.
+Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 

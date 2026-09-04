@@ -87,5 +87,4 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Canonical playbook: `skills/handoff/SKILL.md`
 - Discoverable via `.cursor/skills/handoff` and `.claude/skills/handoff`
-- Writes disposable temp handoff docs; optional Trell episodic persist
-- Wired into AGENTS.md / CLAUDE.md / ROUTER.md / OPERATOR.md
+- Writes disposable temp handoff docs for fresh agent sessions
