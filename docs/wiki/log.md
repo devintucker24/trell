@@ -87,3 +87,8 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Upstream skill from https://github.com/mattpocock/skills (`skills/productivity/handoff`)
 - Installed at `skills/handoff/`, `.cursor/skills/handoff/`, `.claude/skills/handoff/`
+
+## [2026-09-04] schema | grill-me + grilling skills
+
+- Upstream from https://github.com/mattpocock/skills (`skills/productivity/grill-me`, `skills/productivity/grilling`)
+- Installed at `skills/{grill-me,grilling}/` + Cursor/Claude discovery paths

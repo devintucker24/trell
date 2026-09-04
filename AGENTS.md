@@ -61,8 +61,9 @@ python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 | Code ↔ wiki sync | `wiki-maintain` |
 | Rust verify | `cargo-verify` |
 | Session handoff | `/handoff` |
+| Stress-test a plan | `/grill-me` (uses `/grilling`) |
 
-Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Write an episode”*, *“Handoff…”* / `/handoff`.
+Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Write an episode”*, *“Handoff…”* / `/handoff`, *“Grill me…”* / `/grill-me`.
 
 ---
 
