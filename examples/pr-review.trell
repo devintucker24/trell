@@ -1,0 +1,25 @@
+cap pr_review {
+  allow read "src/**"
+  allow ask
+  allow send
+  deny write
+  deny net
+  deny git
+  need approve on write
+  budget tokens 8000
+  budget cents 25
+  spawn 0
+}
+
+in diff: text
+
+let review = ask "Classify the risk of this diff. Consider secrets, auth, and data deletion." using diff as {
+  risk: enum(low, medium, high),
+  reason: text
+}
+
+if review.risk == high {
+  approve "high-risk change cannot proceed without a human"
+}
+
+send review

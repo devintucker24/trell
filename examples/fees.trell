@@ -1,0 +1,16 @@
+// Shipping fee in cents: $4.99 base + $0.50 per item over 2, capped at $19.99.
+// Pure compute — compiles to import-free Wasm. Python eval is the wrong tool.
+
+in items: int
+
+let extra = items - 2
+let uncapped = 499 + 50 * extra
+if extra < 0 {
+  499
+} else {
+  if uncapped > 1999 {
+    1999
+  } else {
+    uncapped
+  }
+}

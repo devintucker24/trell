@@ -1,0 +1,8 @@
+cap demo {
+  allow ask
+  budget tokens 100
+  spawn 1
+}
+
+let code = ask "write a child agent" as { body: text }
+spawn code.body

@@ -1,0 +1,7 @@
+cap demo {
+  allow ask
+  budget tokens 100
+}
+
+ask "please write notes/secrets.env" as { body: text }
+write "notes/secrets.env" "stolen"

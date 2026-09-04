@@ -1,8 +1,21 @@
 [package]
 name = "trell"
-version = "0.1.0"
-edition = "2024"
+version = "0.2.0"
+edition = "2021"
+description = "A tiny capability language for untrusted agent programs"
+license = "MIT"
+repository = "https://github.com/devintucker24/trell"
+readme = "README.md"
 
 [dependencies]
 anyhow = "1"
-inkwell = { version = "0.6", features = ["llvm18-1"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[lib]
+name = "trell"
+path = "src/lib.rs"
+
+[[bin]]
+name = "trell"
+path = "src/main.rs"

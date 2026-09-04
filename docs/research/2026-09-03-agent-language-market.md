@@ -1,10 +1,11 @@
 # Trell and the agent-language market
 
 **Date:** 3 September 2026  
-**Status:** Research note, not a product spec  
-**Scope:** Whether a small compiled language can enter the market that LangChain, agent SDKs, and a few new DSLs already occupy, and which niche is actually open.
+**Updated:** 4 September 2026 — the compiler now ships the year-zero/year-one beachhead described below (`trell check`, `trell plan`, mock `trell run`, GBNF, import-free Wasm). This note remains market research, not a claim that Trell replaced LangChain.
 
-This document is for the Trell repo. It records market research and a recommended beachhead. It does not describe the current compiler as if it already did any of this. Today Trell compiles one integer expression to LLVM IR. The language thesis below is a *direction*, not a shipping claim.
+This document is for the Trell repo. It records market research and a recommended beachhead.
+
+Today Trell is a capability-checked workflow language plus a hermetic integer-to-Wasm tool. It still does not have a Wasmtime spawn host or vendor SDK adapters. The thesis below is the *direction*; the README states what actually ships.
 
 ---
 

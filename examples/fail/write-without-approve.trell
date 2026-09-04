@@ -1,0 +1,6 @@
+cap demo {
+  allow write "notes/**"
+  need approve on write
+}
+
+write "notes/out.md" "hello"

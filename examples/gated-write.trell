@@ -1,0 +1,7 @@
+cap notes {
+  allow write "notes/**"
+  need approve on write
+}
+
+approve "human reviewed the write"
+write "notes/out.md" "hello from trell"

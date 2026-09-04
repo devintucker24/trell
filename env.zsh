@@ -1,2 +1,2 @@
-export LLVM_SYS_181_PREFIX="$(brew --prefix llvm@18)"
-export PATH="$(brew --prefix llvm@18)/bin:$PATH"
+# LLVM was the learning compiler. Trell no longer needs a system LLVM.
+# Optional: cargo install wasmtime-cli  to run emitted .wasm outside Trell.
