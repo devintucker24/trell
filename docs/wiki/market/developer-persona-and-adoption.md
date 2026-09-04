@@ -31,6 +31,10 @@ edges:
 - from: non-coercion-theorem
   to: persona-safety-engineer
   rel: owned_by
+- from: natural-trell-syntax
+  to: persona-auditor
+  rel: owned_by
+  note: 'heal: link hard orphan'
 related:
 - '[[core/natural-syntax-specification]]'
 - '[[roadmap/ten-year-vision]]'

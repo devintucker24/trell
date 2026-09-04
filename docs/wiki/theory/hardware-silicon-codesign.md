@@ -24,6 +24,10 @@ edges:
 - from: tech-npu-semantic-branching
   to: phase-4-iso-silicon
   rel: milestone_of
+- from: speculative-execution
+  to: hardware-rollback
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[core/speculative-execution-engine]]'
 - '[[roadmap/phases-and-milestones]]'

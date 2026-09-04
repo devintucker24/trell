@@ -1,6 +1,6 @@
 ---
 name: trell-wiki
-description: Operate the Trell Karpathy-style epistemic wiki brain — navigate, ingest, query, lint/heal, label, and maintain docs/wiki with YAML graph metadata. Use whenever working with Trell knowledge base, AGENTS.md, or long-term research docs.
+description: Operate the Trell Karpathy-style epistemic wiki brain — navigate, triage, ingest, query, doctor, heal, lint, label, and maintain docs/wiki with YAML graph metadata. Use whenever working with Trell knowledge base, AGENTS.md, or long-term research docs.
 ---
 
 # Trell Wiki Brain — Parent Skill
@@ -11,6 +11,7 @@ This skill family implements the **Karpathy LLM Wiki** pattern for Trell.
 - **Schema:** `AGENTS.md`, `docs/wiki/SCHEMA.md`, `skills/wiki/*`
 - **Wiki:** `docs/wiki/**` with YAML nodes/edges
 - **Raw:** `docs/wiki/raw/`, `THESIS.md`, `examples/`, `src/`
+- **Inbox:** `docs/wiki/inbox/` → triage → ingest
 
 ## Subskills
 | Task | Skill |
@@ -19,7 +20,9 @@ This skill family implements the **Karpathy LLM Wiki** pattern for Trell.
 | Classify inbox drops | [triage/SKILL.md](triage/SKILL.md) |
 | Add research / sources | [ingest/SKILL.md](ingest/SKILL.md) |
 | Answer with citations | [query/SKILL.md](query/SKILL.md) |
-| Health-check & heal | [lint/SKILL.md](lint/SKILL.md) |
+| Diagnose (no edits) | [doctor/SKILL.md](doctor/SKILL.md) |
+| Apply safe fixes | [heal/SKILL.md](heal/SKILL.md) |
+| Doctor + heal shortcut | [lint/SKILL.md](lint/SKILL.md) |
 | Normalize frontmatter | [label/SKILL.md](label/SKILL.md) |
 | Sync code ↔ wiki ↔ GRAPH | [maintain/SKILL.md](maintain/SKILL.md) |
 
@@ -29,9 +32,14 @@ chat paste / URL / note  →  docs/wiki/inbox/  →  triage  →  ingest  →  w
 ```
 Do not invent folders during ingest. Taxonomy changes go through SCHEMA §7.
 
+## Health path
+```
+wiki doctor  →  (optional) wiki heal  →  wiki doctor again
+```
+
 ## References
 - [frontmatter-schemas.md](references/frontmatter-schemas.md)
-- Script: [scripts/sync_graph.py](scripts/sync_graph.py)
+- Scripts: [scripts/sync_graph.py](scripts/sync_graph.py), [scripts/wiki_doctor.py](scripts/wiki_doctor.py)
 
 ## Session bootstrap
 ```

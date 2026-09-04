@@ -24,6 +24,10 @@ edges:
 - from: distributional-types
   to: phase-4-iso-silicon
   rel: milestone_of
+- from: belief-type
+  to: epistemic-entropy-bound
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[theory/epistemic-type-calculus]]'
 - '[[roadmap/ten-year-vision]]'

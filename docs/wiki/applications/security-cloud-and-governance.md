@@ -29,6 +29,14 @@ edges:
 - from: zk-epistemic-proof
   to: app-aml-sar
   rel: applies_to
+- from: three-beat-safety-pattern
+  to: app-iam-zero-trust
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-leo-satellites
+  rel: applies_to
+  note: 'heal: link hard orphan'
 related:
 - '[[theory/cryptographic-model-provenance]]'
 - '[[market/competitive-analysis]]'

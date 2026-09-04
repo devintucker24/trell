@@ -16,6 +16,7 @@
 ├─────────────────────────────────────────────────────────────────┤
 | LAYER 2 — WIKI (LLM-owned, compounding)                         |
 |   docs/wiki/**/*.md  ·  INDEX.md  ·  GRAPH.yaml  ·  log.md      |
+|   inbox/ (pending) → triage → ingested pages                    |
 |   Syntheses, concepts, applications, market, roadmap            |
 |   Every page has YAML frontmatter with nodes + edges            |
 ├─────────────────────────────────────────────────────────────────┤
@@ -40,7 +41,9 @@
    - Navigate → `skills/wiki/navigate/SKILL.md`
    - Triage → `skills/wiki/triage/SKILL.md`
    - Ingest → `skills/wiki/ingest/SKILL.md`
-   - Lint / Heal → `skills/wiki/lint/SKILL.md`
+   - Doctor → `skills/wiki/doctor/SKILL.md`
+   - Heal → `skills/wiki/heal/SKILL.md`
+   - Lint (doctor+heal) → `skills/wiki/lint/SKILL.md`
    - Label → `skills/wiki/label/SKILL.md`
    - Maintain → `skills/wiki/maintain/SKILL.md`
    - Query / Answer → `skills/wiki/query/SKILL.md`
@@ -133,14 +136,23 @@ Skill: `skills/wiki/ingest/SKILL.md`
 3. Log: `## [YYYY-MM-DD] query | <question slug>`
 4. Pending `inbox/` items are not settled knowledge.
 
-### 6.4 Lint / Heal
-Check for: orphan pages, missing inbound links, stale `updated` dates, broken wikilinks, nodes without edges, edges pointing to missing ids, contradictions, concepts mentioned in body but lacking pages, frontmatter schema violations, stale inbox (`pending` too long).
-Write a health report to `docs/wiki/_meta/health-YYYY-MM-DD.md` and append a log entry.
+### 6.4 Wiki Doctor (diagnose only)
+Skill: `skills/wiki/doctor/SKILL.md`  
+Run `python3 skills/wiki/scripts/wiki_doctor.py` → writes `_meta/doctor-YYYY-MM-DD.md` + `doctor-latest.json`.  
+**No wiki content edits.**
 
-### 6.5 Label
+### 6.5 Wiki Heal (apply safe fixes)
+Skill: `skills/wiki/heal/SKILL.md`  
+Consume the doctor report; fix frontmatter/links/orphan edges/inbox routing; never invent taxonomy.  
+Re-run doctor to verify. Log `## [date] heal | …`.
+
+### 6.6 Lint (shortcut)
+Skill: `skills/wiki/lint/SKILL.md` = doctor → heal → re-doctor.
+
+### 6.7 Label
 Normalize tags, domains, node ids (kebab-case), edge relations to the allowed vocabulary in SCHEMA.md.
 
-### 6.6 Maintain (code ↔ wiki sync)
+### 6.8 Maintain (code ↔ wiki sync)
 When `src/` or `examples/` change epistemic semantics:
 1. Diff against wiki claims in `core/` and `theory/`.
 2. Update pages; bump `updated`.
@@ -179,8 +191,10 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 | Navigate | `skills/wiki/navigate/SKILL.md` | Finding pages / graph traversal |
 | Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
 | Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
+| Doctor | `skills/wiki/doctor/SKILL.md` | Diagnose only (wiki doctor) |
+| Heal | `skills/wiki/heal/SKILL.md` | Apply safe fixes from doctor report |
+| Lint | `skills/wiki/lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
 | Query | `skills/wiki/query/SKILL.md` | Answering questions from the brain |
-| Lint | `skills/wiki/lint/SKILL.md` | Health-check / heal orphans & contradictions |
 | Label | `skills/wiki/label/SKILL.md` | Frontmatter + tag normalization |
 | Maintain | `skills/wiki/maintain/SKILL.md` | Sync wiki with compiler / examples |
 
@@ -192,7 +206,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `inbox | triage | ingest | query | lint | label | maintain | schema | graph`.
+Where `<op>` ∈ `inbox | triage | ingest | query | doctor | heal | lint | label | maintain | schema | graph`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 

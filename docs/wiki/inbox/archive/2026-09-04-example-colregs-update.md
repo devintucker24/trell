@@ -1,29 +1,31 @@
 ---
 id: inbox-2026-09-04-example-colregs-update
-title: "INBOX: Example — IMO MASS guidance snippet"
+title: 'INBOX: Example — IMO MASS guidance snippet'
 type: inbox-item
 status: draft
 created: 2026-09-04
-updated: 2026-09-04
-tags: [inbox, example]
+updated: '2026-09-04'
+tags:
+- inbox
+- example
 domain: meta
-summary: "Example inbox item showing how drops look before triage."
-triage_status: pending
-suggested_domain: null
-suggested_type: null
-suggested_action: null
+summary: Example inbox item showing how drops look before triage.
+triage_status: ingested
+suggested_domain: market
+suggested_type: market
+suggested_action: merge-existing
 origin: user-paste
 priority: low
 nodes: []
 edges: []
 related:
-  - "[[inbox/README]]"
+- '[[inbox/README]]'
 agent:
   priority: low
   read_when:
-    - "learning inbox format"
+  - learning inbox format
   maintain:
-    - "safe to archive after used as tutorial"
+  - safe to archive after used as tutorial
 ---
 
 # Example inbox drop (tutorial)

@@ -34,6 +34,18 @@ edges:
 - from: app-treasury-fedwire
   to: reg-sr-11-7
   rel: regulated_by
+- from: three-beat-safety-pattern
+  to: app-insurance-cat
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-market-making
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-sovereign-fx
+  rel: applies_to
+  note: 'heal: link hard orphan'
 related:
 - '[[theory/affine-cognitive-economics]]'
 implements_code:

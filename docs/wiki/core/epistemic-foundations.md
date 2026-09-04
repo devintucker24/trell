@@ -36,6 +36,10 @@ edges:
 - from: epistemic-lie
   to: belief-type
   rel: depends_on
+- from: belief-type
+  to: epistemic-contamination
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[core/contract-and-guard-system]]'
 - '[[theory/epistemic-type-calculus]]'

@@ -26,6 +26,14 @@ edges:
 - from: app-smart-grid
   to: reg-eu-ai-act
   rel: regulated_by
+- from: three-beat-safety-pattern
+  to: app-highspeed-rail
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-water-treatment
+  rel: applies_to
+  note: 'heal: link hard orphan'
 related:
 - '[[applications/overview-and-safety-patterns]]'
 - '[[applications/security-cloud-and-governance]]'

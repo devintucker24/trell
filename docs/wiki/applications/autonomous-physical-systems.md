@@ -36,6 +36,22 @@ edges:
 - from: app-maritime-colregs
   to: reg-imo-mass
   rel: regulated_by
+- from: three-beat-safety-pattern
+  to: app-drone-airspace
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-mining-haulage
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-nuclear-coolant
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-robotic-surgery
+  rel: applies_to
+  note: 'heal: link hard orphan'
 related:
 - '[[applications/overview-and-safety-patterns]]'
 - '[[theory/hardware-silicon-codesign]]'

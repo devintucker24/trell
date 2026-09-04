@@ -124,7 +124,9 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | Navigate | `skills/wiki/navigate/SKILL.md` | INDEX + graph traversal |
 | Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
 | Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
+| Doctor | `skills/wiki/doctor/SKILL.md` | Diagnose only (no edits) |
+| Heal | `skills/wiki/heal/SKILL.md` | Apply safe fixes from doctor report |
+| Lint | `skills/wiki/lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
 | Query | `skills/wiki/query/SKILL.md` | Answer + file synthesis |
-| Lint | `skills/wiki/lint/SKILL.md` | Heal orphans / contradictions |
 | Label | `skills/wiki/label/SKILL.md` | Normalize frontmatter |
 | Maintain | `skills/wiki/maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |

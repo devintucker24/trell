@@ -29,6 +29,10 @@ edges:
 - from: branch-collapse
   to: speculative-execution
   rel: depends_on
+- from: speculative-execution
+  to: speculative-fork-trace
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[theory/hardware-silicon-codesign]]'
 - '[[core/natural-syntax-specification]]'

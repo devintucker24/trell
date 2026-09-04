@@ -28,6 +28,10 @@ edges:
 - from: epistemic-type-calculus
   to: epistemic-foundations
   rel: extends
+- from: belief-type
+  to: subject-reduction
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[core/epistemic-foundations]]'
 - '[[theory/bayesian-and-distributional-types]]'

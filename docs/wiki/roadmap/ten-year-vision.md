@@ -23,6 +23,10 @@ edges:
 - from: phase-4-iso-silicon
   to: ten-year-vision
   rel: milestone_of
+- from: belief-type
+  to: epistemic-liability-era
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[roadmap/phases-and-milestones]]'
 - '[[theory/hardware-silicon-codesign]]'

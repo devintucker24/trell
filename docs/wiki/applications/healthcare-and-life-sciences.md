@@ -31,6 +31,22 @@ edges:
 - from: app-icu-sepsis
   to: reg-fda-samd
   rel: regulated_by
+- from: three-beat-safety-pattern
+  to: app-genomic-oncology
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-organ-allocation
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-pharmacy-robot
+  rel: applies_to
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-radiotherapy
+  rel: applies_to
+  note: 'heal: link hard orphan'
 related:
 - '[[applications/overview-and-safety-patterns]]'
 - '[[market/regulatory-and-insurance-drivers]]'

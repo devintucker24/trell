@@ -318,6 +318,10 @@ nodes:
   kind: concept
   page: _meta/GRAPH
   label: wiki-graph-overview
+- id: wiki-inbox
+  kind: concept
+  page: inbox/README
+  label: wiki-inbox
 - id: wiki-index
   kind: concept
   page: INDEX
@@ -335,6 +339,11 @@ edges:
   to: app-treasury-fedwire
   rel: applies_to
   page: theory/affine-cognitive-economics
+- from: affine-cognitive-budget
+  to: token-budget
+  rel: related_to
+  page: theory/affine-cognitive-economics
+  note: 'heal: link hard orphan'
 - from: app-icu-sepsis
   to: reg-fda-samd
   rel: regulated_by
@@ -356,6 +365,26 @@ edges:
   rel: reduces_via
   page: core/epistemic-foundations
   note: via guard verify/require
+- from: belief-type
+  to: epistemic-contamination
+  rel: related_to
+  page: core/epistemic-foundations
+  note: 'heal: link hard orphan'
+- from: belief-type
+  to: epistemic-entropy-bound
+  rel: related_to
+  page: theory/bayesian-and-distributional-types
+  note: 'heal: link hard orphan'
+- from: belief-type
+  to: epistemic-liability-era
+  rel: related_to
+  page: roadmap/ten-year-vision
+  note: 'heal: link hard orphan'
+- from: belief-type
+  to: subject-reduction
+  rel: related_to
+  page: theory/epistemic-type-calculus
+  note: 'heal: link hard orphan'
 - from: branch-collapse
   to: speculative-execution
   rel: depends_on
@@ -446,13 +475,38 @@ edges:
   rel: competes_with
   page: market/competitive-analysis
 - from: natural-trell-syntax
+  to: comp-dspy
+  rel: competes_with
+  page: market/competitive-analysis
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
   to: comp-langchain
   rel: competes_with
   page: market/competitive-analysis
 - from: natural-trell-syntax
+  to: comp-langgraph
+  rel: competes_with
+  page: market/competitive-analysis
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
+  to: comp-openai-agents-sdk
+  rel: competes_with
+  page: market/competitive-analysis
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
   to: comp-weft
   rel: competes_with
   page: market/competitive-analysis
+- from: natural-trell-syntax
+  to: keyword-end
+  rel: related_to
+  page: core/natural-syntax-specification
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
+  to: persona-auditor
+  rel: owned_by
+  page: market/developer-persona-and-adoption
+  note: 'heal: link hard orphan'
 - from: natural-trell-syntax
   to: persona-deliberative-agent
   rel: owned_by
@@ -506,6 +560,16 @@ edges:
   rel: depends_on
   page: core/speculative-execution-engine
 - from: speculative-execution
+  to: hardware-rollback
+  rel: related_to
+  page: theory/hardware-silicon-codesign
+  note: 'heal: link hard orphan'
+- from: speculative-execution
+  to: speculative-fork-trace
+  rel: related_to
+  page: core/speculative-execution-engine
+  note: 'heal: link hard orphan'
+- from: speculative-execution
   to: tech-npu-semantic-branching
   rel: accelerates
   page: core/speculative-execution-engine
@@ -526,21 +590,96 @@ edges:
   rel: accelerates
   page: market/competitive-analysis
 - from: three-beat-safety-pattern
+  to: app-drone-airspace
+  rel: applies_to
+  page: applications/autonomous-physical-systems
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-genomic-oncology
+  rel: applies_to
+  page: applications/healthcare-and-life-sciences
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-highspeed-rail
+  rel: applies_to
+  page: applications/critical-infrastructure-and-energy
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-iam-zero-trust
+  rel: applies_to
+  page: applications/security-cloud-and-governance
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
   to: app-icu-sepsis
   rel: applies_to
   page: applications/healthcare-and-life-sciences
+- from: three-beat-safety-pattern
+  to: app-insurance-cat
+  rel: applies_to
+  page: applications/financial-treasury-and-markets
+  note: 'heal: link hard orphan'
 - from: three-beat-safety-pattern
   to: app-kernel-hotpatch
   rel: applies_to
   page: applications/security-cloud-and-governance
 - from: three-beat-safety-pattern
+  to: app-leo-satellites
+  rel: applies_to
+  page: applications/security-cloud-and-governance
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
   to: app-maritime-colregs
   rel: applies_to
   page: applications/autonomous-physical-systems
 - from: three-beat-safety-pattern
+  to: app-market-making
+  rel: applies_to
+  page: applications/financial-treasury-and-markets
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-mining-haulage
+  rel: applies_to
+  page: applications/autonomous-physical-systems
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-nuclear-coolant
+  rel: applies_to
+  page: applications/autonomous-physical-systems
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-organ-allocation
+  rel: applies_to
+  page: applications/healthcare-and-life-sciences
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-pharmacy-robot
+  rel: applies_to
+  page: applications/healthcare-and-life-sciences
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-radiotherapy
+  rel: applies_to
+  page: applications/healthcare-and-life-sciences
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-robotic-surgery
+  rel: applies_to
+  page: applications/autonomous-physical-systems
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
   to: app-smart-grid
   rel: applies_to
   page: applications/critical-infrastructure-and-energy
+- from: three-beat-safety-pattern
+  to: app-sovereign-fx
+  rel: applies_to
+  page: applications/financial-treasury-and-markets
+  note: 'heal: link hard orphan'
+- from: three-beat-safety-pattern
+  to: app-water-treatment
+  rel: applies_to
+  page: applications/critical-infrastructure-and-energy
+  note: 'heal: link hard orphan'
 - from: three-beat-safety-pattern
   to: ask-deliberation
   rel: depends_on
@@ -557,6 +696,10 @@ edges:
   to: wiki-index
   rel: depends_on
   page: _meta/GRAPH
+- from: wiki-inbox
+  to: wiki-schema
+  rel: depends_on
+  page: inbox/README
 - from: wiki-index
   to: belief-type
   rel: related_to

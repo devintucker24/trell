@@ -32,6 +32,10 @@ edges:
 - from: keyword-when
   to: speculative-execution
   rel: implements
+- from: natural-trell-syntax
+  to: keyword-end
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[core/speculative-execution-engine]]'
 - '[[core/contract-and-guard-system]]'

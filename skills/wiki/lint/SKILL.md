@@ -1,32 +1,26 @@
 ---
 name: wiki-lint
-description: Health-check and heal the Trell wiki — orphans, broken links, missing frontmatter, stale pages, graph inconsistencies, contradictions. Use periodically or before releases.
+description: Combined wiki doctor + heal shortcut — diagnose then apply safe fixes, then re-diagnose. Use when user says lint the wiki; prefer explicit doctor/heal skills when separating diagnosis from edits.
 ---
 
-# Skill: Wiki Lint / Heal
+# Skill: Wiki Lint (doctor → heal → re-doctor)
 
 ## When to use
-- User asks to lint, heal, or audit the knowledge base
-- Before merging large doc PRs
-- After bulk ingest
+- User says "lint the wiki" (combined pass)
+- Pre-release cleanup when they want diagnose+fix in one go
 
-## Checklist
-1. **Frontmatter:** Every `.md` under `docs/wiki/` (except maybe log) has valid YAML per SCHEMA.md.
-2. **Orphans:** Pages with zero inbound `related` / edges pointing to them (except INDEX/SCHEMA).
-3. **Broken wikilinks:** `[[...]]` targets resolve to files.
-4. **Graph integrity:** All edge endpoints exist in GRAPH.yaml nodes.
-5. **Stale:** `status: active` but `updated` older than major code changes affecting claims.
-6. **Contradictions:** Follow `rel: contradicts` edges; resolve or document.
-7. **Missing concepts:** Body mentions a major Trell primitive lacking a page.
-8. **Code drift:** Claims about syntax must match `src/parser.rs` / examples.
+## Prefer explicit skills when
+- **"wiki doctor"** → `skills/wiki/doctor` only (no edits)
+- **"wiki heal"** → `skills/wiki/heal` only (apply last diagnosis)
 
-## Output
-Write `docs/wiki/_meta/health-YYYY-MM-DD.md` with findings + fixes applied.  
-Append log: `## [YYYY-MM-DD] lint | health pass`
-
-## Heal order
-1. Fix SCHEMA violations (label skill)
-2. Repair broken links
-3. Add missing edges for orphans
-4. Update stale summaries
-5. Sync GRAPH.yaml
+## Procedure
+1. Run **doctor** (`skills/wiki/doctor/SKILL.md` + `wiki_doctor.py`)
+2. If `heal_recommended` → run **heal** (`skills/wiki/heal/SKILL.md`)
+3. Run **doctor** again; compare scores
+4. Log as:
+```markdown
+## [YYYY-MM-DD] lint | doctor+heal
+- Before score: …
+- After score: …
+- Reports: doctor-…md, heal-…md
+```

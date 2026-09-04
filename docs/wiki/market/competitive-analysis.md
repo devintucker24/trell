@@ -41,6 +41,18 @@ edges:
 - from: tech-xgrammar
   to: natural-trell-syntax
   rel: accelerates
+- from: natural-trell-syntax
+  to: comp-dspy
+  rel: competes_with
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
+  to: comp-langgraph
+  rel: competes_with
+  note: 'heal: link hard orphan'
+- from: natural-trell-syntax
+  to: comp-openai-agents-sdk
+  rel: competes_with
+  note: 'heal: link hard orphan'
 related:
 - '[[market/regulatory-and-insurance-drivers]]'
 - '[[market/developer-persona-and-adoption]]'

@@ -24,6 +24,10 @@ edges:
 - from: affine-cognitive-budget
   to: app-treasury-fedwire
   rel: applies_to
+- from: affine-cognitive-budget
+  to: token-budget
+  rel: related_to
+  note: 'heal: link hard orphan'
 related:
 - '[[core/contract-and-guard-system]]'
 - '[[applications/financial-treasury-and-markets]]'
