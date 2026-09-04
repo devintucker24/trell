@@ -176,14 +176,19 @@ impl Duration {
         }
 
         for &(size, name) in UNITS {
-            if self.0 >= size {
-                let count = self.0 / size;
+            if self.0 < size {
+                continue;
+            }
+            let count = self.0 / size;
+            if self.0 % size == 0 {
                 let plural = if count == 1 { "" } else { "s" };
-                return if self.0 % size == 0 {
-                    format!("{} {}{}", count, name, plural)
-                } else {
-                    format!("about {} {}{}", count, name, plural)
-                };
+                return format!("{} {}{}", count, name, plural);
+            }
+            // Rounding "90 seconds" down to "about 1 minute" throws away more
+            // than it saves, so a lone unit with a remainder defers to the
+            // next smaller one.
+            if count > 1 {
+                return format!("about {} {}s", count, name);
             }
         }
 

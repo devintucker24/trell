@@ -1,443 +1,757 @@
-# Palimpsest: An Epistemic Memory Language for AI Systems
+# Palimpsest
 
-> **Palimpsest** (/ˈpæl.ɪmp.sest/): *A manuscript or piece of writing material on which earlier writing has been effaced or overlaid to make room for later writing, yet traces of the prior text remain indelibly preserved, auditable, and recoverable.*
+A language for what an agent knows.
 
----
+Not what it can retrieve — what it *knows*: which fact is current, which one it
+replaced, who is entitled to say so, when it stops being true, and what the
+agent is allowed to claim it knows.
 
-## 1. Thesis: Memory is an Epistemic Resolution & Truth Maintenance Problem
+*A palimpsest is a manuscript scraped down and written over, where the earlier
+text is still legible underneath. That is the data structure. Nothing here is
+ever deleted; it is written over, and the layer below stays readable.*
 
-Modern AI agents treat memory as a **vector similarity-search problem**. A user says *"I live in Lisbon"* in March and *"I moved to Berlin"* in August. Both text fragments are embedded and placed into a vector database. When the agent is prompted in September, retrieval pulls top-$k$ nearest chunks. Both chunks enter the prompt context window. The stochastic language model arbitrates between them—sometimes guessing right by date proximity, sometimes hallucinating, never explainably, and incapable of defending its choice.
+```
+trust legal above policy above staff above user above rumor
 
-This is a category error. Retrieval-Augmented Generation (RAG) and vector stores solve **content lookup**, not **epistemic belief state**. 
+alice.city is "Lisbon" as user from onboarding_form on 2026-03-01
+alice.city is "Berlin" as user from relocation_ticket on 2026-08-15
 
-Compilers solved hierarchical name resolution decades ago: nested scopes, lexical frames, shadowing, and precedence rules. But human cognition and AI agent beliefs possess dimensions that classical programming languages never had:
-1. **Epistemic Authority Lattices:** Inner scopes cannot unconditionally shadow outer scopes. A user claiming *"my PTO is 25 days"* in chat cannot override company policy in the HR handbook, even though the user is the narrower and more recent scope. Authority is an epistemic partial order $(A, \le)$ that dominates temporal recency.
-2. **First-Class Provenance & Epistemic Types:** A belief without provenance is hearsay. In Palimpsest, belief resolution enforces type-level epistemic contracts (`recall verified path`, `recall min_authority(Policy) path`). If a belief was derived from an unverified source or tainted document, the language's *reduction rules refuse to resolve it*. This is an operational semantic invariant, not a prompt instruction asking nicely.
-3. **Temporal Shadowing without Erasure:** New facts shadow older facts without destroying them. The underlying parchment retains every layer. Queries can time-travel (`recall as_of("2026-04-01") path`) or inspect the full audit trace (`audit path`).
-4. **Lifetimes & Staleness Degradation:** Facts decay. An IP lease, a weather forecast, or a cache entry has a TTL. When evaluated past expiry, evaluation transitions the binding into a distinct `Stale(value, age, ttl)` constructor. Queries demanding freshness (`recall fresh path`) halt with an epistemic error rather than silently serving obsolete policies.
-5. **Truth Maintenance & Cascading Retraction:** When an assumption, source, or episode is retracted (`retract source "phishing_email"`), an active Truth Maintenance System (TMS) dependency graph unrolls all derived beliefs and deterministically falls back to the prior valid belief layer in $O(1)$/$O(k)$ time.
-6. **Explicit Contradiction as a First-Class Result:** When two conflicting facts exist at identical authority and temporal priority, Palimpsest refuses to silently flip a coin or average them; it produces a `ContradictionError` that demands arbitration.
+acme.pto.days is 20 as policy from hr_handbook_2026 on 2026-01-01
+acme.pto.days is 25 as user   from slack_thread_942 on 2026-09-02
 
-### Why This Cannot Be a Library (The PL Test)
+what is alice.city                     # Berlin
+what was alice.city on 2026-04-01      # Lisbon
+what is acme.pto.days                  # 20 — newer, narrower, and still outranked
+why acme.pto.days                      # both layers, and why 25 lost
 
-> **The Test:** *Name something that lives in your language's evaluation semantics or type system and therefore cannot be provided by an SDK.*
+forget everything from slack_thread_942
+check                                  # what is unsourced, stale, or contested
+```
 
-An SDK is an ambient runtime API over data structures: you call `store.get("key")`, receive an arbitrary JSON dictionary or string, and pass it to an LLM prompt. The SDK cannot alter how expressions evaluate, cannot enforce that an unverified binding refuses evaluation at the language boundary, and cannot define lexical-authority scope reduction rules.
-
-In Palimpsest:
-1. **Defeasible Reduction Semantics:** The evaluation rule for `recall p` is not a map lookup. It evaluates across an environment $\sigma = \langle \text{Lattice}, \text{ScopeStack}, \text{Time}, \text{TMSGraph} \rangle$. An attempted override by a low-authority assertion does not mutate or replace the existing binding; it creates a shadowed inscription and registers a formal `DefeasanceConflict` in the semantic state.
-2. **Epistemic Refusal Semantics:** In expressions like `let key = recall verified secrets.token;`, if the only candidate belief has `authority = Unverified` or `verified = false`, the language evaluation semantics *halts with an Epistemic Refusal*. The value does not exist in the language environment. No downstream expression or prompt template can consume it.
-3. **Staleness Monad / Wrapper Type:** A binding evaluated past TTL evaluates to a distinct type constructor `Stale { value, age, ttl }`. Operations expecting `T` fail with a type/staleness error unless explicitly inspected via `.is_stale` or unwrapped.
-4. **Lexical Scope Shadowing Bound to Epistemic Lattices:** Resolution walks a 2D matrix of lexical scope frames and authority tiers. Inner lexical depth can shadow *only* within equivalent or lower authority tiers. A higher authority tier in an outer scope strictly dominates an inner scope assertion.
-
----
-
-## 2. Who Writes Palimpsest?
-
-Palimpsest is designed for three distinct participants in an AI system:
-
-1. **The Agent Controller (Machine Ingest):** As an autonomous agent interacts with users, tools, and environments, it emits declarative Palimpsest statements (`assert`, `episode`, `retract`) instead of stuffing raw chat dumps into a vector database.
-2. **The Knowledge & Safety Architect (Human System Designer):** Engineers write Palimpsest programs to declare the foundational rules of the agent's mind: the authority hierarchy (`authority Legal > Compliance > Policy > User > Unverified;`), organizational scopes (`scope enterprise.acme { ... }`), foundational company handbooks, and TTL/provenance constraints.
-3. **The Auditor & Evaluator (Inspector / Verifier):** Compliance officers and automated eval suites execute Palimpsest queries (`audit`, `history`, `conflicts`, `recall as_of(...)`) to formally verify what an agent knew at a specific time, audit why a fact was superseded, and prove that untrusted inputs did not override security policies.
+No API key. No embedding model. No vector store. `cargo test` and
+`cargo run -- examples/moving.pal` are the whole setup.
 
 ---
 
-## 3. The 20-Line Tour
+## Contents
 
-Here is a complete Palimpsest program illustrating the core primitives (`examples/tour.pal`):
+- [The thesis](#the-thesis)
+- [Where this sits in the 2026 landscape](#where-this-sits-in-the-2026-landscape)
+- [Why this cannot be a library](#why-this-cannot-be-a-library)
+- [The language](#the-language)
+- [Markdown brains](#markdown-brains)
+- [Running it](#running-it)
+- [The scenarios, and their real output](#the-scenarios-and-their-real-output)
+- [What is real and what is not](#what-is-real-and-what-is-not)
 
-```palimpsest
-authority Compliance > Policy > User > Unverified;
+---
 
-scope enterprise.acme {
-    // Foundational policy with 365-day lifetime
-    assert policy.vacation_days = 20 @ authority(Policy), source("hr_handbook_2026"), ttl(365d);
-    assert security.tier = "restricted" @ authority(Compliance), source("soc2_audit");
+## The thesis
 
-    // Employee claims conflicting vacation days in Slack
-    assert policy.vacation_days = 25 @ authority(User), source("slack_chat_942");
+The seed idea for this project was that agent memory is treated as a
+similarity-search problem and should be treated as a name-resolution problem. I
+think that is right and I think it stops one step short.
 
-    // Chronological profile updates
-    assert user.alice.city = "Lisbon" @ authority(User), source("onboarding_doc"), at("2026-03-01T00:00:00Z");
-    assert user.alice.city = "Berlin" @ authority(User), source("relocation_ticket"), at("2026-08-15T00:00:00Z");
-}
+Name resolution alone gets you shadowing and recency, which compilers have done
+since the 1960s. That already beats a vector index, because "Berlin replaced
+Lisbon" is a fact about the *relationship between two statements*, and an index
+of independent chunks structurally cannot hold it. But scope and recency are not
+enough on their own, for a reason the seed thesis names and then leaves as a
+corollary: **the most specific and most recent claim is frequently the one you
+must not believe.** An employee saying their leave allowance is twenty-five days
+is narrower than the handbook and newer than the handbook, and it is wrong.
 
-let current_city = recall enterprise.acme.user.alice.city;               // Resolves to "Berlin"
-let past_city    = recall as_of("2026-04-01T00:00:00Z") enterprise.acme.user.alice.city; // "Lisbon"
-let pto_days     = recall enterprise.acme.policy.vacation_days;          // Resolves to 20 (Policy > User!)
-let audit_trail  = audit enterprise.acme.user.alice.city;               // Audits Lisbon (shadowed) & Berlin
+So the thesis I actually built is one step over:
 
-retract source "relocation_ticket";                                     // TMS dependency cascade
-let restored_city = recall enterprise.acme.user.alice.city;             // Deterministically falls back to "Lisbon"
+> **Agent memory is a name-resolution problem where the resolution order is not
+> lexical.** Standing comes first, specificity second, recency third. A memory
+> language's job is to make that order explicit, deterministic, and auditable,
+> and to refuse the question when the order does not settle it.
+
+Which produces the rest of the design:
+
+**Standing is a separate axis from scope depth.** `trust legal above policy above
+user` declares an order over who is entitled to be believed. Resolution consults
+it before it consults anything else. This is the one line that stops an agent
+from being talked out of a policy by whoever spoke most recently.
+
+**Provenance is part of the question, not part of the answer.** `what is verified
+deploy.token` is a different operation from `what is deploy.token`. The first
+refuses to resolve from anything the brain cannot attribute. Not a warning
+attached to the result — the value does not come back, so no downstream
+expression can consume it. This is the property that has to be in the evaluation
+rule, because anything that hands you the value and a flag is a thing a
+programmer forgets to check.
+
+**Forgetting is a semantic operation, not a delete.** `forget everything from
+phishing_email_88` withdraws every belief that document taught and every episode
+it reported, and the previous answer comes back on its own, because the previous
+answer was never destroyed. A vector store can delete the embedding. It cannot
+restore what the document displaced, because nothing recorded that it displaced
+anything.
+
+**Staleness is a type, not a timestamp comparison.** A belief past its lifetime
+resolves to a different type from a fresh one. Code that expected a string does
+not silently receive last year's tax rate.
+
+**Contradiction is an outcome.** Two documents of equal standing claiming the
+same day and disagreeing is not a ranking problem to be broken by a tiebreak. It
+is a fact about the brain, and the language reports it rather than guessing.
+
+**Episodes are not facts.** "We tried the migration and it failed on the
+connection pool" has no name to resolve. It is stored separately, never shadowed,
+never overwritten — and a resolvable fact may rest on it via `because`, so
+withdrawing the episode withdraws the fact.
+
+---
+
+## Where this sits in the 2026 landscape
+
+I went looking for prior art before building, and the most useful thing I found
+was that a lot of people have converged on the same problem from the other
+direction, and are solving it with conventions rather than semantics.
+
+### The RAG stack, and what it is actually good at
+
+The 2026 production retrieval stack is well-understood and genuinely good:
+structure-aware chunking at 512–1024 tokens, a contextual summary prepended to
+each chunk before embedding (Anthropic's contextual retrieval, roughly a 49%
+reduction in retrieval failures on its own), dense and BM25 retrieval in
+parallel fused with Reciprocal Rank Fusion, then a cross-encoder reranker
+compressing fifty candidates to five. Pure vector search is now considered an
+anti-pattern outside trivial cases.
+
+**Palimpsest does not compete with any of that and should not be compared to
+it.** That stack answers "which passages are relevant to this question," which
+is a real problem it solves well. It has no answer to "which of these two
+passages is currently true," because relevance and truth are different
+relations and the pipeline only computes one of them. Reranking a stale policy
+above a current one is not a reranker bug. The reranker was never told one
+superseded the other, and there is nowhere in the format to say so.
+
+The natural pairing is retrieval for recall over prose and Palimpsest for the
+claims that have to be right. Ask the index what documents discuss leave policy;
+ask the brain how many days Alice actually has.
+
+### Second brains: LLM Wiki and GBrain
+
+Two things landed in April 2026 and both are more relevant to this project than
+any vector database.
+
+**Karpathy's LLM Wiki** proposes that instead of re-retrieving from raw sources
+at query time, an agent should incrementally maintain a persistent wiki of
+interlinked markdown — knowledge compiled once and kept current. Three layers
+(immutable raw sources, an LLM-owned wiki, a schema file governing the agent)
+and three operations: ingest, query, and **lint**.
+
+**GBrain** ships the same shape as software: a git repo of markdown is the
+system of record, Postgres with pgvector indexes it for hybrid retrieval, and
+every page write extracts typed entity edges into a self-wiring knowledge graph
+with no LLM calls. Its own documentation is candid about where it stops — it
+names temporal reasoning and "what was true last week but isn't now" as
+explicitly not a first-class feature.
+
+Both are right about the substrate, and Palimpsest adopts it wholesale: **plain
+markdown in git, human-readable and diffable, is the correct system of record
+for a brain.** Palimpsest reads exactly that (see [Markdown
+brains](#markdown-brains)).
+
+The interesting part is where they stop. Read the LLM Wiki thread and you find
+the same missing layer being described over and over by people who built on it:
+one commenter concludes "each update needs provenance, scope, freshness, and NOT
+VERIFIED"; another adds `data-supersedes` to their page format so "a correction
+never erases, it leaves one live target with the history still addressable";
+another builds immutable typed cards where "corrections supersede, refuted cards
+stay visible as signposted dead ends"; another resolves conflicts at write time
+by demoting the loser to a hidden `stale` and keeping it in an audit log, with
+predicates declarable as temporal so a superseded value stays queryable by date.
+
+That is five people independently reinventing supersession, provenance,
+staleness, and audit — as markdown conventions, YAML keys, and prompt
+instructions. **Palimpsest's claim is that this is a language, and they are
+writing it without a compiler.** Conventions in a schema file are enforced by an
+LLM remembering to follow them. The same rules in evaluation semantics are
+enforced by the rules.
+
+The strongest confirmation is a question asked in that thread and left
+unanswered: *"Has anyone run both layers together, a deterministic fact store as
+the substrate with a maintained wiki as the read surface over it?"* That is
+precisely the position this language occupies.
+
+The other tell is `lint`. Karpathy lists it as one of three core operations —
+check the wiki for contradictions, stale claims, orphan pages, gaps. One
+implementer reports it is "the part people react to most, probably because it's
+the one thing a RAG tool structurally can't do." Palimpsest's `check` is that
+operation, except it is decidable rather than a model's opinion: contradiction
+means two live beliefs at equal standing on the same stated day, and staleness
+means a lifetime that has elapsed. Same operation, mechanical answer.
+
+### Agent memory products
+
+**Letta/MemGPT** gives an agent editable memory blocks inside its own context and
+lets it rewrite them. The self-edit is the mechanism, which means the model is
+the arbiter of what supersedes what. Palimpsest takes that decision away from the
+model on purpose: the model writes statements, the language decides which one
+holds.
+
+**Mem0** and **LangMem** extract facts from conversation and deduplicate them,
+which is genuinely useful and orthogonal. They resolve conflicts by heuristic and
+recency at write time. Palimpsest keeps both layers and resolves at read time,
+which is what makes `what was alice.city on 2026-04-01` answerable at all.
+
+**Zep/Graphiti** is the closest prior art and deserves a precise answer. It
+builds a temporal knowledge graph with bi-temporal edges (`valid_at`,
+`invalid_at`) and invalidates facts when new episodes contradict them. It is
+genuinely good and the overlap is real: both keep history rather than
+overwriting, both answer as-of queries.
+
+Three places Palimpsest goes where Graphiti does not:
+
+1. **Invalidation is decided by an LLM.** Graphiti asks a model whether a new
+   edge contradicts an existing one. That is a reasonable engineering choice and
+   it is also the exact decision this project exists to remove from the model. In
+   Palimpsest, contradiction is a structural property of two beliefs, computed the
+   same way every run, with no API key.
+2. **There is no authority dimension.** Graphiti's edges carry time but not
+   standing. Nothing in the model expresses that the handbook outranks the
+   employee. Recency wins, which is the failure mode the whole design is aimed at.
+3. **Refusal is not expressible.** Graphiti can tell you a fact's provenance. It
+   cannot make a query that structurally cannot return an unsourced fact, because
+   the constraint would live in application code, and application code is where
+   these checks get forgotten.
+
+### Databases with time and immutable facts
+
+**Datomic** is the ancestor of the storage model and I have taken from it freely:
+immutable assertions and retractions, as-of queries, the database as an
+accumulating log rather than a mutable cell. What Datomic does not have is an
+opinion about *belief*. A datom is a fact asserted by a transaction; there is no
+notion that the transactor might not be entitled to assert it, or that the fact
+might expire, or that a query might refuse to read an unattributed one. Excision
+removes data; it does not restore what the data displaced. Palimpsest is roughly
+Datomic's temporal model with an epistemics layer on top and a syntax a
+non-programmer can read.
+
+**Datalog** and **Datascript** give recursive querying that Palimpsest does not
+have. **RDF/SPARQL named graphs** can express provenance and are the most
+complete prior art for attribution — RDF can say anything about anything,
+including who said it. What RDF cannot do is *act* on that: there is no SPARQL
+form meaning "refuse this query if the triple's named graph is untrusted." The
+information is representable and inert. Palimpsest represents less and enforces
+it.
+
+### Theory
+
+**AGM belief revision** is the formal backdrop, and Palimpsest is a deliberately
+partial implementation of it. AGM's expansion, contraction, and revision map onto
+writing a fact, `forget`, and supersession. AGM leaves the selection function —
+which beliefs to give up when you must give up something — abstract. Palimpsest's
+answer is the trust order, which is less general than AGM allows and has the
+advantage of being a thing a person can read off the top of a file.
+
+**Truth maintenance systems** are what `because` and cascading retraction are.
+This is a JTMS with one justification per belief rather than a general dependency
+network, which is a real limitation (see [What is real and what is
+not](#what-is-real-and-what-is-not)) and keeps retraction linear and explicable.
+
+**Defeasible logic** is the closest formal fit: the trust order is a superiority
+relation over defeasible rules, and defeat is recorded rather than silent, which
+is what `conflicts` reports.
+
+**Answer set programming** would handle the contradiction case by producing
+multiple answer sets. That is more expressive and less useful here — an agent
+that must act needs to know it is stuck, not receive two consistent worlds.
+Palimpsest refuses instead.
+
+**Incremental view maintenance / differential dataflow** is the right frame for
+making retraction efficient at scale, and this implementation does not use it
+(retraction is a linear scan over an index). Nothing in the semantics prevents
+it; it is an implementation upgrade, not a redesign.
+
+### Cognitive architectures
+
+**SOAR** and **ACT-R** split declarative from procedural memory, and ACT-R's
+declarative module has base-level activation decaying with time and disuse. That
+decay is Palimpsest's lifetimes with a different curve — and a deliberate
+difference: ACT-R makes a decayed chunk *harder to retrieve*, while Palimpsest
+makes an expired belief *retrievable but differently typed*. Silent
+retrieval-failure is the wrong behaviour for a system that has to explain itself.
+A brain that cannot recall something should say so.
+
+The declarative/procedural split is also why Palimpsest has no procedural memory
+at all: how an agent does things is what every agent framework already does, and
+duplicating it would be the "workflow, not the brain" mistake. The
+episodic/semantic split *is* in scope, because that is where the trap is — see
+`examples/episodes.pal`.
+
+### Adjacent AI DSLs
+
+**DSPy**, **BAML**, **LMQL**, and **Guidance** are all languages for *calling a
+model*: prompts, schemas, structured output, constrained decoding. Palimpsest
+never calls a model. There is no inference in the crate and no place to put an
+API key. They compose cleanly for that reason — BAML for extracting structured
+claims from prose, Palimpsest for deciding which of those claims survives.
+
+### The short version
+
+| | keeps history | as-of query | authority | refusal | deterministic | audits itself |
+|---|---|---|---|---|---|---|
+| Vector RAG | no | no | no | no | no | no |
+| LLM Wiki / GBrain | by convention | no | by convention | no | no | LLM lint |
+| Letta / Mem0 | partial | no | no | no | no | no |
+| Zep / Graphiti | yes | yes | no | no | LLM-decided | no |
+| Datomic | yes | yes | no | no | yes | no |
+| RDF named graphs | modelable | modelable | modelable | no | yes | no |
+| **Palimpsest** | yes | yes | yes | yes | yes | `check` |
+
+---
+
+## Why this cannot be a library
+
+The test posed for this project: name something in the evaluation semantics or
+type system that an SDK cannot provide.
+
+**A library can hand you a value with a flag. It cannot fail to hand you the
+value.**
+
+```
+what is verified deploy.token
+```
+
+If the only belief behind that name is unattributed, this expression does not
+evaluate. Nothing is bound; no downstream expression, no string interpolation,
+and no prompt template can reach it. The nearest SDK equivalent is
+`store.get("deploy.token", verified=True)` returning `None`, and the difference
+is the whole point: `None` is a value, it flows, and somebody eventually writes
+`or ""`. A refusal is not a value.
+
+Three more that live in the same place:
+
+**A stale belief has a different type.** Past its lifetime, a value resolves to
+`Stale { value, age, lifetime }`, not to the string it wraps. Code written for
+the fresh case does not accidentally run on the expired one — `expect what is ip
+is "10.0.0.1"` *fails* once the lease is gone. A library returns the string and a
+`stale=True` attribute nobody reads.
+
+**A low-standing write does not overwrite.** Writing `acme.pto.days is 25 as
+user` when a `policy` belief exists does not mutate anything, does not fail, and
+does not get dropped. It is inscribed as a layer that loses, and the defeat is
+recorded in `conflicts`. There is no map, so there is nothing to put a key in.
+
+**`check` has no library shape.** Not because it is hard to write, but because it
+is a question about the belief set as a whole — which names are held at equal
+standing with no rule to decide between them — and that question only exists once
+"standing" and "the same name" are language concepts rather than application
+conventions.
+
+The honest boundary: everything Palimpsest does could be *implemented* as a
+library, in the sense that everything any language does could be. What a library
+cannot do is make the refusal unavoidable. A library's guarantees are advisory,
+enforced by every caller remembering to check. A language's are structural.
+
+---
+
+## The language
+
+Palimpsest is meant to be readable by the person whose policy is being encoded,
+not only by the engineer wiring it up. There are no semicolons, no sigils, and no
+function-call syntax on the common path.
+
+### Facts
+
+A fact is a sentence. The name, `is`, the value, then any number of
+prepositional phrases in any order.
+
+```
+alice.city is "Berlin"
+alice.city is "Berlin" from relocation_ticket
+alice.city is "Berlin" as user from relocation_ticket on 2026-08-15
+gateway.ip is "10.0.0.1" as policy from dhcp_lease for 5 minutes
+db.status is "degraded" as compliance from pagerduty because migration_attempt_3
+token   is "tok_999"   as rumor from anonymous_paste unverified
+```
+
+| phrase | meaning |
+|---|---|
+| `as <tier>` | who is entitled to say this. Defaults to the weakest tier. |
+| `from <source>` | the document or conversation it came from. |
+| `on` / `since <date>` | when it became true. Defaults to now. |
+| `for <duration>` | how long it stays true. |
+| `until <date>` | when it stops being true. |
+| `because <episode>` | the event it rests on. |
+| `verified` / `unverified` | override the default attribution judgement. |
+
+Dates are bare: `2026-08-15`, `2026-09-04T08:15`. Durations are written either
+way: `for 30 days`, `for 90d`, `for 5 minutes`.
+
+### Trust
+
+```
+trust legal above compliance above policy above staff above user above rumor
+```
+
+One line, top to bottom, strongest first. This is the whole precedence model, and
+it is deliberately a total order rather than a lattice: a person should be able
+to predict which claim wins by reading one line, and partial orders make that a
+graph search. A tier nobody declared is an error naming the tiers that exist,
+rather than a silent default.
+
+### Scopes
+
+```
+about acme:
+    region is "eu-west-1" as policy from infra_standard
+
+    about alice:
+        city is "Berlin" as user from relocation_ticket
+```
+
+`about` prefixes names. A question inside a scope searches outward, so `alice`
+sees `acme.region`. Scope depth breaks ties *within* a tier and never crosses
+one — the point of the nested example above is that `alice` cannot override
+`acme.region` by being more specific.
+
+### Questions
+
+```
+what is alice.city                    # resolve now
+what was alice.city on 2026-04-01     # resolve as of a date
+what is verified deploy.token         # refuse unless attributable
+what is fresh gateway.ip              # refuse if past its lifetime
+what is trusted policy acme.budget    # refuse below a standing
+why alice.city                        # every layer, and why each won or lost
+conflicts                             # overrides that were refused
+episodes                              # the episodic log
+check                                 # health of the whole brain
+```
+
+A question on its own line prints its answer. Adjectives stack: `what is verified
+fresh gateway.ip`.
+
+### Episodes
+
+Things that happened, which have no name to resolve:
+
+```
+when migration_attempt_3:
+    happened on 2026-09-04T08:15
+    involved deploy_bot, alice
+    details service is "billing-db", pool_size is 100
+    summary "Schema migration aborted: the connection pool was exhausted"
+```
+
+Episodes are never shadowed and never overwritten. A fact may rest on one with
+`because`, and `forget when migration_attempt_3` takes both.
+
+### Forgetting
+
+```
+forget everything from phishing_email_88   # a source, and all it taught
+forget when migration_attempt_3            # an episode, and all resting on it
+forget alice.city                          # one name
+```
+
+### Time
+
+The clock is virtual, so lifetimes and expiry are reproducible. Nothing in the
+crate reads the wall clock.
+
+```
+now is 2026-09-04T12:00:00Z
+later by 10 minutes
+```
+
+### Bindings, output, and assertions
+
+```
+let lease = what is gateway.ip
+show "the lease is " + lease.age + " old"
+expect what is alice.city is "Berlin"
+```
+
+`expect` is how the examples test themselves; a failure names the line.
+
+### The resolution rule, in full
+
+Every question resolves the same way. Gather every belief written under the name
+in any enclosing scope, drop the withdrawn ones and any dated after the moment
+being asked about, then:
+
+1. **Highest standing wins.**
+2. Among equals, the **most specific scope** wins.
+3. Among equals, the **most recent** wins.
+
+If two survivors claim the same explicitly stated moment, that is a
+contradiction, and the question is refused. Then, and only then, the demands the
+question made (`verified`, `fresh`, `trusted <tier>`) are applied to the winner.
+
+Two consequences worth stating because they are the ones people get wrong.
+Demands filter the *answer*, they do not search for a better one — `what is
+verified x` refuses if the winning belief is unattributed, even when a weaker
+attributable belief exists, because silently answering from a source you did not
+choose is the behaviour this language exists to prevent. And beliefs written in
+the same tick without an explicit date supersede in file order rather than
+contradicting, because two lines in a document are a sequence, not a
+simultaneous claim.
+
+---
+
+## Markdown brains
+
+Palimpsest reads markdown, so a brain can be a git repo of pages that a human
+reads and an agent maintains — the LLM Wiki and GBrain substrate, with
+deterministic resolution underneath.
+
+Fenced `pal` blocks are executed; the prose around them is ignored:
+
+````markdown
+---
+source: hr_handbook_2026
+authority: policy
+---
+
+# Employee Handbook 2026
+
+Full-time employees accrue twenty days of paid leave per calendar year.
+
+```pal
+acme.pto.days is 20 as policy on 2026-01-01
+acme.expenses.per_diem_eur is 75 as policy on 2026-01-01 for 1 year
+```
+````
+
+**The page is the provenance.** Facts inherit the file path as their source, or
+the `source:` frontmatter key if it names something stabler. So `forget
+everything from hr_handbook_2026` means what it looks like, and withdrawing a
+page withdraws its episodes too. Line numbers are preserved, so a parse error
+points at the right line of the markdown.
+
+`examples/brain/` is a four-page worked example — a handbook, a person page, an
+incident report, and a page of questions — where the handbook and the person page
+disagree about leave and the handbook wins across the file boundary.
+
+```
+$ palimpsest examples/brain --check
 ```
 
 ---
 
-## 4. Prior Art & Deep Differentiation
+## Running it
 
-Palimpsest is built from a blank thesis, consciously answering and surpassing five distinct lineages of computer science and AI memory:
-
-```
-                       ┌──────────────────────────────────────────────────────────┐
-                       │                     PALIMPSEST                           │
-                       │  • Declarative Epistemic Memory Language                 │
-                       │  • 2D Authority-Lattice × Lexical Scopes                 │
-                       │  • First-Class TMS Retraction Cascade & Fallback         │
-                       │  • Temporal Shadowing & Inscription Audit Trail          │
-                       │  • Episodic Grounding & Staleness Degradation            │
-                       │  • Provenance-Gated Evaluation Semantics                 │
-                       └─────────────┬───────────────────────────────┬────────────┘
-                                     │                               │
-       ┌─────────────────────────────┴──────────┐     ┌──────────────┴──────────────────────────┐
-       ▼                                        ▼     ▼                                         ▼
- Agent Memory Products                 Temporal Databases      Belief Revision & Logic         AI DSLs
- (Letta, Mem0, LangMem, Graphiti)      (Datomic, Datalog,      (AGM, TMS/ATMS, Defeasible      (DSPy, BAML,
-                                        RDF / SPARQL)           Logic, SOAR / ACT-R)            LMQL, Guidance)
-```
-
-### 1. Agent Memory Products (Letta/MemGPT, Mem0, LangMem, Zep/Graphiti)
-- **Letta / MemGPT:** Letta manages prompt context windows by creating editable "memory blocks" (persona, human, core memory) updated via LLM tool calls (`core_memory_append`, `core_memory_replace`). It has no formal type system, no authority hierarchy, no concept of temporal shadowing (it edits text strings in place), and resolution is simply whatever the LLM reads in the context window.
-- **Mem0 & LangMem:** Mem0 embeds unstructured facts into vector stores with user/agent IDs and uses LLM agents to CRUD fact cards. It directly suffers from vector collision: when contradictory facts are stored, both return in top-$k$, leaving resolution to prompt serendipity.
-- **Zep / Graphiti:** Graphiti is the closest existing prior art. It builds temporal knowledge graphs with bi-temporal models and edge invalidation.
-  - *Where Palimpsest goes beyond Graphiti:* Graphiti is a Python library and database engine. It has no syntax, no lexical scoping, no authority lattice (all extracted facts share the same epistemic tier unless hard-coded in weights), no provenance type system that halts resolution when unverified, and no programming language evaluation model where scopes, inheritance, and deterministic fallbacks are first-class linguistic constructs.
-
-### 2. Databases with Time and Immutable Facts (Datomic, Datalog, RDF/SPARQL, Datascript)
-- **Datomic & Datascript:** Datomic models immutable EAVT datoms (Entity, Attribute, Value, Time/Tx) with `:db/add`, `:db/retract`, and `as-of` historical queries.
-  - *Where Palimpsest goes beyond Datomic:* Datomic is a database storage engine, not an epistemic programming language. Datomic has no notion of cognitive agent scope, authority dominance (a transaction is a transaction; a user transaction overwrites an admin assertion if written later), staleness degradation curves, or provenance refusal semantics.
-- **Datalog:** Declarative logic programming over relational tuples. Pure Datalog is monotonic: adding facts can only derive more facts, making update and retraction impossible without stratified negation, modal state threading, or non-monotonic extensions. Datalog lacks lexical scoping and temporal lifetimes.
-- **RDF / SPARQL & Named Graphs:** Quad stores `(subject, predicate, object, graph)` use named graphs as coarse containers for provenance. However, named graphs are uninterpreted identifiers: they do not provide shadowing, authority precedence, or automatic fallback resolution.
-
-### 3. Theory (AGM, TMS/ATMS, Defeasible Logic, ASP, IVM, Cognitive Architectures)
-- **AGM Belief Revision (Alchourrón, Gärdenfors, Makinson):** AGM formalizes ideal epistemic expansion ($+$), contraction ($-$), and revision ($*$) over deductively closed propositional belief sets. AGM is computationally intractable in general logics and has no concept of programming language scopes, provenance, execution, or temporal decay.
-- **Truth Maintenance Systems (TMS / ATMS - Doyle & de Kleer):** TMS maintains dependency networks between assumptions, justifications, and derived facts, recalculating IN/OUT status upon retraction. Palimpsest directly translates the insights of TMS into language evaluation semantics: bindings track their justification chains, and `retract` operations unravel all downstream beliefs in constant/linear time.
-- **Non-Monotonic & Defeasible Logic:** Formalizes defeasible rules, rebuttals, and undercutting defeaters. Palimpsest implements defeasible logic through its **Authority Lattice**: an assertion at authority $A_1$ is defeated by an assertion at $A_2$ if $A_2 > A_1$, producing an auditable `DefeasanceConflict`.
-- **SOAR and ACT-R (Cognitive Architectures):** ACT-R separates declarative memory (chunks) from procedural memory (production rules) and features activation decay. Palimpsest adopts a principled position on the **Episodic vs Semantic Memory** split:
-  - *Semantic Memory* consists of resolvable named paths in the epistemic lattice (`entity.property`).
-  - *Episodic Memory* consists of immutable event logs (`episode <id> { at, actors, context, summary }`).
-  - *Grounded Justification:* Semantic facts can be grounded in episodes (`grounded_in("<episode_id>")`). The episode is the premise of the fact. When the episode is retracted or invalidated, all grounded semantic beliefs are automatically unseated.
-
-### 4. Adjacent AI DSLs (DSPy, BAML, LMQL, Guidance)
-- **DSPy:** Compiles multi-stage prompt pipelines and optimizes few-shot demonstrations. DSPy is about *prompt engineering and pipeline optimization*, not memory.
-- **BAML:** A type-safe schema language for parsing LLM structured outputs into typed objects. BAML is about *output schema extraction*, not belief maintenance.
-- **LMQL & Guidance:** Constrained text generation using grammars and token-level logit masks.
-- *Where Palimpsest goes:* None of these DSLs manage agent memory, belief state, historical shadowing, authority conflict, or retraction cascades. They are generation formatters; Palimpsest is the epistemic memory substrate.
-
-### Differentiation Matrix
-
-| Capability | Vector RAG | MemGPT / Letta | Graphiti | Datomic | DSPy / BAML | **Palimpsest** |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Deterministic Shadowing (no LLM coin-toss)** | No | No | Partial | Yes | N/A | **Yes (Formal PL Semantics)** |
-| **Epistemic Authority Lattice** | No | No | No | No | N/A | **Yes (`A > B > C`)** |
-| **Auditable Historical Inscriptions (`audit`)** | No | No | Yes | Yes | N/A | **Yes (Full Vellum Trace)** |
-| **Cascading TMS Retraction (`retract`)** | No | No | No | Partial | N/A | **Yes (Justification DAG)** |
-| **Lifetimes & Staleness Degradation (`ttl`)** | No | No | Partial | No | N/A | **Yes (`Stale` Constructor)** |
-| **Type-Level Provenance Refusal (`verified`)** | No | No | No | No | N/A | **Yes (Epistemic Refusal)** |
-| **Episodic Grounding of Semantic Facts** | No | No | No | No | N/A | **Yes (`grounded_in`)** |
-| **Runs Deterministically Without API Keys** | Yes | No | No | Yes | Yes | **Yes (Pure Rust Core)** |
-
----
-
-## 5. Formal Semantics: The Palimpsest Resolution Algorithm
-
-When an expression `recall p` is evaluated in runtime state $\sigma$ at evaluation time $T_{\text{eval}}$:
-
-$$\sigma = \langle \mathcal{L}, \mathcal{S}, \mathcal{B}, \mathcal{E}, \mathcal{J}, \mathcal{C}, T_{\text{clock}} \rangle$$
-
-Where:
-- $\mathcal{L}$ is the partially ordered Authority Lattice (e.g. $\text{Compliance} \succ \text{Policy} \succ \text{User} \succ \text{Unverified}$).
-- $\mathcal{S}$ is the lexical scope stack.
-- $\mathcal{B} = \{ b_1, b_2, \dots \}$ is the set of all memory inscriptions.
-- $\mathcal{E}$ is the episodic memory store.
-- $\mathcal{J}$ is the TMS justification graph (dependencies between sources, episodes, and beliefs).
-- $\mathcal{C}$ is the defeasance conflict log.
-
-### Step 1: Candidate Inscription Gathering
-The engine finds all inscriptions matching path $p$ (scoped or fully qualified) asserted at or before $T_{\text{eval}}$ that are **not retracted**:
-
-$$\mathcal{B}_{\text{cand}} = \{ b \in \mathcal{B} \mid \text{path}(b) \sim p \land \neg\text{retracted}(b) \land \text{time}(b) \le T_{\text{eval}} \}$$
-
-If $\mathcal{B}_{\text{cand}} = \emptyset$, resolution terminates with `PathNotFoundError`.
-
-### Step 2: Authority Lattice Dominance
-Authority strictly dominates temporal recency and lexical depth:
-
-$$A_{\max} = \max_{b \in \mathcal{B}_{\text{cand}}} \text{rank}(\text{authority}(b))$$
-$$\mathcal{B}_{\text{auth}} = \{ b \in \mathcal{B}_{\text{cand}} \mid \text{rank}(\text{authority}(b)) = A_{\max} \}$$
-
-Any candidate with authority $A < A_{\max}$ is defeated. If an incoming defeated belief attempted to assert a different value than an existing $A_{\max}$ belief, a `DefeasanceConflict` is recorded in $\mathcal{C}$.
-
-### Step 3: Recency Ordering & Contradiction Detection
-Among candidates in $\mathcal{B}_{\text{auth}}$, inscriptions are sorted by asserted timestamp and transaction sequence order:
-
-$$b_{\text{winner}} = \operatorname{argmax}_{b \in \mathcal{B}_{\text{auth}}} (\text{time}(b), \text{tx\_id}(b))$$
-
-If another candidate in $\mathcal{B}_{\text{auth}}$ was asserted with an identical explicit timestamp and conflicting value, resolution halts with `ContradictionError`.
-
-### Step 4: Epistemic Provenance Guard
-If the query declares `verified`:
-If $\neg\text{verified}(b_{\text{winner}})$ or $\text{authority}(b_{\text{winner}}) = \text{Unverified}$, resolution fails closed:
-
-$$\text{halt with } \text{UnverifiedBeliefRefusal}(p, \text{source}(b_{\text{winner}}))$$
-
-### Step 5: Staleness Degradation
-If $b_{\text{winner}}$ specifies an expiry $T_{\text{valid}} = \text{time}(b) + \text{ttl}$:
-- If $T_{\text{eval}} > T_{\text{valid}}$ and query demanded `fresh`: halts with `StaleBeliefError`.
-- If $T_{\text{eval}} > T_{\text{valid}}$ and standard `recall`: evaluates to `Value::Stale { value, age, ttl }`.
-- Otherwise: evaluates directly to `value`.
-
----
-
-## 6. Demonstrating the 6 Acceptance Scenarios
-
-Every acceptance scenario is fully implemented and verifiable either individually or in batch.
-
-### Running All Scenarios
 ```bash
-cargo run -- --scenarios
+cargo test                                # 67 tests
+cargo run -- examples/moving.pal          # one program
+cargo run -- examples/brain               # a whole markdown brain
+cargo run -- examples/brain --check       # ... and audit it, non-zero on errors
+cargo run -- -e 'x is 1 as rumor
+what is x'
 ```
 
-### Scenario 1: Fact Superseding and Auditability
-*A user moves from Lisbon in March to Berlin in August. The current belief resolves to Berlin, but Lisbon remains indelibly in the audit trail rather than silently lost or confusingly retrieved together.*
+Pure Rust, no dependencies, stable toolchain. The crate is a library as well as a
+binary; `palimpsest::run_quiet(source)` returns a `Runtime` you can query.
 
-Program (`examples/01_superseding_and_audit.pal`):
-```palimpsest
-assert user.residence = "Lisbon" @ authority(User), source("chat_session_03"), at("2026-03-01T10:00:00Z");
-assert user.residence = "Berlin" @ authority(User), source("chat_session_08"), at("2026-08-15T14:30:00Z");
-
-let current = recall user.residence;
-let past = recall as_of("2026-04-01T00:00:00Z") user.residence;
-print history user.residence;
-```
-
-Execution Output:
-```
->>> Running Palimpsest program: examples/01_superseding_and_audit.pal
-"--- Current Belief ---"
-"Berlin"
-"--- Time-Travel (as of April 2026) ---"
-"Lisbon"
-"--- Full Epistemic Audit Trail ---"
-=== Palimpsest Inscription Audit (2) ===
-  [#1] user.residence = "Lisbon" | auth: User | src: "chat_session_03" | ver: true | time: 2026-03-01T10:00:00Z | status: SHADOWED (by #2 at 2026-08-15T14:30:00Z)
-  [#2] user.residence = "Berlin" | auth: User | src: "chat_session_08" | ver: true | time: 2026-08-15T14:30:00Z | status: ACTIVE
-```
+Why an interpreter rather than a compiler: the interesting semantics are all
+about the state of a belief store at a moment, and there is no compile-time work
+worth doing when every question is a query over data that arrived at runtime.
+There is nothing to lower.
 
 ---
 
-### Scenario 2: Low-Authority Cannot Override High-Authority
-*A user claims their PTO is 25 days. The employee handbook specifies 20 days. Because `Policy > User`, the user's claim cannot override the policy even though it is newer, and the conflict is reported explicitly.*
+## The scenarios, and their real output
 
-Program (`examples/02_authority_lattice_conflict.pal`):
-```palimpsest
-authority Compliance > Policy > User > Unverified;
+All seven run. Output below is verbatim.
 
-assert employee.alice.pto_days = 20 @ authority(Policy), source("hr_handbook_2026"), at("2026-01-01T00:00:00Z");
-assert employee.alice.pto_days = 25 @ authority(User), source("slack_chat_942"), at("2026-09-02T11:00:00Z");
+### 1. A fact is superseded, and the old one is auditable
 
-print "Recalled PTO:";
-print recall employee.alice.pto_days;
-print conflicts;
+`cargo run -- examples/moving.pal`
+
+```
+Where does Alice live?
+Berlin
+
+Where did she live in April, before the move?
+Lisbon
+
+Both layers, and why Lisbon is no longer the answer:
+history of alice.city (2 layers)
+  #1 alice.city = "Lisbon"  [user via onboarding_form on 2026-03-01] -> overwritten by #2 on 2026-08-15
+  #2 alice.city = "Berlin"  [user via relocation_ticket on 2026-08-15] -> current
 ```
 
-Execution Output:
+### 2. A low-standing source cannot override a high-standing one, and the conflict is reported
+
+`cargo run -- examples/authority.pal`
+
 ```
->>> Running Palimpsest program: examples/02_authority_lattice_conflict.pal
-"--- Recalled PTO (Policy wins over User) ---"
+How many PTO days does Alice have?
 20
-"--- Defeasance Conflicts ---"
-=== Defeasance Conflicts (1) ===
-  [Conflict on 'employee.alice.pto_days']: Low-authority 'User' (source: "slack_chat_942", value: 25) was defeated by existing high-authority 'Policy' (source: "hr_handbook_2026", value: 20). Reason: Attempted override by authority 'User' defeated by established authority 'Policy'
+
+The disagreement is recorded, not discarded:
+1 conflict
+  acme.alice.pto: user said 25 (via slack_thread_942) but policy outranks it and says 20 (via hr_handbook_2026)
+
+A question that insists on a policy-grade answer still gets one:
+20
+
+Authority also beats scope depth, which is the unusual part:
+eu-west-1
 ```
+
+The last line is the sharp one: `region` was written in the innermost scope as
+`user` and in the outer scope as `policy`, and the outer scope wins.
+
+### 3. Retracting a source removes what it taught and falls back
+
+`cargo run -- examples/forgetting.pal`
+
+```
+While the phishing email is trusted:
+admin
+no
+
+Withdraw the source, in one line:
+
+Everything it taught is gone, and the prior answer is back:
+member
+
+Facts from other sources are untouched:
+billing
+
+And the withdrawal is on the record:
+history of alice.role (2 layers)
+  #1 alice.role = "member"  [policy via corporate_ldap on 2026-01-10] -> current
+  #3 alice.role = "admin"  [policy via phishing_email_88 on 2026-09-03] -> forgotten: source `phishing_email_88` was forgotten
+```
+
+### 4. An expired belief reports staleness rather than being served straight
+
+`cargo run -- examples/lifetimes.pal`
+
+```
+Inside its lifetime, the lease answers normally:
+10.0.0.1
+
+Ten minutes pass.
+
+An ordinary question still answers, but the answer says what it is:
+STALE "10.0.0.1" (lived 10 minutes, allowed 5 minutes)
+  stale?   yes
+  value:   10.0.0.1
+  age:     10 minutes
+
+The tax rate expired months ago and nobody noticed until now:
+checked 2 beliefs (2 live) and 0 episodes
+  [warning] stale: #1 gateway.ip expired on 2026-09-04 12:05 and is 5 minutes past its lifetime
+  [warning] stale: #2 tax.rate expired on 2026-01-01 and is about 8 months past its lifetime
+  0 error(s), 2 warning(s)
+```
+
+### 5. A question that would rely on an unsourced belief is refused
+
+`cargo run -- examples/provenance.pal`
+
+```
+An ordinary question will hand over the rumour:
+tok_untrusted_999
+
+A question that requires provenance will not:
+  (the next line stops the program)
+
+refused: deploy.token is only believed as rumor via anonymous_paste. The question asked for a verified answer, so nothing is returned.
+
+This is a refusal, not a crash: the belief store could not answer
+that question under the conditions the question set.
+```
+
+Exit code 1. The refusal comes from the resolution rule; there is no phrasing of
+the question that returns the value.
+
+### 6. Episodic memory, and something a vector store cannot do in one line
+
+`cargo run -- examples/episodes.pal`
+
+```
+What is the state of the billing database?
+degraded
+
+...
+
+The incident is resolved, so the episode is withdrawn:
+
+The belief that rested on it went with it:
+history of billing.db.status (1 layer)
+  #1 billing.db.status = "degraded"  [compliance via pagerduty on 2026-09-04 12:00] -> forgotten: episode `migration_attempt_3` was forgotten
+
+The unrelated belief stands, because it rests on a different episode:
+400
+```
+
+`forget when migration_attempt_3` is the one line. To do this with embeddings you
+would have to know which chunks were derived from the incident, delete them, and
+then reconstruct what they had displaced — and that last step is impossible,
+because nothing recorded a displacement.
+
+### 7. `check` audits the belief store itself
+
+`cargo run -- examples/check.pal`
+
+```
+Health of the brain:
+checked 7 beliefs (7 live) and 0 episodes
+  [warning] unsourced: #2 company.headcount is believed as policy but cites nothing; a question demanding `verified` will refuse it
+  [error] orphaned: #7 company.status rests on episode `sec_inquiry`, which this brain has no record of
+  [error] contested: company.fiscal_year_end holds "03-31" and "12-31" at equal standing (policy); no rule decides between them
+  [warning] stale: #3 company.insurance_policy expired on 2026-01-01 and is about 8 months past its lifetime
+  [note] refused: an override of company.name by user was rejected in favour of legal
+  2 error(s), 2 warning(s)
+```
+
+This is the LLM Wiki `lint` operation with a decidable answer instead of a
+model's opinion, and it is the clearest statement of what the language is for.
+There is no query you can send a vector index that means "which of your contents
+contradict each other," because the index has no notion of two chunks being about
+the same fact.
 
 ---
 
-### Scenario 3: Retracting a Source Unravels Beliefs & Falls Back
-*Alice is recorded as 'member' by LDAP. A phishing email claims Alice is 'admin'. Retracting the phishing email cascades through the TMS and deterministically falls back to 'member'.*
+## What is real and what is not
 
-Program (`examples/03_truth_maintenance_retract.pal`):
-```palimpsest
-assert user.alice.role = "member" @ authority(Policy), source("corporate_ldap"), at("2026-01-10T00:00:00Z");
-assert user.alice.role = "admin" @ authority(Policy), source("phishing_email_88"), at("2026-09-03T09:00:00Z");
+Real, tested, and running with no network access:
 
-print recall user.alice.role;       // "admin"
-retract source "phishing_email_88";
-print recall user.alice.role;       // Deterministically falls back to "member"
-print audit user.alice.role;
-```
+- Lexer, parser, and tree-walking interpreter in pure Rust, no dependencies.
+- The three-axis resolution rule, over nested scopes, with as-of queries.
+- Provenance, lifetimes, staleness as a distinct type, the four refusals.
+- Cascading retraction by source, by episode, and by name, with fallback.
+- Episodic memory and `because` grounding.
+- `check` over the whole store.
+- Markdown ingestion with the page as provenance.
+- 67 tests; every example's `expect` assertions run in CI.
 
-Execution Output:
-```
->>> Running Palimpsest program: examples/03_truth_maintenance_retract.pal
-"--- Prior to Retraction (compromised) ---"
-"admin"
-"--- Retracting Compromised Source ---"
-"--- After Retraction (TMS restored prior state) ---"
-"member"
-"--- Audit Trail ---"
-=== Palimpsest Inscription Audit (2) ===
-  [#1] user.alice.role = "member" | auth: Policy | src: "corporate_ldap" | ver: true | time: 2026-01-10T00:00:00Z | status: ACTIVE
-  [#2] user.alice.role = "admin" | auth: Policy | src: "phishing_email_88" | ver: true | time: 2026-09-03T09:00:00Z | status: RETRACTED (Retraction of source 'phishing_email_88')
-```
+Deliberately out of scope for this version, and honestly so:
 
----
+- **Extraction from prose.** Turning "I moved to Berlin last month" into
+  `alice.city is "Berlin" on 2026-08-15` is a model's job, and it is the hard
+  part. Explicit statements are the primary interface. A model that emits
+  Palimpsest is the intended integration, and the language is deliberately
+  easy to emit.
+- **Derived beliefs and inference rules.** The truth maintenance here is a JTMS
+  over one justification per belief (`because`), not a general dependency
+  network. There are no rules, so nothing derives a belief from other beliefs.
+  That is the largest missing piece and the most natural next thing to build.
+- **Persistence.** The store is in memory; a brain is rebuilt from its markdown
+  on each run. Fine at wiki scale — Karpathy puts that boundary around 50–100k
+  tokens — and the wrong architecture past it. Retraction is a linear scan;
+  differential dataflow is the known answer if it ever needs to matter.
+- **Partial trust orders.** The order is total, on purpose. Two sibling tiers
+  that cannot be compared are representable in a lattice and would make the
+  question "which claim wins" require running the program.
+- **Concurrency.** Single-threaded, sequential file ingestion. The concurrent
+  ingest problem is real and unaddressed.
 
-### Scenario 4: Lifetimes, Staleness, and Expiry
-*A DHCP IP lease has a TTL of 300 seconds. After 600 seconds, standard recall returns a `Stale` descriptor object with metadata, and `recall fresh` halts with a `StaleBeliefError`.*
-
-Program (`examples/04_staleness_and_lifetimes.pal`):
-```palimpsest
-set_time "2026-09-04T12:00:00Z";
-assert infra.gateway.ip = "10.0.0.1" @ authority(Policy), source("dhcp_lease"), ttl(300s);
-
-let ip_fresh = recall fresh infra.gateway.ip; // OK
-advance_time 600s;
-let ip_stale = recall infra.gateway.ip;       // Evaluates to Stale wrapper
-print ip_stale;
-print audit infra.gateway.ip;
-```
-
-Execution Output:
-```
->>> Running Palimpsest program: examples/04_staleness_and_lifetimes.pal
-"--- At t=0s: Memory is Fresh ---"
-"10.0.0.1"
-"--- Advancing Time by 10 Minutes (600s) ---"
-"--- Standard Recall Reports Stale Wrapper ---"
-Stale(value: "10.0.0.1", age: 600s, ttl: 300s)
-"--- Audit Trail Showing Expiry ---"
-=== Palimpsest Inscription Audit (1) ===
-  [#1] infra.gateway.ip = "10.0.0.1" | auth: Policy | src: "dhcp_lease" | ver: true | time: 2026-09-04T12:00:00Z | status: EXPIRED (at 2026-09-04T12:05:00Z)
-```
-
----
-
-### Scenario 5: Provenance Gatekeeping & Language-Enforced Refusal
-*An unverified rumor claims an API key. A query requiring verified provenance refuses to resolve it by the language's own evaluation semantics, preventing prompt injection or data poisoning.*
-
-Program (`examples/05_provenance_gatekeeping.pal`):
-```palimpsest
-assert secrets.auth_token = "tok_untrusted_999" @ authority(Unverified), source("anonymous_paste"), unverified;
-
-print audit secrets.auth_token;
-let safe_token = recall verified secrets.auth_token;
-```
-
-Execution Output:
-```
->>> Running Palimpsest program: examples/05_provenance_gatekeeping.pal
-"--- Audit Trail (Shows Inscription is Unverified) ---"
-=== Palimpsest Inscription Audit (1) ===
-  [#1] secrets.auth_token = "tok_untrusted_999" | auth: Unverified | src: "anonymous_paste" | ver: false | time: 2026-09-04T12:00:00Z | status: ACTIVE
-
-"--- Attempting Verified Recall (Language Halts with Epistemic Refusal) ---"
-Execution error: Epistemic Refusal [UnverifiedBelief]: Memory 'secrets.auth_token' from source '"anonymous_paste"' with authority 'Unverified' refused. Query explicitly demanded 'verified', but belief lacks verified provenance or authentic authority.
-```
-
----
-
-### Scenario 6: Grounding Semantic Facts in Episodic Memory
-*An episodic event represents an operational outage. Semantic infrastructure state is grounded in that episode. When the incident episode is retracted upon remediation, all grounded beliefs are automatically unseated.*
-
-Program (`examples/06_episodic_grounding_and_retract.pal`):
-```palimpsest
-episode db_outage_01 {
-    at: "2026-09-04T08:15:00Z",
-    actors: ["deploy_bot", "alice"],
-    context: { service: "billing-db", pool_limit: 100 },
-    summary: "Migration aborted: connection pool exhausted during schema update"
-}
-
-scope enterprise.acme {
-    assert infra.db.status = "degraded" @ authority(Compliance), grounded_in("db_outage_01");
-}
-
-print recall enterprise.acme.infra.db.status;  // "degraded"
-retract episode db_outage_01;                  // Remediated
-print audit enterprise.acme.infra.db.status;   // RETRACTED
-```
-
-Execution Output:
-```
->>> Running Palimpsest program: examples/06_episodic_grounding_and_retract.pal
-"--- Recalled Semantic State Grounded in Episode ---"
-"degraded"
-"--- Active Episodes in Memory ---"
-[{ actors: ["deploy_bot", "alice"], at: 2026-09-04T08:15:00Z, context: { pool_limit: 100, service: "billing-db" }, id: "db_outage_01", summary: "Migration aborted: connection pool exhausted during schema update" }]
-"--- Retracting Incident Episode (Root Cause Resolved) ---"
-"--- Audit Trail Confirms Invalidation of Grounded Fact ---"
-=== Palimpsest Inscription Audit (1) ===
-  [#1] enterprise.acme.infra.db.status = "degraded" | auth: Compliance | src: "none" | ver: true | time: 2026-09-04T12:00:00Z | status: RETRACTED (Retraction of episode 'db_outage_01')
-```
-
----
-
-## 7. Language Primitives Reference
-
-### Statements
-| Syntax | Semantics |
-| :--- | :--- |
-| `authority T1 > T2 > ...;` | Declares total ordering / lattice ranks for epistemic authority. |
-| `scope prefix.path { ... }` | Introduces lexical namespace frames. |
-| `assert path = expr @ modifiers;` | Inscribes a belief into the palimpsest. |
-| `episode id { at, actors, context, summary }` | Records an episodic event chunk. |
-| `retract source expr;` | Retracts all beliefs derived from the specified source. |
-| `retract episode id;` | Retracts an episode and all beliefs grounded in it. |
-| `retract belief path;` | Retracts all beliefs on a specific path. |
-| `let ident = expr;` | Binds an evaluated expression to a local variable. |
-| `print expr;` | Evaluates and prints an expression. |
-| `assert_eq expr1, expr2;` | Language-level test assertion. |
-| `set_time expr;` | Sets virtual clock time. |
-| `advance_time expr;` | Advances virtual clock by duration. |
-
-### Assertion Modifiers (`@ ...`)
-| Modifier | Purpose |
-| :--- | :--- |
-| `authority(Ident)` | Sets the authority tier (e.g. `Policy`, `User`). |
-| `source(Expr)` | Provenance tag (document, URL, chat session, API). |
-| `verified` / `unverified` | Explicit verification flag. |
-| `at(Expr)` | Explicit external assertion timestamp. |
-| `ttl(Expr)` | Time-To-Live duration (e.g. `300s`, `24h`, `30d`). |
-| `valid_until(Expr)` | Absolute expiration timestamp. |
-| `grounded_in(Ident)` | Episode ID grounding this belief. |
-
-### Expressions
-| Syntax | Result |
-| :--- | :--- |
-| `recall path` | Resolves current valid belief. |
-| `recall as_of(t) path` | Resolves belief as of timestamp `t`. |
-| `recall fresh path` | Resolves belief, halting with `StaleBeliefError` if expired. |
-| `recall verified path` | Resolves belief, halting with `UnverifiedBeliefRefusal` if unverified. |
-| `recall min_authority(A) path` | Resolves belief requiring at least authority `A`. |
-| `history path` / `audit path` | Returns structured audit trace of all inscriptions on `path`. |
-| `conflicts` | Returns list of recorded defeasance conflicts. |
-| `episodes` | Returns list of active episodes. |
-
----
-
-## 8. Implementation Details
-
-- **Language & Runtime:** Pure standard-library Rust (Edition 2021). Zero external crate dependencies, ensuring instant compilation, zero supply-chain vulnerabilities, and deterministic cross-platform behavior.
-- **Parser Architecture:** Hand-written recursive-descent lexer and parser with precedence-climbing arithmetic and boolean expression evaluation.
-- **Memory Engine:** Epistemic Environment tracking scopes, monotonic belief IDs, authority ranks, inverted source and episode indices, justification DAG for TMS cascades, and virtual clock state.
-- **Test Suite:** 13 unit and integration tests verifying all 6 acceptance scenarios, nested scoping, contradiction detection, time math, and parser error recovery (`cargo test`).
-
----
-
-## 9. Status: What is Real vs What is Stubbed
-
-### Real & Fully Working Today:
-- Complete lexer, parser, AST, and runtime engine.
-- 2D Authority Lattice $\times$ Lexical Scope resolution algorithm.
-- First-class TMS cascading retractions for sources, beliefs, and episodes.
-- Temporal shadowing and indelible vellum auditing (`audit path`).
-- Lifetimes, TTLs, virtual clock advancement, and `Stale` value type.
-- Provenance gatekeeping and `UnverifiedBeliefRefusal`.
-- Simultaneous equal-authority contradiction detection (`ContradictionError`).
-- Episodic memory declaration, listing, and semantic grounding.
-- CLI runner with single-file execution and `--scenarios` runner.
-- Comprehensive test suite in `tests/acceptance_tests.rs` and `tests/parser_tests.rs`.
-
-### Deliberately Out of Scope for v1:
-- **Prose Extraction Pipeline:** We deliberately do not include an LLM inference loop inside the core interpreter. The core language is completely deterministic and requires zero API keys. Extraction from prose into Palimpsest statements (`assert`, `episode`) belongs in an agent controller / compiler frontend that targets Palimpsest.
-- **Vector Index Backend:** Palimpsest is the deterministic epistemic resolution layer; while a vector similarity index could be added as an auxiliary fuzzy path index, the core semantics rely on hierarchical path resolution and lattices.
-- **Distributed Replication:** Palimpsest runs as an in-process or local agent memory engine. Distributed multi-agent gossip consensus across multiple palimpsests is left for future work.
+The one thing I would push back on in the framing that produced this: the demand
+for something a vector store "genuinely cannot do cleanly" is easy to satisfy and
+therefore not the most interesting bar. `forget everything from X` clears it in
+one line. The harder and more useful question is whether the deterministic layer
+is worth the loss of fuzzy recall, and the answer is that it is not, on its own —
+which is why this is a substrate that sits under a wiki and beside a retrieval
+index, not a replacement for either.

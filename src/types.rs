@@ -121,7 +121,14 @@ impl fmt::Display for Value {
                 if layers.is_empty() {
                     return write!(f, "no history");
                 }
-                writeln!(f, "history of {} ({} layers)", layers[0].path, layers.len())?;
+                let n = layers.len();
+                writeln!(
+                    f,
+                    "history of {} ({} layer{})",
+                    layers[0].path,
+                    n,
+                    if n == 1 { "" } else { "s" }
+                )?;
                 for layer in layers {
                     writeln!(f, "  {}", layer)?;
                 }
@@ -132,7 +139,8 @@ impl fmt::Display for Value {
                 if conflicts.is_empty() {
                     return write!(f, "no conflicts");
                 }
-                writeln!(f, "{} conflict(s)", conflicts.len())?;
+                let n = conflicts.len();
+                writeln!(f, "{} conflict{}", n, if n == 1 { "" } else { "s" })?;
                 for c in conflicts {
                     writeln!(f, "  {}", c)?;
                 }

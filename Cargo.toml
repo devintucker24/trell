@@ -2,6 +2,9 @@
 name = "palimpsest"
 version = "0.1.0"
 edition = "2021"
-description = "A declarative epistemic memory language for AI systems"
+description = "A language for what an agent knows: deterministic name resolution over beliefs, with authority, provenance, lifetimes and audit"
+readme = "README.md"
+keywords = ["agent-memory", "knowledge-base", "belief-revision", "language"]
+categories = ["text-processing"]
 
 [dependencies]
