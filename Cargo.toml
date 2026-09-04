@@ -1,8 +1,7 @@
 [package]
-name = "trell"
+name = "palimpsest"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+description = "A declarative epistemic memory language for AI systems"
 
 [dependencies]
-anyhow = "1"
-inkwell = { version = "0.6", features = ["llvm18-1"] }
