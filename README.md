@@ -190,13 +190,16 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
 
 **Karpathy LLM Wiki brain (for agents):**
-- Schema: [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) · [`docs/wiki/OPERATOR.md`](docs/wiki/OPERATOR.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md)
-- **Cursor:** [`.cursor/rules/`](.cursor/rules/) · [`.cursor/skills/`](.cursor/skills/)
-- **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `.cursor/skills/wiki-triage` → `.cursor/skills/wiki-ingest`
+- Schema: [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) · [`docs/wiki/OPERATOR.md`](docs/wiki/OPERATOR.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md) · [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md)
+- **Canonical skills:** [`docs/wiki/skills/`](docs/wiki/skills/wiki-brain/SKILL.md) (`wiki-brain` parent; not a repo-root `skills/` folder)
+- **IDE adapters:** [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md) (thin launchers)
+- **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `wiki-triage` → `wiki-ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
+- **Usage:** [`usage-telemetry`](docs/wiki/_meta/usage-telemetry.md) · `python3 docs/wiki/scripts/wiki_usage.py report`
+- **Export:** [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md) · `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo`
 - Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
-- Scripts: [`docs/wiki/scripts/`](docs/wiki/scripts/) (`wiki_retrieve.py`, `wiki_doctor.py`, `sync_graph.py`)
-- Skills: [`.cursor/skills/`](.cursor/skills/) (retrieve · navigate · triage · ingest · doctor · heal · lint · label · maintain) · Matt Pocock set via [`skills-lock.json`](skills-lock.json) (`/handoff`, `/read-handoff`, `/grill-me`, …)
+- Scripts: [`docs/wiki/scripts/`](docs/wiki/scripts/) (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_usage.py`, `wiki_pack.py`, `sync_graph.py`)
+- Other Cursor/Claude skills (Matt Pocock, cargo-verify): [`.cursor/skills/`](.cursor/skills/) via [`skills-lock.json`](skills-lock.json)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 
 * **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)

@@ -10,28 +10,29 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from collections import Counter, defaultdict
 from datetime import date
 from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3]
-WIKI = ROOT / "docs" / "wiki"
-META = WIKI / "_meta"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wiki_paths import META, ROOT, WIKI, is_wiki_content_page, load_host
+from wiki_usage import log_event, write_dashboard, compute_stats, load_events
+
 TODAY = date.today().isoformat()
 
 REQUIRED_FIELDS = [
     "id", "title", "type", "status", "created", "updated",
     "tags", "domain", "summary", "nodes", "edges", "related", "agent",
 ]
-ALLOWED_TYPES = {
+DEFAULT_TYPES = {
     "index", "concept", "application", "market", "roadmap", "schema",
     "meta", "synthesis", "raw-pointer", "inbox-item", "episode",
 }
-ALLOWED_DOMAINS = {
-    "core", "theory", "applications", "market", "roadmap", "meta",
-    "episodic", "temporal",
+DEFAULT_DOMAINS = {
+    "meta", "episodic", "temporal",
 }
 ALLOWED_RELS = {
     "depends_on", "implements", "contradicts", "extends", "applies_to",
@@ -64,10 +65,14 @@ def add(findings, severity, code, message, path=None, fix=None):
 
 
 def main() -> None:
+    no_log = "--no-log" in sys.argv
     findings: list[dict] = []
+    host = load_host()
+    allowed_types = set(DEFAULT_TYPES) | set(host.get("types_extra") or [])
+    allowed_domains = set(DEFAULT_DOMAINS) | set(host.get("domains") or [])
     md_files = sorted(
         p for p in WIKI.rglob("*.md")
-        if p.name != "log.md" and "inbox/archive" not in p.as_posix()
+        if is_wiki_content_page(p.relative_to(WIKI).as_posix(), p.name)
     )
 
     metas: dict[str, dict] = {}
@@ -91,10 +96,10 @@ def main() -> None:
                 # inbox-item has extra fields; still needs core set
                 if f in REQUIRED_FIELDS:
                     add(findings, "high", "schema_field", f"Missing field `{f}`", rel, "label skill")
-        if meta.get("type") and meta["type"] not in ALLOWED_TYPES:
-            add(findings, "critical", "bad_type", f"Unknown type `{meta['type']}`", rel, "SCHEMA update or fix type")
-        if meta.get("domain") and meta["domain"] not in ALLOWED_DOMAINS:
-            add(findings, "critical", "bad_domain", f"Unknown domain `{meta['domain']}`", rel, "SCHEMA gate")
+        if meta.get("type") and meta["type"] not in allowed_types:
+            add(findings, "critical", "bad_type", f"Unknown type `{meta['type']}`", rel, "SCHEMA update or HOST.yaml types_extra")
+        if meta.get("domain") and meta["domain"] not in allowed_domains:
+            add(findings, "critical", "bad_domain", f"Unknown domain `{meta['domain']}`", rel, "SCHEMA gate or HOST.yaml domains")
         for e in meta.get("edges") or []:
             if e.get("rel") not in ALLOWED_RELS:
                 add(findings, "high", "bad_rel", f"Unknown rel `{e.get('rel')}`", rel, "Use SCHEMA rel vocabulary")
@@ -129,10 +134,11 @@ def main() -> None:
             "Link from hub via applies_to/related_to on owning page")
 
     # Wikilinks (skip generated reports — they quote prior findings)
-    all_stems = {p.relative_to(WIKI).as_posix()[:-3] for p in WIKI.rglob("*.md")}
+    all_stems = {p.relative_to(WIKI).as_posix()[:-3] for p in WIKI.rglob("*.md") if is_wiki_content_page(p.relative_to(WIKI).as_posix(), p.name)}
     aliases = set(all_stems) | {s.split("/")[-1] for s in all_stems} | {
-        "INDEX", "SCHEMA", "log", "ROUTER", "OPERATOR", "inbox/README",
-        "episodic/INDEX", "temporal/TIMELINE",
+        "INDEX", "SCHEMA", "log", "ROUTER", "OPERATOR", "FRAMEWORK", "inbox/README",
+        "episodic/INDEX", "temporal/TIMELINE", "_meta/usage-telemetry",
+        "_meta/usage-dashboard",
     }
     skip_link_scan = ("_meta/doctor-", "_meta/heal-", "_meta/health-", "_meta/sim-")
     for p in md_files:
@@ -169,21 +175,23 @@ def main() -> None:
     # Bootstrap artifacts
     for req in [
         ROOT / "AGENTS.md",
-        ROOT / "CLAUDE.md",
         WIKI / "INDEX.md",
         WIKI / "SCHEMA.md",
         WIKI / "OPERATOR.md",
         WIKI / "ROUTER.md",
         WIKI / "log.md",
         META / "GRAPH.yaml",
-        ROOT / ".cursor" / "skills" / "trell-wiki" / "SKILL.md",
-        ROOT / ".cursor" / "skills" / "wiki-doctor" / "SKILL.md",
-        ROOT / ".cursor" / "skills" / "wiki-heal" / "SKILL.md",
-        ROOT / ".cursor" / "skills" / "wiki-triage" / "SKILL.md",
-        ROOT / ".cursor" / "skills" / "wiki-retrieve" / "SKILL.md",
-        ROOT / ".cursor" / "skills" / "cargo-verify" / "SKILL.md",
+        WIKI / "FRAMEWORK.md",
+        WIKI / "HOST.yaml",
+        WIKI / "skills" / "wiki-brain" / "SKILL.md",
+        WIKI / "skills" / "wiki-usage" / "SKILL.md",
+        WIKI / "skills" / "wiki-retrieve" / "SKILL.md",
+        WIKI / "skills" / "wiki-doctor" / "SKILL.md",
+        WIKI / "skills" / "wiki-heal" / "SKILL.md",
+        WIKI / "skills" / "wiki-triage" / "SKILL.md",
         WIKI / "scripts" / "wiki_retrieve.py",
         WIKI / "scripts" / "wiki_doctor.py",
+        WIKI / "scripts" / "wiki_usage.py",
         WIKI / "scripts" / "sync_graph.py",
         WIKI / "episodic" / "INDEX.md",
         WIKI / "temporal" / "TIMELINE.md",
@@ -284,7 +292,7 @@ def main() -> None:
         f"({report['graph']['hard_orphans']} hard orphans)",
         "",
         f"Heal recommended: **{'yes' if report['heal_recommended'] else 'no'}** "
-        f"(use `.cursor/skills/wiki-heal` or `/wiki-heal`)",
+        f"(use `wiki-heal`)",
         "",
         "## Findings",
         "",
@@ -307,6 +315,18 @@ def main() -> None:
             lines.append("")
 
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if not no_log:
+        log_event(
+            "doctor",
+            doctor_score=score,
+            tokens_est=None,
+            source="script",
+            hits=len(findings),
+        )
+        try:
+            write_dashboard(compute_stats(load_events(30)), 30)
+        except Exception:  # noqa: BLE001
+            pass
     print(f"Doctor score {score}/100")
     print(f"Wrote {md_path}")
     print(f"Wrote {latest}")

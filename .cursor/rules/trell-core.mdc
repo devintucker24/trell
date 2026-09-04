@@ -7,7 +7,7 @@ alwaysApply: true
 
 - Project brief: `AGENTS.md` (and `CLAUDE.md` for Claude Code).
 - Wiki map: `docs/wiki/ROUTER.md` → retrieve, don't dump the entire wiki.
-- Skills: `.cursor/skills/` (Cursor) and `.claude/skills/` (Claude).
+- Wiki-brain skills: `docs/wiki/skills/` (canonical). Cursor/Claude `wiki-*` folders are thin launchers.
 - Verify Rust with `/cargo-verify` or `cargo test`.
 
 ## Autonomous Wiki Triggers (When & What to use)
@@ -20,6 +20,7 @@ Whenever a request touches Trell architecture, concepts, memory, or documentatio
 | **Historical or decision queries** ("What did we decide about X?") | `wiki-retrieve` (`--lane episodic`) | `python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --lane episodic` |
 | **Chronological / version queries** ("When did X change / as-of Y?") | `wiki-retrieve` (`--as-of`, `--lane temporal`) | `python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --as-of YYYY-MM-DD` |
 | **User shares notes, URLs, or asks to "Inbox this"** | `wiki-triage` → `wiki-ingest` | Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md` from template, triage, then ingest |
-| **Audit or verify wiki health** ("wiki doctor", broken links, orphans) | `wiki-doctor` → `wiki-heal` | `python3 docs/wiki/scripts/wiki_doctor.py`, then follow `.cursor/skills/wiki-heal/SKILL.md` if score < 95 |
+| **Audit or verify wiki health** ("wiki doctor", broken links, orphans) | `wiki-doctor` → `wiki-heal` | `python3 docs/wiki/scripts/wiki_doctor.py`, then follow `docs/wiki/skills/wiki-heal/SKILL.md` if score < 95 |
 | **Combined audit & fix** ("lint the wiki") | `wiki-lint` | Run doctor, heal findings, re-run doctor |
 | **Code changes affecting epistemic semantics** | `wiki-maintain` | Sync `docs/wiki/core/`, run `python3 docs/wiki/scripts/sync_graph.py` |
+| **Export / pack the wiki into another repo** | `docs/wiki/FRAMEWORK.md` | `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo` |

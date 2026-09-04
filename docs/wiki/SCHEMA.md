@@ -21,6 +21,7 @@ edges:
 related:
   - "[[INDEX]]"
   - "[[ROUTER]]"
+  - "[[FRAMEWORK]]"
   - "[[_meta/CONTEXT_PROTOCOL]]"
   - "[[temporal/TIMELINE]]"
 agent:
@@ -35,6 +36,8 @@ agent:
 # SCHEMA.md — Frontmatter & Graph Contracts
 
 This document is the **machine-oriented contract** for every page under `docs/wiki/`. Human narrative lives in page bodies; agents enforce this schema.
+
+**Pack vs host:** required fields, `rel`s, and memory lanes are portable. Domain folder names live in `docs/wiki/HOST.yaml` (`domains`, `semantic_dirs`). See [[FRAMEWORK]].
 
 ---
 
@@ -145,7 +148,7 @@ edges:
     page: core/epistemic-foundations
 ```
 
-After editing any page frontmatter nodes/edges, regenerate or surgically update GRAPH.yaml (skill: `.cursor/skills/wiki-maintain`).
+After editing any page frontmatter nodes/edges, regenerate or surgically update GRAPH.yaml (skill: `wiki-maintain`).
 
 ---
 
@@ -164,10 +167,10 @@ Agents can filter pages by:
 ```
 docs/wiki/inbox/   type: inbox-item   triage_status: pending
         │
-        ▼  .cursor/skills/wiki-triage
+        ▼  wiki-triage  (docs/wiki/skills/wiki-triage)
    classified / routed / needs-human / rejected
         │
-        ▼  .cursor/skills/wiki-ingest
+        ▼  wiki-ingest  (docs/wiki/skills/wiki-ingest)
    wiki page (domain folder)  +  optional raw/ pointer  +  GRAPH.yaml  +  log.md
         │
         ▼
@@ -190,8 +193,20 @@ Inbox pages are **not** query authorities until ingested.
 
 ## 7. Taxonomy Evolution Rules (when agents may invent structure)
 
+### Operator-kit folders (not knowledge pages)
+These exist under `docs/wiki/` but **doctor/retrieve/graph skip** them as pages (`skills/`, `scripts/`, `_meta/usage/`):
+
+| Folder | Role |
+|--------|------|
+| `skills/` | Canonical wiki-brain playbooks (`SKILL.md`) |
+| `scripts/` | Python operators |
+| `host/` | Host overlay pages (this instance: `router-seeds.md`) — **are** wiki pages |
+| `HOST.yaml` | Project overlay (not markdown) |
+
+Do **not** put Matt Pocock / third-party skills in `docs/wiki/skills/` or a repo-root `skills/` tree. IDE discovery uses `.cursor/skills/` / `.claude/skills/` launchers.
+
 ### Allowed without human approval
-- New **page** under an existing domain folder (`core/`, `theory/`, `applications/`, `market/`, `roadmap/`, `_meta/`, `raw/`, `inbox/`, `episodic/`, `temporal/`)
+- New **page** under an existing domain folder listed in `HOST.yaml` `domains` (plus `_meta/`, `raw/`, `inbox/`)
 - New **node id** (kebab-case, correct prefix)
 - New **edge** using an existing `rel`
 - Reuse of an existing **tag**
@@ -199,9 +214,9 @@ Inbox pages are **not** query authorities until ingested.
 - New **inbox-item**
 - New **episode** under `episodic/` (must append `temporal/TIMELINE.md`)
 
-### Requires SCHEMA.md + AGENTS.md update first (and `needs-human` if unsure)
+### Requires SCHEMA.md + HOST.yaml update first (and `needs-human` if unsure)
 - New **top-level folder** under `docs/wiki/` (e.g. inventing `docs/wiki/hardware/`)
-- New **`domain:`** enum value
+- New **`domain:`** enum value (add to `HOST.yaml` `domains` **and** this SCHEMA if it is a pack-wide type)
 - New **`type:`** enum value
 - New **`rel:`** edge relation
 - New **node `kind:`**
@@ -232,7 +247,7 @@ Prefer these. Add new recurring tags here when promoted from inbox.
 
 **Market / roadmap:** `market`, `regulation`, `insurance`, `personas`, `adoption`, `roadmap`, `phases`, `vision`
 
-**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`
+**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`, `usage`, `telemetry`, `wiki-brain`, `framework`, `host`
 
 One-off adjectives do **not** belong in `tags:` — put them in the body.
 

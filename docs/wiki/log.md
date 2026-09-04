@@ -109,3 +109,12 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Updated `.cursor/rules/trell-wiki.mdc` with autonomous skill execution checklist
 - Doctor check score: 100.0/100
 
+## [2026-09-04] schema | portable wiki-brain pack + usage telemetry
+
+- Canonical skills in `docs/wiki/skills/` (`wiki-brain` parent, not Trell-branded)
+- Thin `.cursor` / `.claude` launchers via `wiki_pack.py install-launchers`
+- Host overlay: `HOST.yaml` + `host/router-seeds.md`; pack docs: `FRAMEWORK.md`
+- Usage JSONL + dashboard: `wiki_usage.py`; catalog `_meta/usage-telemetry.md`
+- Export: `python3 docs/wiki/scripts/wiki_pack.py export <other-repo>`
+
+

@@ -25,9 +25,8 @@ edges:
 related:
   - "[[_meta/CONTEXT_PROTOCOL]]"
   - "[[_meta/brain-gap-analysis-2026-09-04]]"
-  - "[[INDEX]]"
-  - "[[episodic/INDEX]]"
-  - "[[temporal/TIMELINE]]"
+  - "[[host/router-seeds]]"
+  - "[[FRAMEWORK]]"
 agent:
   priority: critical
   read_when:
@@ -55,26 +54,18 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 
 ## Tier 1 — Intent → seed pages
 
+**Pack-generic** (always):
+
 | Intent signal | Seed pages (open these first) |
 |---|---|
-| epistemic / certainty / belief / verify / guard | `core/epistemic-foundations.md`, `core/contract-and-guard-system.md`, `theory/epistemic-type-calculus.md` |
-| speculative / when / fork / rollback | `core/speculative-execution-engine.md`, `applications/overview-and-safety-patterns.md` |
-| models / contracts / quorum / consensus | `core/contract-and-guard-system.md` |
-| Natural Trell / colon-indent / syntax | `core/natural-syntax-specification.md` |
-| compiler / lexer / parser / typecheck / src | `core/epistemic-foundations.md` + `src/` (code is ground truth) |
-| ship / fleet / maritime / COLREGs / drone | `applications/autonomous-physical-systems.md`, `applications/overview-and-safety-patterns.md` |
-| finance / bank / Fedwire / insurance | `applications/financial-treasury-and-markets.md` |
-| healthcare / ICU / pharma | `applications/healthcare-and-life-sciences.md` |
-| grid / water / train / infrastructure | `applications/critical-infrastructure-and-energy.md` |
-| security / IAM / satellites / AML | `applications/security-cloud-and-governance.md` |
-| market / LangChain / BAML / competitors | `market/competitive-analysis.md` |
-| regulation / EU AI Act / Lloyd's | `market/regulatory-and-insurance-drivers.md` |
-| vision / 10-year / phases / roadmap | `roadmap/ten-year-vision.md`, `roadmap/phases-and-milestones.md` |
-| wiki / memory / RAG / retrieval / context | `_meta/brain-gap-analysis-2026-09-04.md`, `_meta/CONTEXT_PROTOCOL.md` |
+| wiki / memory / RAG / retrieval / context / pack / export | `FRAMEWORK.md`, `_meta/CONTEXT_PROTOCOL.md`, `_meta/usage-telemetry.md` |
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
-| health / orphans / doctor / heal | run `.cursor/skills/wiki-doctor` (then `wiki-heal` if score < 95) |
+| health / orphans / doctor / heal | run `wiki-doctor` (then `wiki-heal` if score < 95) |
+| usage / tokens / context cost / telemetry | `_meta/usage-telemetry.md` + `wiki_usage.py report` |
 | session / decisions / what happened / episodic | `episodic/INDEX.md` + latest episode |
 | timeline / when / as-of / what changed / temporal | `temporal/TIMELINE.md` + retrieve with `--as-of` |
+
+**Host-specific:** read `docs/wiki/host/router-seeds.md` (path in `HOST.yaml` `router_seeds`).
 
 After seeding, expand **one hop** via frontmatter `edges` or `GRAPH.yaml` — not whole categories.
 
@@ -86,7 +77,7 @@ python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --budget-tokens 3500
 python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --as-of 2026-09-04 --budget-tokens 3500
 ```
 
-See `.cursor/skills/wiki-retrieve/SKILL.md`. Open **only** top hits that fit budget.
+See `docs/wiki/skills/wiki-retrieve/SKILL.md`. Open **only** top hits that fit budget.
 
 ## Tier 3 — Deep read (cite + update)
 
@@ -96,10 +87,10 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 
 | Need | Lane | Where |
 |---|---|---|
-| Stable “what is true” | Semantic | `core/`, `theory/`, `applications/`, … |
+| Stable “what is true” | Semantic | dirs in `HOST.yaml` `semantic_dirs` |
 | “What we did / decided / failed” | Episodic | `episodic/` |
 | “When / as-of / what superseded what” | Temporal | `temporal/TIMELINE.md` + page `temporal:` fields |
-| “How to operate” | Procedural | `AGENTS.md`, `.cursor/skills/wiki-*` |
+| “How to operate” | Procedural | `AGENTS.md`, `docs/wiki/skills/` |
 
 ## Hard budget defaults
 

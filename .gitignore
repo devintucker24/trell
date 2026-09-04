@@ -1,3 +1,6 @@
+# Wiki-brain local telemetry (dashboard markdown is committed)
+docs/wiki/_meta/usage/events.jsonl
+
 /target
 out.ll
 trell-program
@@ -62,4 +65,8 @@ trell-program.o
 .zencoder/
 /agent/
 /data/
+
+# Wiki-brain local telemetry (dashboard markdown may be committed)
+docs/wiki/_meta/usage/events.jsonl
+
 

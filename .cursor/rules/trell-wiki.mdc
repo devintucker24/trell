@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Wiki brain
 
-- Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/OPERATOR.md`.
+- Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/OPERATOR.md`. Canonical skills: `docs/wiki/skills/` (parent `wiki-brain`).
 - Context: `docs/wiki/ROUTER.md` — retrieve; do not dump INDEX/SCHEMA/GRAPH.
 - New material → `docs/wiki/inbox/` only; triage before ingest.
 - No new folders/types/domains/rels without `docs/wiki/SCHEMA.md`.
@@ -16,6 +16,7 @@ alwaysApply: false
 ## Autonomous Skill Execution Checklist
 
 1. **Retrieval**: Before opening wiki files, run `python3 docs/wiki/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`.
-2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → execute `.cursor/skills/wiki-triage/SKILL.md` → execute `.cursor/skills/wiki-ingest/SKILL.md`.
-3. **Health & Linting**: Run `python3 docs/wiki/scripts/wiki_doctor.py`. If score < 95 or issues found, execute `.cursor/skills/wiki-heal/SKILL.md`.
+2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → execute `docs/wiki/skills/wiki-triage/SKILL.md` → execute `docs/wiki/skills/wiki-ingest/SKILL.md`.
+3. **Health & Linting**: Run `python3 docs/wiki/scripts/wiki_doctor.py`. If score < 95 or issues found, execute `docs/wiki/skills/wiki-heal/SKILL.md`.
 4. **Graph Synchronization**: Whenever page frontmatter `nodes` or `edges` are modified, always execute `python3 docs/wiki/scripts/sync_graph.py`.
+5. **Canonical skills** live in `docs/wiki/skills/` (portable). `.cursor/skills/wiki-*` are thin launchers only.

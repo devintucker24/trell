@@ -12,14 +12,18 @@ from __future__ import annotations
 import argparse
 import math
 import re
+import sys
+import time
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3]
-WIKI = ROOT / "docs" / "wiki"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wiki_paths import ROOT, WIKI, is_wiki_content_page, load_host
+from wiki_usage import log_event
+
 GRAPH_PATH = WIKI / "_meta" / "GRAPH.yaml"
 
 STOP = {
@@ -256,7 +260,7 @@ def estimate_tokens(text: str) -> int:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Trell wiki hybrid retrieve")
+    ap = argparse.ArgumentParser(description="Wiki-brain hybrid retrieve")
     ap.add_argument("query", help="natural language query")
     ap.add_argument("--k", type=int, default=8, help="max candidates before budget trim")
     ap.add_argument("--budget-tokens", type=int, default=3500)
@@ -268,7 +272,13 @@ def main() -> None:
         help="memory lane filter",
     )
     ap.add_argument("--json", action="store_true", help="machine-readable output")
+    ap.add_argument("--no-log", action="store_true", help="do not append usage telemetry")
     args = ap.parse_args()
+
+    t0 = time.perf_counter()
+    host = load_host()
+    semantic = tuple(host.get("semantic_dirs") or LANE_DIRS["semantic"])
+    lane_map = {**LANE_DIRS, "semantic": semantic}
 
     as_of = parse_day(args.as_of) if args.as_of else None
     q_tokens = tokenize(args.query)
@@ -284,15 +294,13 @@ def main() -> None:
         if any(t in nid.lower() or t in label for t in q_tokens):
             seed_nodes.add(nid)
 
-    lane_dirs = LANE_DIRS[args.lane]
+    lane_dirs = lane_map[args.lane]
     candidates: list[dict] = []
 
     for path in sorted(WIKI.rglob("*.md")):
-        if path.name == "log.md" or path.name == "_TEMPLATE.md":
-            continue
-        if "inbox/archive" in path.as_posix():
-            continue
         rel = path.relative_to(WIKI).as_posix()
+        if not is_wiki_content_page(rel, path.name):
+            continue
         top = rel.split("/", 1)[0]
         if lane_dirs is not None and top not in lane_dirs and not (
             args.lane == "semantic" and rel in ("INDEX.md", "SCHEMA.md", "ROUTER.md")
@@ -380,6 +388,22 @@ def main() -> None:
             break
         packed.append(c)
         used += cost
+
+    duration_ms = int((time.perf_counter() - t0) * 1000)
+    if not args.no_log:
+        log_event(
+            "retrieve",
+            query=args.query,
+            lane=args.lane,
+            as_of=args.as_of,
+            hits=len(packed),
+            tokens_est=used,
+            budget_tokens=args.budget_tokens,
+            top_score=packed[0]["score"] if packed else 0.0,
+            duration_ms=duration_ms,
+            hit_paths=[c["path"] for c in packed[:8]],
+            source="script",
+        )
 
     if args.json:
         import json

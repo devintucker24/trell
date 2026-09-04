@@ -49,14 +49,14 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 2. [`CLAUDE.md`](../../CLAUDE.md) — Claude Code twin brief
 3. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
 4. [`OPERATOR.md`](OPERATOR.md) — detailed wiki operator manual
-5. Retrieve: `python3 docs/wiki/scripts/wiki_retrieve.py "<q>"` — [`.cursor/skills/wiki-retrieve`](../../.cursor/skills/wiki-retrieve/SKILL.md)
+5. Retrieve: `python3 docs/wiki/scripts/wiki_retrieve.py "<q>"` — [`docs/wiki/skills/wiki-retrieve`](skills/wiki-retrieve/SKILL.md)
 6. This INDEX — catalog when browsing structure
 7. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
 8. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
 9. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
-10. Skills: [`.cursor/skills/trell-wiki`](../../.cursor/skills/trell-wiki/SKILL.md)
+10. Skills: [`docs/wiki/skills/wiki-brain`](skills/wiki-brain/SKILL.md) · pack: [`FRAMEWORK.md`](FRAMEWORK.md)
 
-**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + skills).
+**Layers:** raw (`raw/`, host sources) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + `docs/wiki/skills/`).
 **Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
 
 ---
@@ -130,21 +130,25 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 * [[raw/thesis]]: Pointer to immutable THESIS.md
 * [[raw/examples]]: Pointers to executable `.trell` examples
 * [[raw/market-research-2026-09-03]]: Historical market note (reconcile carefully)
-* [[log]]: Append-only operations log for agents
+* [[FRAMEWORK]]: Portable wiki-brain pack — skills-in-wiki, export, adapters
+* [[_meta/usage-telemetry]]: Usage metric catalog + agent logging protocol
+* [[host/router-seeds]]: Trell-specific ROUTER Tier-1 seeds (`HOST.yaml`)
 
 ---
 
-## 7. Agent Skills (`.cursor/skills/`)
+## 7. Agent Skills (`docs/wiki/skills/`)
 | Skill | Path | Job |
 |-------|------|-----|
-| Parent | `.cursor/skills/trell-wiki/SKILL.md` | Entry point |
-| **Retrieve** | `.cursor/skills/wiki-retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
-| Navigate | `.cursor/skills/wiki-navigate/SKILL.md` | INDEX + graph traversal |
-| Triage | `.cursor/skills/wiki-triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
-| Ingest | `.cursor/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
-| Doctor | `.cursor/skills/wiki-doctor/SKILL.md` | Diagnose only (no edits) |
-| Heal | `.cursor/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
-| Lint | `.cursor/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
-| Query | `.cursor/skills/wiki-query/SKILL.md` | Answer + file synthesis |
-| Label | `.cursor/skills/wiki-label/SKILL.md` | Normalize frontmatter |
-| Maintain | `.cursor/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |
+| Parent | `docs/wiki/skills/wiki-brain/SKILL.md` | Portable pack entry point |
+| **Retrieve** | `docs/wiki/skills/wiki-retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
+| Navigate | `docs/wiki/skills/wiki-navigate/SKILL.md` | INDEX + graph traversal |
+| Triage | `docs/wiki/skills/wiki-triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
+| Ingest | `docs/wiki/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
+| Doctor | `docs/wiki/skills/wiki-doctor/SKILL.md` | Diagnose only (no edits) |
+| Heal | `docs/wiki/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
+| Lint | `docs/wiki/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
+| Query | `docs/wiki/skills/wiki-query/SKILL.md` | Answer + file synthesis |
+| Label | `docs/wiki/skills/wiki-label/SKILL.md` | Normalize frontmatter |
+| Maintain | `docs/wiki/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |
+| Usage | `docs/wiki/skills/wiki-usage/SKILL.md` | Telemetry + context cost |
+| Pack | `docs/wiki/FRAMEWORK.md` | Export into another project |

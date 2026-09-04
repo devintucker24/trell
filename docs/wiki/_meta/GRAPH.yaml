@@ -1,6 +1,6 @@
 version: 1
 updated: '2026-09-04'
-description: Trell epistemic wiki knowledge graph — regenerated from page frontmatter
+description: Wiki-brain knowledge graph — regenerated from page frontmatter
 nodes:
 - id: affine-cognitive-budget
   kind: concept
@@ -198,6 +198,10 @@ nodes:
   kind: technology
   page: theory/hardware-silicon-codesign
   label: hardware-rollback
+- id: host-router-seeds
+  kind: concept
+  page: host/router-seeds
+  label: Host router seeds
 - id: insurance-epistemic-bound
   kind: concept
   page: market/regulatory-and-insurance-drivers
@@ -354,6 +358,10 @@ nodes:
   kind: primitive
   page: theory/affine-cognitive-economics
   label: token-budget
+- id: wiki-brain-pack
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki-brain pack
 - id: wiki-graph-overview
   kind: concept
   page: _meta/GRAPH
@@ -378,6 +386,14 @@ nodes:
   kind: concept
   page: SCHEMA
   label: wiki-schema
+- id: wiki-usage-dashboard
+  kind: concept
+  page: _meta/usage-dashboard
+  label: Wiki usage dashboard
+- id: wiki-usage-telemetry
+  kind: concept
+  page: _meta/usage-telemetry
+  label: Wiki usage telemetry
 - id: zk-epistemic-proof
   kind: technology
   page: theory/cryptographic-model-provenance
@@ -518,6 +534,10 @@ edges:
   to: reg-eu-ai-act
   rel: implements
   page: market/regulatory-and-insurance-drivers
+- from: host-router-seeds
+  to: wiki-router
+  rel: depends_on
+  page: host/router-seeds
 - from: insurance-epistemic-bound
   to: epistemic-receipt
   rel: depends_on
@@ -816,6 +836,18 @@ edges:
   to: speculative-execution
   rel: depends_on
   page: applications/overview-and-safety-patterns
+- from: wiki-brain-pack
+  to: wiki-router
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-schema
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-usage-telemetry
+  rel: related_to
+  page: FRAMEWORK
 - from: wiki-graph-overview
   to: wiki-index
   rel: depends_on
@@ -864,6 +896,14 @@ edges:
   to: memory-temporal
   rel: related_to
   page: SCHEMA
+- from: wiki-usage-dashboard
+  to: wiki-usage-telemetry
+  rel: implements
+  page: _meta/usage-dashboard
+- from: wiki-usage-telemetry
+  to: wiki-router
+  rel: related_to
+  page: _meta/usage-telemetry
 - from: zk-epistemic-proof
   to: app-aml-sar
   rel: applies_to
