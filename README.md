@@ -185,7 +185,18 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 
 ---
 
-## 6. Repository Structure
+## 6. Comprehensive Knowledge Base & Technical Wiki
+
+For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**:
+
+* **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)
+* **Science & Theory**: [Epistemic Type Calculus & Soundness Proofs](docs/wiki/theory/epistemic-type-calculus.md), [Bayesian & Distributional Types](docs/wiki/theory/bayesian-and-distributional-types.md), [Affine Cognitive Economics](docs/wiki/theory/affine-cognitive-economics.md), [Cryptographic ZK Provenance](docs/wiki/theory/cryptographic-model-provenance.md), [Hardware & Silicon Co-Design](docs/wiki/theory/hardware-silicon-codesign.md)
+* **20 Real-World Applications**: [Universal Safety Pattern](docs/wiki/applications/overview-and-safety-patterns.md), [Autonomous Systems & Robotics](docs/wiki/applications/autonomous-physical-systems.md), [Healthcare & Life Sciences](docs/wiki/applications/healthcare-and-life-sciences.md), [Financial Treasury](docs/wiki/applications/financial-treasury-and-markets.md), [Critical Infrastructure](docs/wiki/applications/critical-infrastructure-and-energy.md), [Security & Cloud Governance](docs/wiki/applications/security-cloud-and-governance.md)
+* **Market & Roadmap**: [Competitive Landscape](docs/wiki/market/competitive-analysis.md), [Regulatory & Insurance Drivers](docs/wiki/market/regulatory-and-insurance-drivers.md), [Developer Personas](docs/wiki/market/developer-persona-and-adoption.md), [10-Year Strategic Vision](docs/wiki/roadmap/ten-year-vision.md), [Strategic Phases & Milestones](docs/wiki/roadmap/phases-and-milestones.md)
+
+---
+
+## 7. Repository Structure
 
 - `THESIS.md`: The philosophical and architectural thesis for Trell.
 - `src/ast.rs`: Abstract Syntax Tree with first-class epistemic and speculative constructs.
