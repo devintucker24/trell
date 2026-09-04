@@ -1,3 +1,47 @@
+---
+id: epistemic-type-calculus
+title: Epistemic Type Calculus & Soundness Proofs
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- type-theory
+- soundness
+- formal-methods
+domain: theory
+summary: Formal typing rules, non-coercion theorem, progress and preservation.
+nodes:
+- id: non-coercion-theorem
+  kind: concept
+- id: subject-reduction
+  kind: concept
+- id: taint-freedom-corollary
+  kind: concept
+edges:
+- from: non-coercion-theorem
+  to: belief-type
+  rel: enforces
+- from: taint-freedom-corollary
+  to: guard-verify
+  rel: depends_on
+- from: epistemic-type-calculus
+  to: epistemic-foundations
+  rel: extends
+related:
+- '[[core/epistemic-foundations]]'
+- '[[theory/bayesian-and-distributional-types]]'
+implements_code:
+- src/typecheck.rs
+agent:
+  priority: high
+  read_when:
+  - formal proofs
+  - academic exposition
+  maintain:
+  - keep rules matched to typecheck
+---
+
 # Theory: Epistemic Type Calculus & Soundness Proofs
 
 ## 1. Abstract Syntax & Type Grammar

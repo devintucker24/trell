@@ -1,3 +1,57 @@
+---
+id: epistemic-foundations
+title: Epistemic Foundations of Trell
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- epistemic-types
+- belief
+- certain
+- core
+domain: core
+summary: Dual-track certain T vs belief<T> and the non-coercion rule.
+nodes:
+- id: belief-type
+  kind: type
+  label: belief<T>
+- id: certain-type
+  kind: type
+  label: certain T
+- id: epistemic-lie
+  kind: concept
+  label: The Epistemic Lie
+- id: epistemic-contamination
+  kind: concept
+edges:
+- from: belief-type
+  to: certain-type
+  rel: reduces_via
+  note: via guard verify/require
+- from: certain-type
+  to: belief-type
+  rel: extends
+  note: certainty subsumption
+- from: epistemic-lie
+  to: belief-type
+  rel: depends_on
+related:
+- '[[core/contract-and-guard-system]]'
+- '[[theory/epistemic-type-calculus]]'
+- '[[core/speculative-execution-engine]]'
+implements_code:
+- src/ast.rs
+- src/typecheck.rs
+agent:
+  priority: critical
+  read_when:
+  - explaining what Trell is
+  - type system questions
+  maintain:
+  - sync Non-Coercion rule with typecheck.is_assignable
+---
+
 # Core: Epistemic Foundations of Trell
 
 ## 1. The Epistemic Crisis in Modern Computing

@@ -1,3 +1,48 @@
+---
+id: security-cloud-and-governance
+title: Security, Cloud & Governance Applications
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- security
+- iam
+- satellites
+- aml
+- kernel
+domain: applications
+summary: Kernel hot-patching, IAM synthesis, orbital deconfliction, AML.
+nodes:
+- id: app-kernel-hotpatch
+  kind: application
+- id: app-iam-zero-trust
+  kind: application
+- id: app-leo-satellites
+  kind: application
+- id: app-aml-sar
+  kind: application
+edges:
+- from: three-beat-safety-pattern
+  to: app-kernel-hotpatch
+  rel: applies_to
+- from: zk-epistemic-proof
+  to: app-aml-sar
+  rel: applies_to
+related:
+- '[[theory/cryptographic-model-provenance]]'
+- '[[market/competitive-analysis]]'
+implements_code:
+- examples/code_synth_guard.trell
+agent:
+  priority: high
+  read_when:
+  - security
+  - cloud IAM
+  - space
+  maintain: []
+---
+
 # Applications: Security, Cloud Infrastructure & Governance
 
 In cyber defense, cloud access, and international compliance, autonomous agents must operate with least-privilege authority and tamper-evident audit trails.

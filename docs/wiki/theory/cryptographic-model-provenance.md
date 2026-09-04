@@ -1,3 +1,40 @@
+---
+id: cryptographic-model-provenance
+title: Cryptographic Model Provenance & ZK-Epistemic Proofs
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- zk-snark
+- provenance
+- audit
+domain: theory
+summary: ZK proofs of model lineage and immutable epistemic receipts.
+nodes:
+- id: zk-epistemic-proof
+  kind: technology
+- id: epistemic-receipt
+  kind: primitive
+edges:
+- from: zk-epistemic-proof
+  to: belief-type
+  rel: extends
+- from: epistemic-receipt
+  to: reg-eu-ai-act
+  rel: regulated_by
+related:
+- '[[market/regulatory-and-insurance-drivers]]'
+- '[[core/epistemic-foundations]]'
+agent:
+  priority: medium
+  read_when:
+  - audit trails
+  - regulatory evidence
+  maintain:
+  - roadmap feature — not shipped in v0.2
+---
+
 # Theory: Cryptographic Model Provenance & ZK-Epistemic Proofs
 
 ## 1. The Lineage Problem in Autonomous Systems

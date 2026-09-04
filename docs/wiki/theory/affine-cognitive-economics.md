@@ -1,3 +1,40 @@
+---
+id: affine-cognitive-economics
+title: Affine Cognitive Economics & Resource Invariants
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- affine-types
+- budgets
+- tokens
+- energy
+domain: theory
+summary: Linear/affine budgets for tokens, joules, and dollar cost ceilings.
+nodes:
+- id: affine-cognitive-budget
+  kind: concept
+- id: token-budget
+  kind: primitive
+edges:
+- from: model-contract
+  to: affine-cognitive-budget
+  rel: enforces
+- from: affine-cognitive-budget
+  to: app-treasury-fedwire
+  rel: applies_to
+related:
+- '[[core/contract-and-guard-system]]'
+- '[[applications/financial-treasury-and-markets]]'
+agent:
+  priority: medium
+  read_when:
+  - cost ceilings
+  - runaway agents
+  maintain: []
+---
+
 # Theory: Affine Cognitive Economics & Resource Invariants
 
 ## 1. The Autonomous Agent Resource Dilemma

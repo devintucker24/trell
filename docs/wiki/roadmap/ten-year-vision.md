@@ -1,3 +1,39 @@
+---
+id: ten-year-vision
+title: Ten-Year Vision (2026–2036)
+type: roadmap
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- roadmap
+- vision
+- '2036'
+domain: roadmap
+summary: Trell as the epistemic layer between models and actuators by 2036.
+nodes:
+- id: ten-year-vision
+  kind: concept
+- id: epistemic-liability-era
+  kind: concept
+edges:
+- from: phase-1-beachhead
+  to: ten-year-vision
+  rel: milestone_of
+- from: phase-4-iso-silicon
+  to: ten-year-vision
+  rel: milestone_of
+related:
+- '[[roadmap/phases-and-milestones]]'
+- '[[theory/hardware-silicon-codesign]]'
+agent:
+  priority: high
+  read_when:
+  - future of Trell
+  - strategic narrative
+  maintain: []
+---
+
 # Roadmap: The Ten-Year Vision (2026 – 2036)
 
 By September 2036, artificial intelligence will be woven into the fabric of physical reality: autonomous container vessels navigating international straits, robotic surgical suites operating in regional hospitals, decentralized energy grids balancing gigawatts of renewable power, and autonomous treasury gateways clearing international payments in milliseconds.

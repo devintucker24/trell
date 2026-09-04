@@ -1,3 +1,49 @@
+---
+id: speculative-execution-engine
+title: Speculative Semantic Execution Engine
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- speculation
+- fork
+- when
+- rollback
+domain: core
+summary: Parallel hypothesis branches with transactional rollback and collapse.
+nodes:
+- id: speculative-execution
+  kind: engine
+- id: branch-collapse
+  kind: engine
+- id: speculative-fork-trace
+  kind: primitive
+edges:
+- from: speculative-execution
+  to: belief-type
+  rel: depends_on
+- from: speculative-execution
+  to: tech-npu-semantic-branching
+  rel: accelerates
+- from: branch-collapse
+  to: speculative-execution
+  rel: depends_on
+related:
+- '[[theory/hardware-silicon-codesign]]'
+- '[[core/natural-syntax-specification]]'
+implements_code:
+- src/interpreter.rs
+agent:
+  priority: high
+  read_when:
+  - latency
+  - fork/when semantics
+  - hardware co-design
+  maintain:
+  - sync traces with interpreter SpeculativeForkTrace
+---
+
 # Core: Speculative Semantic Execution Engine
 
 ## 1. The Deliberation Latency Tax

@@ -1,6 +1,55 @@
+---
+id: wiki-index
+title: Trell Epistemic Language Knowledge Base Index
+type: index
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- index
+- navigation
+domain: meta
+summary: Master catalog of the Trell wiki brain for agent navigation.
+nodes:
+- id: wiki-index
+  kind: concept
+  label: Wiki Index
+edges:
+- from: wiki-index
+  to: belief-type
+  rel: related_to
+- from: wiki-index
+  to: three-beat-safety-pattern
+  rel: related_to
+- from: wiki-index
+  to: ten-year-vision
+  rel: related_to
+related:
+- '[[SCHEMA]]'
+- '[[core/epistemic-foundations]]'
+- '[[roadmap/ten-year-vision]]'
+agent:
+  priority: critical
+  read_when:
+  - starting any wiki session
+  - finding a page
+  maintain:
+  - update on every structural page add/remove
+---
+
 # Trell Epistemic Language Knowledge Base & Technical Wiki
 
-Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's networked hyperlinked wiki system. This repository serves as the definitive source of truth for the philosophy, formal mathematics, type systems, runtime architectures, domain applications, competitive market analysis, and 10-year evolutionary roadmap of the Trell programming language.
+Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's networked hyperlinked wiki system (LLM Wiki). This repository is a **compounding brain**: agents compile knowledge into interlinked markdown with YAML graph metadata; they do not re-derive everything from raw sources on every query.
+
+### Agent bootstrap (read first)
+1. [`AGENTS.md`](../../AGENTS.md) — schema: how to navigate, heal, label, ingest, maintain
+2. This INDEX — catalog of pages
+3. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge vocabulary
+4. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) / [`_meta/GRAPH.md`](_meta/GRAPH.md) — knowledge graph
+5. [`log.md`](log.md) — chronological ops
+6. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
+
+**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree) → schema (`AGENTS.md` + skills).
 
 ---
 
@@ -53,3 +102,27 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | **Speculative Branches** | [[core/speculative-execution-engine]] | [[theory/hardware-silicon-codesign]], [[applications/autonomous-physical-systems]] |
 | **Market Niches** | [[applications/overview-and-safety-patterns]] | [[market/competitive-analysis]], [[market/regulatory-and-insurance-drivers]] |
 | **Future Roadmap** | [[roadmap/ten-year-vision]] | [[roadmap/phases-and-milestones]], [[theory/bayesian-and-distributional-types]] |
+| **Knowledge Graph** | [[_meta/GRAPH]] | [[SCHEMA]], `AGENTS.md` |
+
+---
+
+## 6. Brain Ops (Schema, Graph, Raw, Log)
+* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relation vocabulary
+* [[_meta/GRAPH]]: Human graph overview + link to GRAPH.yaml
+* [[raw/thesis]]: Pointer to immutable THESIS.md
+* [[raw/examples]]: Pointers to executable `.trell` examples
+* [[raw/market-research-2026-09-03]]: Historical market note (reconcile carefully)
+* [[log]]: Append-only operations log for agents
+
+---
+
+## 7. Agent Skills (`skills/wiki/`)
+| Skill | Path | Job |
+|-------|------|-----|
+| Parent | `skills/wiki/SKILL.md` | Entry point |
+| Navigate | `skills/wiki/navigate/SKILL.md` | INDEX + graph traversal |
+| Ingest | `skills/wiki/ingest/SKILL.md` | Compile sources into wiki |
+| Query | `skills/wiki/query/SKILL.md` | Answer + file synthesis |
+| Lint | `skills/wiki/lint/SKILL.md` | Heal orphans / contradictions |
+| Label | `skills/wiki/label/SKILL.md` | Normalize frontmatter |
+| Maintain | `skills/wiki/maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |

@@ -1,3 +1,50 @@
+---
+id: phases-and-milestones
+title: Strategic Phases & Milestones
+type: roadmap
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- phases
+- milestones
+- execution
+domain: roadmap
+summary: Phase 1 niche → Phase 2 LSP/codegen → Phase 3 AOT/WASM → Phase 4 ISO/silicon.
+nodes:
+- id: phase-1-beachhead
+  kind: phase
+- id: phase-2-lsp-codegen
+  kind: phase
+- id: phase-3-aot-wasm
+  kind: phase
+- id: phase-4-iso-silicon
+  kind: phase
+edges:
+- from: phase-1-beachhead
+  to: app-maritime-colregs
+  rel: applies_to
+- from: phase-2-lsp-codegen
+  to: tech-xgrammar
+  rel: depends_on
+- from: phase-3-aot-wasm
+  to: tech-wasmtime
+  rel: depends_on
+- from: phase-4-iso-silicon
+  to: tech-npu-semantic-branching
+  rel: depends_on
+related:
+- '[[roadmap/ten-year-vision]]'
+- '[[market/competitive-analysis]]'
+agent:
+  priority: high
+  read_when:
+  - planning work
+  - milestones
+  maintain:
+  - update when phase goals complete
+---
+
 # Roadmap: Strategic Phases & Milestones
 
 The execution path for Trell from working Rust compiler prototype to global industry standard follows four distinct, non-overlapping phases.

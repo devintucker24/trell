@@ -1,3 +1,40 @@
+---
+id: hardware-silicon-codesign
+title: Hardware & Silicon Co-Design for Semantic Branching
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- npu
+- silicon
+- speculation
+- hardware
+domain: theory
+summary: NPU/LPU hardware support for speculative semantic forks and rollback.
+nodes:
+- id: tech-npu-semantic-branching
+  kind: technology
+- id: hardware-rollback
+  kind: technology
+edges:
+- from: tech-npu-semantic-branching
+  to: speculative-execution
+  rel: accelerates
+- from: tech-npu-semantic-branching
+  to: phase-4-iso-silicon
+  rel: milestone_of
+related:
+- '[[core/speculative-execution-engine]]'
+- '[[roadmap/phases-and-milestones]]'
+agent:
+  priority: medium
+  read_when:
+  - hardware future
+  - latency zero-collapse
+  maintain: []
+---
+
 # Theory: Hardware & Silicon Co-Design for Semantic Branching
 
 ## 1. Classical vs Semantic Branch Prediction

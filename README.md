@@ -187,7 +187,13 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 
 ## 6. Comprehensive Knowledge Base & Technical Wiki
 
-For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**:
+For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
+
+**Karpathy LLM Wiki brain (for agents):**
+- Schema: [`AGENTS.md`](AGENTS.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md)
+- Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
+- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (navigate · ingest · query · lint · label · maintain)
+- Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 
 * **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)
 * **Science & Theory**: [Epistemic Type Calculus & Soundness Proofs](docs/wiki/theory/epistemic-type-calculus.md), [Bayesian & Distributional Types](docs/wiki/theory/bayesian-and-distributional-types.md), [Affine Cognitive Economics](docs/wiki/theory/affine-cognitive-economics.md), [Cryptographic ZK Provenance](docs/wiki/theory/cryptographic-model-provenance.md), [Hardware & Silicon Co-Design](docs/wiki/theory/hardware-silicon-codesign.md)

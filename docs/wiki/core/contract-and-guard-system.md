@@ -1,3 +1,56 @@
+---
+id: contract-and-guard-system
+title: Model Contracts & Verification Guard System
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- contracts
+- guards
+- quorum
+- require
+domain: core
+summary: Model contracts, deterministic guards, require/verify, and quorum consensus.
+nodes:
+- id: model-contract
+  kind: primitive
+- id: guard-verify
+  kind: primitive
+  label: guard / require / verify
+- id: quorum-consensus
+  kind: primitive
+edges:
+- from: guard-verify
+  to: belief-type
+  rel: enforces
+- from: guard-verify
+  to: certain-type
+  rel: reduces_via
+- from: quorum-consensus
+  to: belief-type
+  rel: extends
+- from: model-contract
+  to: affine-cognitive-budget
+  rel: depends_on
+related:
+- '[[core/epistemic-foundations]]'
+- '[[theory/epistemic-type-calculus]]'
+- '[[theory/affine-cognitive-economics]]'
+implements_code:
+- src/oracle.rs
+- src/interpreter.rs
+- src/typecheck.rs
+agent:
+  priority: critical
+  read_when:
+  - verification
+  - quorum
+  - model invariants
+  maintain:
+  - keep contract fields aligned with ModelContract AST
+---
+
 # Core: Model Contracts & Verification Guard System
 
 ## 1. Model Contracts as First-Class Signatures

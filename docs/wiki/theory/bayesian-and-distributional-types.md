@@ -1,3 +1,41 @@
+---
+id: bayesian-and-distributional-types
+title: Bayesian & Distributional Type Systems
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- bayesian
+- entropy
+- distributions
+- roadmap
+domain: theory
+summary: Future distributional belief types, entropy bounds, Bayesian update.
+nodes:
+- id: distributional-types
+  kind: type
+- id: epistemic-entropy-bound
+  kind: concept
+edges:
+- from: distributional-types
+  to: belief-type
+  rel: extends
+- from: distributional-types
+  to: phase-4-iso-silicon
+  rel: milestone_of
+related:
+- '[[theory/epistemic-type-calculus]]'
+- '[[roadmap/ten-year-vision]]'
+agent:
+  priority: medium
+  read_when:
+  - future type system
+  - entropy bounds
+  maintain:
+  - mark clearly as roadmap vs shipped
+---
+
 # Theory: Bayesian & Distributional Type Systems
 
 ## 1. Beyond Scalar Confidence

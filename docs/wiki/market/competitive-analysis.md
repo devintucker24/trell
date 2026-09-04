@@ -1,3 +1,59 @@
+---
+id: competitive-analysis
+title: Competitive Landscape Analysis
+type: market
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- market
+- langchain
+- baml
+- weft
+- dspy
+domain: market
+summary: Why SDKs fail epistemic safety; Trell's uncontested authority slice.
+nodes:
+- id: comp-langchain
+  kind: competitor
+- id: comp-langgraph
+  kind: competitor
+- id: comp-baml
+  kind: competitor
+- id: comp-weft
+  kind: competitor
+- id: comp-dspy
+  kind: competitor
+- id: comp-openai-agents-sdk
+  kind: competitor
+- id: tech-xgrammar
+  kind: technology
+edges:
+- from: natural-trell-syntax
+  to: comp-langchain
+  rel: competes_with
+- from: natural-trell-syntax
+  to: comp-baml
+  rel: competes_with
+- from: natural-trell-syntax
+  to: comp-weft
+  rel: competes_with
+- from: tech-xgrammar
+  to: natural-trell-syntax
+  rel: accelerates
+related:
+- '[[market/regulatory-and-insurance-drivers]]'
+- '[[market/developer-persona-and-adoption]]'
+agent:
+  priority: high
+  read_when:
+  - competition
+  - positioning
+  - why not a library
+  maintain:
+  - refresh competitor claims carefully with sources
+---
+
 # Market: Competitive Landscape Analysis
 
 ## 1. The Incumbent Landscape: Libraries vs Languages

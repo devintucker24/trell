@@ -1,3 +1,50 @@
+---
+id: regulatory-and-insurance-drivers
+title: Regulatory Drivers & Insurance Mandates
+type: market
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- regulation
+- eu-ai-act
+- imo
+- insurance
+domain: market
+summary: EU AI Act, IMO MASS, SR 11-7, and insurance epistemic bounding.
+nodes:
+- id: reg-eu-ai-act
+  kind: regulation
+- id: reg-imo-mass
+  kind: regulation
+- id: reg-sr-11-7
+  kind: regulation
+- id: reg-fda-samd
+  kind: regulation
+- id: insurance-epistemic-bound
+  kind: concept
+edges:
+- from: app-maritime-colregs
+  to: reg-imo-mass
+  rel: regulated_by
+- from: guard-verify
+  to: reg-eu-ai-act
+  rel: implements
+- from: insurance-epistemic-bound
+  to: epistemic-receipt
+  rel: depends_on
+related:
+- '[[market/competitive-analysis]]'
+- '[[theory/cryptographic-model-provenance]]'
+agent:
+  priority: high
+  read_when:
+  - compliance
+  - insurance
+  - why enterprises adopt
+  maintain: []
+---
+
 # Market: Regulatory Drivers & Insurance Mandates
 
 The primary catalyst for Trell's adoption will not be developer convenience—it will be **liability, insurance underwriting, and statutory regulation**.

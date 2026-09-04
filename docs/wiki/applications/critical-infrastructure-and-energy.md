@@ -1,3 +1,43 @@
+---
+id: critical-infrastructure-and-energy
+title: Critical Infrastructure & Energy
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- grid
+- water
+- rail
+- infrastructure
+domain: applications
+summary: Smart grid frequency, water dosing, high-speed rail interlocking.
+nodes:
+- id: app-smart-grid
+  kind: application
+- id: app-water-treatment
+  kind: application
+- id: app-highspeed-rail
+  kind: application
+edges:
+- from: three-beat-safety-pattern
+  to: app-smart-grid
+  rel: applies_to
+- from: app-smart-grid
+  to: reg-eu-ai-act
+  rel: regulated_by
+related:
+- '[[applications/overview-and-safety-patterns]]'
+- '[[applications/security-cloud-and-governance]]'
+agent:
+  priority: high
+  read_when:
+  - energy
+  - utilities
+  - rail
+  maintain: []
+---
+
 # Applications: Critical Infrastructure & Energy
 
 Civil infrastructure requires continuous 24/7 uptime where milliseconds of instability cause regional blackouts or tainted public water supplies.

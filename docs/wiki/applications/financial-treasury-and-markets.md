@@ -1,3 +1,54 @@
+---
+id: financial-treasury-and-markets
+title: Financial Treasury & Capital Markets
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- finance
+- fedwire
+- hft
+- insurance
+- fx
+domain: applications
+summary: RTGS settlement, flash-crash defense, claims, sovereign FX.
+nodes:
+- id: app-treasury-fedwire
+  kind: application
+- id: app-market-making
+  kind: application
+- id: app-insurance-cat
+  kind: application
+- id: app-sovereign-fx
+  kind: application
+- id: example-bank-transfer
+  kind: example
+edges:
+- from: quorum-consensus
+  to: app-treasury-fedwire
+  rel: applies_to
+- from: example-bank-transfer
+  to: app-treasury-fedwire
+  rel: implements
+- from: app-treasury-fedwire
+  to: reg-sr-11-7
+  rel: regulated_by
+related:
+- '[[theory/affine-cognitive-economics]]'
+implements_code:
+- examples/bank_transfer.trell
+- examples/financial_settlement.trell
+agent:
+  priority: high
+  read_when:
+  - banking
+  - treasury
+  - quorum
+  maintain:
+  - keep bank_transfer.trell green
+---
+
 # Applications: Financial Treasury & Capital Markets
 
 In financial systems moving hundreds of millions of dollars per minute, an unverified prompt injection or model hallucination results in immediate, irreversible balance sheet losses. Trell establishes cryptographic and mathematical bounds on financial dispatch.

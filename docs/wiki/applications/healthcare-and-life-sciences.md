@@ -1,3 +1,49 @@
+---
+id: healthcare-and-life-sciences
+title: Healthcare & Life Sciences Applications
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- healthcare
+- icu
+- radiotherapy
+- pharmacy
+- genomics
+domain: applications
+summary: ICU sepsis, radiotherapy dosing, pharmacy, genomics, organ allocation.
+nodes:
+- id: app-icu-sepsis
+  kind: application
+- id: app-radiotherapy
+  kind: application
+- id: app-pharmacy-robot
+  kind: application
+- id: app-genomic-oncology
+  kind: application
+- id: app-organ-allocation
+  kind: application
+edges:
+- from: three-beat-safety-pattern
+  to: app-icu-sepsis
+  rel: applies_to
+- from: app-icu-sepsis
+  to: reg-fda-samd
+  rel: regulated_by
+related:
+- '[[applications/overview-and-safety-patterns]]'
+- '[[market/regulatory-and-insurance-drivers]]'
+implements_code:
+- examples/medical_diagnosis.trell
+agent:
+  priority: high
+  read_when:
+  - healthcare
+  - clinical AI
+  maintain: []
+---
+
 # Applications: Healthcare & Life Sciences
 
 In clinical and pharmacological domains, a model hallucination does not just corrupt state—it risks patient morbidity and mortality. Trell guarantees formal epistemic boundaries between clinical suggestions and medical actuators.

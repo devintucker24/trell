@@ -1,3 +1,56 @@
+---
+id: autonomous-physical-systems
+title: Autonomous Physical Systems & Robotics
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- maritime
+- drones
+- mining
+- surgery
+- nuclear
+domain: applications
+summary: Ships, drones, haul trucks, surgical robots, and nuclear coolant control.
+nodes:
+- id: app-maritime-colregs
+  kind: application
+- id: app-drone-airspace
+  kind: application
+- id: app-mining-haulage
+  kind: application
+- id: app-robotic-surgery
+  kind: application
+- id: app-nuclear-coolant
+  kind: application
+- id: example-autonomous-ship
+  kind: example
+edges:
+- from: three-beat-safety-pattern
+  to: app-maritime-colregs
+  rel: applies_to
+- from: example-autonomous-ship
+  to: app-maritime-colregs
+  rel: implements
+- from: app-maritime-colregs
+  to: reg-imo-mass
+  rel: regulated_by
+related:
+- '[[applications/overview-and-safety-patterns]]'
+- '[[theory/hardware-silicon-codesign]]'
+implements_code:
+- examples/autonomous_ship.trell
+agent:
+  priority: high
+  read_when:
+  - ships
+  - robotics
+  - COLREGs
+  maintain:
+  - keep ship example compiling
+---
+
 # Applications: Autonomous Physical Systems & Robotics
 
 This document details 5 mission-critical applications where Trell bridges stochastic AI models and heavy physical actuators.

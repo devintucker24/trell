@@ -1,3 +1,52 @@
+---
+id: natural-syntax-specification
+title: Natural Trell Syntax Specification
+type: concept
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- natural-trell
+- syntax
+- ebnf
+- grammar
+domain: core
+summary: Colon + indent + end grammar, keywords, and EBNF for Natural Trell.
+nodes:
+- id: natural-trell-syntax
+  kind: primitive
+  label: Natural Trell
+- id: keyword-ask
+  kind: primitive
+- id: keyword-when
+  kind: primitive
+- id: keyword-end
+  kind: primitive
+edges:
+- from: natural-trell-syntax
+  to: belief-type
+  rel: depends_on
+- from: keyword-ask
+  to: belief-type
+  rel: implements
+- from: keyword-when
+  to: speculative-execution
+  rel: implements
+related:
+- '[[core/speculative-execution-engine]]'
+- '[[core/contract-and-guard-system]]'
+implements_code:
+- src/lexer.rs
+- src/parser.rs
+agent:
+  priority: critical
+  read_when:
+  - syntax questions
+  - writing Natural Trell examples
+  maintain:
+  - keep EBNF aligned with parser.rs
+---
+
 # Core: Natural Trell Syntax Specification
 
 **Natural Trell** is the human- and AI-readable syntax for the Trell programming language. It is designed to bridge domain specialists (ship captains, clinicians, risk officers) and autonomous code-generation agents by combining Python-like visual ergonomics with the physical safety of explicit `end` block delimiters.

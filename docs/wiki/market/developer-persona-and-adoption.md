@@ -1,3 +1,47 @@
+---
+id: developer-persona-and-adoption
+title: Developer Personas & Adoption Dynamics
+type: market
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- personas
+- adoption
+- agents
+- domain-experts
+domain: market
+summary: AI agents, safety engineers, domain specialists, and auditors as users.
+nodes:
+- id: persona-deliberative-agent
+  kind: persona
+- id: persona-safety-engineer
+  kind: persona
+- id: persona-domain-specialist
+  kind: persona
+- id: persona-auditor
+  kind: persona
+edges:
+- from: natural-trell-syntax
+  to: persona-deliberative-agent
+  rel: owned_by
+- from: natural-trell-syntax
+  to: persona-domain-specialist
+  rel: owned_by
+- from: non-coercion-theorem
+  to: persona-safety-engineer
+  rel: owned_by
+related:
+- '[[core/natural-syntax-specification]]'
+- '[[roadmap/ten-year-vision]]'
+agent:
+  priority: medium
+  read_when:
+  - who writes Trell
+  - GTM
+  maintain: []
+---
+
 # Market: Developer Personas & Adoption Dynamics
 
 Who writes Trell? The language is designed specifically for four distinct personas across the software engineering and autonomous systems ecosystem.

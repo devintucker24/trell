@@ -1,3 +1,40 @@
+---
+id: overview-and-safety-patterns
+title: Universal Epistemic Safety Pattern
+type: application
+status: active
+created: '2026-09-04'
+updated: '2026-09-04'
+tags:
+- pattern
+- three-beat
+- safety
+domain: applications
+summary: The three-beat ask → require → when pattern used across all niches.
+nodes:
+- id: three-beat-safety-pattern
+  kind: concept
+edges:
+- from: three-beat-safety-pattern
+  to: ask-deliberation
+  rel: depends_on
+- from: three-beat-safety-pattern
+  to: guard-verify
+  rel: depends_on
+- from: three-beat-safety-pattern
+  to: speculative-execution
+  rel: depends_on
+related:
+- '[[applications/autonomous-physical-systems]]'
+- '[[core/epistemic-foundations]]'
+agent:
+  priority: critical
+  read_when:
+  - how Trell is used in industry
+  - teaching pattern
+  maintain: []
+---
+
 # Applications: The Universal Epistemic Safety Pattern
 
 Across all 20 real-world industry applications, Trell code converges on an inviolable **Three-Beat Epistemic Safety Pattern**.
