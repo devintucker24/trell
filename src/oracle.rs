@@ -41,6 +41,26 @@ impl ConfigurableOracle {
             confidence: 0.97,
             justification: "Speculative static analysis confirms no memory unsafety, unbound recursion, or unauthorized syscall escape".to_string(),
         });
+        entries.insert("lookoutai".to_string(), MockScenarioEntry {
+            value: "VeerStarboard".to_string(),
+            confidence: 0.94,
+            justification: "COLREGs Rule 14: Head-on situation detected, execute standard starboard alteration to pass port-to-port".to_string(),
+        });
+        entries.insert("fraudoracle".to_string(), MockScenarioEntry {
+            value: "ClearWire".to_string(),
+            confidence: 0.93,
+            justification: "Consensus quorum verified: wire beneficiary matches authenticated recipient directory with standard velocity".to_string(),
+        });
+        entries.insert("vessel".to_string(), MockScenarioEntry {
+            value: "VeerStarboard".to_string(),
+            confidence: 0.94,
+            justification: "COLREGs Rule 14: Head-on situation detected, execute standard starboard alteration to pass port-to-port".to_string(),
+        });
+        entries.insert("wire".to_string(), MockScenarioEntry {
+            value: "ClearWire".to_string(),
+            confidence: 0.93,
+            justification: "Consensus quorum verified: wire beneficiary matches authenticated recipient directory with standard velocity".to_string(),
+        });
 
         Self { entries }
     }

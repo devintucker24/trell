@@ -152,6 +152,8 @@ fn test_all_example_files_check_and_run() {
         "examples/financial_settlement.trell",
         "examples/code_synth_guard.trell",
         "examples/deterministic_math.trell",
+        "examples/autonomous_ship.trell",
+        "examples/bank_transfer.trell",
     ];
 
     for path_str in examples {
@@ -166,4 +168,93 @@ fn test_all_example_files_check_and_run() {
         let mut interp = Interpreter::new(&program, Box::new(MockOracle::new()));
         interp.run_main().expect("Run main failed");
     }
+}
+
+#[test]
+fn test_natural_trell_maritime_navigation() {
+    let source = r#"
+model LookoutAI:
+    temperature: 0.1
+    budget: 1500
+    require: confidence >= 0.85
+end
+
+guard ClearWaterway(action: string):
+    action == "HoldCourse" or action == "VeerStarboard" or action == "ThrottleDown"
+end
+
+action main:
+    print "Scanning autonomous maritime radar sector..."
+
+    let obstacle_assessment: belief<string> = ask LookoutAI("Container vessel detected bearing 045 relative, range 1.2 nautical miles")
+
+    let conf = confidence obstacle_assessment
+    print "Assessed collision probability confidence:"
+    print conf
+
+    let safe_action: certain string = verify obstacle_assessment with ClearWaterway fallback "ThrottleDown"
+
+    when safe_action is:
+        case VeerStarboard:
+            print "Helm: Rudder starboard 15 degrees. Passing astern."
+        case ThrottleDown:
+            print "Engine: Reversing screw to half astern."
+        else:
+            print "Helm: Steady as she goes."
+    end
+
+    print "Collision avoidance maneuver verified and executed."
+end
+    "#;
+
+    let program = parse_and_check(source).expect("Natural Trell maritime navigation should parse and typecheck");
+    let mut oracle = MockOracle::new();
+    oracle.set_response("ask", "VeerStarboard", 0.94, "COLREGs Rule 14 Head-on situation: Alter course to starboard");
+    let mut interp = Interpreter::new(&program, Box::new(oracle));
+    interp.run_main().expect("Execution should succeed");
+
+    assert_eq!(interp.traces.len(), 1);
+    assert_eq!(interp.traces[0].chosen_branch, "VeerStarboard");
+}
+
+#[test]
+fn test_natural_trell_quorum_consensus_transfer() {
+    let source = r#"
+model FraudOracle:
+    budget: 800
+    require: confidence >= 0.80
+end
+
+guard ApprovedSettlement(verdict: string):
+    verdict == "ClearWire" or verdict == "EscrowHold"
+end
+
+action main:
+    print "Validating institutional wire dispatch..."
+
+    let consensus_verdict: belief<string> = quorum(3, 0.70):
+        ask FraudOracle("High-speed interbank wire $1,250,000 to offshore clearing agency")
+    end
+
+    let verified_decision: certain string = require consensus_verdict with ApprovedSettlement else "EscrowHold"
+
+    when verified_decision is:
+        case ClearWire:
+            print "Dispatch: SWIFT MT103 authenticated and transmitted."
+        else:
+            print "Compliance: Diverting transfer to 24-hour escrow hold."
+    end
+
+    print "Consensus transaction complete."
+end
+    "#;
+
+    let program = parse_and_check(source).expect("Natural Trell quorum consensus should parse and typecheck");
+    let mut oracle = MockOracle::new();
+    oracle.set_response("ask", "ClearWire", 0.92, "Consensus quorum verified low-risk velocity profile");
+    let mut interp = Interpreter::new(&program, Box::new(oracle));
+    interp.run_main().expect("Execution should succeed");
+
+    assert_eq!(interp.traces.len(), 1);
+    assert_eq!(interp.traces[0].chosen_branch, "ClearWire");
 }

@@ -1,0 +1,51 @@
+// Autonomous Maritime Navigation & Collision Avoidance in Natural Trell
+// Demonstrates:
+// 1. colon + indent + end syntax
+// 2. dual-track Certain vs Belief safety boundary
+// 3. deterministic maritime COLREGs guard verification
+// 4. speculative semantic branch execution ('when' / 'is' / 'case' / 'else')
+
+model LookoutAI:
+    temperature: 0.1
+    budget: 1500
+    require: confidence >= 0.85
+end
+
+guard ClearWaterway(action: string):
+    action == "HoldCourse" or action == "VeerStarboard" or action == "ThrottleDown"
+end
+
+action main:
+    print "=== Autonomous Vessel 'Oceanic Pioneer' Navigation Matrix ==="
+    print "Scanning autonomous maritime radar and optical AIS sector..."
+
+    // Model deliberation returns a probabilistic belief carrying confidence and COLREGs rationale
+    let obstacle_assessment: belief<string> = ask LookoutAI("Container vessel detected bearing 045 relative, range 1.2 nautical miles")
+
+    print "Lookout model advisory belief:"
+    print obstacle_assessment
+
+    let conf: float = confidence obstacle_assessment
+    print "Epistemic confidence score:"
+    print conf
+
+    // Epistemic reduction: The ship's physical rudder CANNOT be turned by an unverified belief!
+    // 'verify with' checks the deterministic guard invariant.
+    let safe_action: certain string = verify obstacle_assessment with ClearWaterway fallback "ThrottleDown"
+
+    print "Deterministically verified navigation command:"
+    print safe_action
+
+    // Speculative semantic branch execution:
+    // Trell evaluates the chosen navigational branch and logs speculative rollbacks.
+    when safe_action is:
+        case VeerStarboard:
+            print "Helm Action: Executing COLREGs Rule 14 maneuver - Rudder starboard 15 degrees. Passing port-to-port."
+        case ThrottleDown:
+            print "Helm Action: Reversing screw to half astern to yield right of way."
+        else:
+            print "Helm Action: Maintaining steady heading and speed."
+    end
+
+    print "Autonomous navigation decision cycle complete."
+end

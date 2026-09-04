@@ -74,7 +74,44 @@ let verdict: belief<string> = consensus(3, 0.70) {
 
 ---
 
-## 3. A Complete Trell Program
+## 3. Natural Trell Syntax (Colon + Indent + `end`)
+
+In addition to classic syntax, Trell natively supports **Natural Trell**: a clean, human-readable syntax designed for domain experts, combining Python-like clarity with explicit `end` block safety.
+
+```trell
+// Maritime Autonomous Collision Avoidance in Natural Trell
+model LookoutAI:
+    temperature: 0.1
+    budget: 1500
+    require: confidence >= 0.85
+end
+
+guard ClearWaterway(action: string):
+    action == "HoldCourse" or action == "VeerStarboard" or action == "ThrottleDown"
+end
+
+action main:
+    print "Scanning autonomous maritime radar sector..."
+
+    let obstacle: belief<string> = ask LookoutAI("Container ship bearing 045 relative, range 1.2nm")
+    let conf = confidence obstacle
+
+    let safe_action: certain string = require obstacle with ClearWaterway else "ThrottleDown"
+
+    when safe_action is:
+        case VeerStarboard:
+            print "Helm: Alter course to starboard 15 degrees."
+        case ThrottleDown:
+            print "Engine: Reversing screw to half astern."
+        else:
+            print "Helm: Maintain heading and speed."
+    end
+end
+```
+
+---
+
+## 4. Classic Trell Program
 
 ```trell
 // Medical Diagnosis with Epistemic Verification & Speculative Collapse
@@ -118,7 +155,7 @@ fn main() {
 
 ---
 
-## 4. CLI Usage
+## 5. CLI Usage
 
 ### Check Epistemic Type Soundness
 ```bash
@@ -148,7 +185,7 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 
 ---
 
-## 5. Repository Structure
+## 6. Repository Structure
 
 - `THESIS.md`: The philosophical and architectural thesis for Trell.
 - `src/ast.rs`: Abstract Syntax Tree with first-class epistemic and speculative constructs.
@@ -159,6 +196,8 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 - `src/oracle.rs`: Configurable model oracle interface with scenario support.
 - `src/codegen.rs`: Package compiler emitting verified execution units.
 - `examples/`:
+  - `autonomous_ship.trell`: Maritime obstacle collision avoidance in Natural Trell syntax (colon + indent + end).
+  - `bank_transfer.trell`: High-speed interbank wire transfer with statistical quorum in Natural Trell.
   - `medical_diagnosis.trell`: Clinical arbitration and biomarker guard verification.
   - `financial_settlement.trell`: Treasury risk consensus and multi-sig escrow dispatch.
   - `code_synth_guard.trell`: Sandboxed capability enforcement for AI-generated code.

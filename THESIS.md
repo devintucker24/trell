@@ -81,3 +81,60 @@ Every attempt to implement epistemic programming as a Python library (e.g., Pyda
 2. **Speculative Memory & State Rollback:** When an agent speculatively executes branch A and branch B before the model finishes token 50, a Python runtime cannot cleanly isolate and roll back memory heap changes, mock environments, or transactional side effects. Trell's runtime tracks speculative frames and isolates effects until branch collapse.
 3. **Control Flow for Probabilistic Collapse:** In general-purpose languages, `if condition:` evaluates a Boolean. In Trell, `fork` and `collapse` represent probabilistic superposition across distribution branches with automatic pruning, fallback escalation, and confidence thresholds compiled into the runtime scheduler.
 4. **First-Class Cognitive Budgets & Token Invariants:** In Trell, computational budgets (tokens, reasoning depth, dollar cost) are structural resource types enforced by the compiler's affine type system. If a function exhausts its cognitive budget along any execution path, it fails compilation.
+
+---
+
+## 5. Natural Trell Syntax: Readable, Clean, and Uncompromising
+
+To make Trell maximally readable for human domain specialists (doctors, ship captains, compliance officers) while retaining rigorous safety invariants, Trell introduces **Natural Trell** syntax alongside its classic syntax.
+
+Natural Trell uses the **Colon + Indentation + Explicit `end`** structure (drawing inspiration from languages like Mojo, Ruby, and Python, with physical boundary safety):
+- **Colon (`:`)** introduces any declaration, block, or compound statement.
+- **Indentation** provides effortless visual structure.
+- **Explicit `end`** seals every block as a tamper-evident physical boundary—preventing accidental scope bleeding in mission-critical applications and automated code generation.
+
+### Natural Trell Keywords & Primitives
+
+| Keyword | Purpose | Example |
+| :--- | :--- | :--- |
+| `model` | Defines AI contract, temperature, token budget, and invariants | `model LookoutAI:` |
+| `guard` | Deterministic verification predicate | `guard ClearWaterway(action: string):` |
+| `action` | Top-level or callable execution block | `action main:` |
+| `ask` | Deliberation call to a model oracle | `let res: belief<string> = ask LookoutAI("radar scan")` |
+| `quorum` | Statistical consensus across N samples | `let res: belief<string> = quorum(3, 0.70): ... end` |
+| `require` / `verify` | Epistemic reduction (`belief<T>` -> `certain T`) | `let safe: certain string = require b with Guard else "Fallback"` |
+| `when` / `is` / `case` / `else` | Speculative semantic execution across belief branches | `when safe is: case VeerStarboard: ... else: ... end` |
+| `end` | Explicit block terminator | `end` |
+
+### Natural Maritime Navigation Example
+```trell
+model LookoutAI:
+    temperature: 0.1
+    budget: 1500
+    require: confidence >= 0.85
+end
+
+guard ClearWaterway(action: string):
+    action == "HoldCourse" or action == "VeerStarboard" or action == "ThrottleDown"
+end
+
+action main:
+    print "Scanning autonomous maritime radar sector..."
+
+    let obstacle_assessment: belief<string> = ask LookoutAI("Container vessel detected bearing 045 relative, range 1.2 nautical miles")
+    let conf = confidence obstacle_assessment
+    print conf
+
+    let safe_action: certain string = require obstacle_assessment with ClearWaterway else "ThrottleDown"
+
+    when safe_action is:
+        case VeerStarboard:
+            print "Helm: Rudder starboard 15 degrees. Passing astern."
+        case ThrottleDown:
+            print "Engine: Reversing screw to half astern."
+        else:
+            print "Helm: Steady as she goes."
+    end
+end
+```
+

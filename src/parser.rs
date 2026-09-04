@@ -47,6 +47,38 @@ impl Parser {
                 self.advance();
                 Ok(name)
             }
+            Token::Ask => {
+                self.advance();
+                Ok("ask".to_string())
+            }
+            Token::Action => {
+                self.advance();
+                Ok("action".to_string())
+            }
+            Token::When => {
+                self.advance();
+                Ok("when".to_string())
+            }
+            Token::Model => {
+                self.advance();
+                Ok("model".to_string())
+            }
+            Token::Quorum => {
+                self.advance();
+                Ok("quorum".to_string())
+            }
+            Token::Require => {
+                self.advance();
+                Ok("require".to_string())
+            }
+            Token::Is => {
+                self.advance();
+                Ok("is".to_string())
+            }
+            Token::In => {
+                self.advance();
+                Ok("in".to_string())
+            }
             other => Err(anyhow!("Expected identifier, found {:?}: {}", other, err_msg)),
         }
     }
@@ -54,7 +86,7 @@ impl Parser {
     pub fn parse_program(&mut self) -> Result<Program> {
         // Backwards compatibility check: If file starts with an expression directly
         // rather than contract/struct/guard/fn declarations, wrap it into `fn main() { print(<expr>); }`
-        if !matches!(self.peek(), Token::Contract | Token::Struct | Token::Guard | Token::Fn | Token::Eof) {
+        if !matches!(self.peek(), Token::Contract | Token::Model | Token::Struct | Token::Guard | Token::Fn | Token::Action | Token::Eof) {
             let expr = self.parse_expr()?;
             return Ok(Program {
                 items: vec![Item::Function(FunctionDef {
@@ -70,10 +102,10 @@ impl Parser {
 
         while !self.is_at_end() {
             match self.peek() {
-                Token::Contract => items.push(Item::Contract(self.parse_contract()?)),
+                Token::Contract | Token::Model => items.push(Item::Contract(self.parse_contract()?)),
                 Token::Struct => items.push(Item::Struct(self.parse_struct()?)),
                 Token::Guard => items.push(Item::Guard(self.parse_guard()?)),
-                Token::Fn => items.push(Item::Function(self.parse_function()?)),
+                Token::Fn | Token::Action => items.push(Item::Function(self.parse_function()?)),
                 other => return Err(anyhow!("Unexpected token at top level: {:?}", other)),
             }
         }
@@ -82,16 +114,40 @@ impl Parser {
     }
 
     fn parse_contract(&mut self) -> Result<ModelContract> {
-        self.consume(&Token::Contract, "Expected 'contract'")?;
+        let is_natural = if self.check(&Token::Model) {
+            self.advance();
+            true
+        } else {
+            self.consume(&Token::Contract, "Expected 'contract' or 'model'")?;
+            false
+        };
+
         let name = self.consume_ident("Expected contract name")?;
-        self.consume(&Token::LeftBrace, "Expected '{' after contract name")?;
+        let use_end = if is_natural {
+            self.consume(&Token::Colon, "Expected ':' after model name")?;
+            true
+        } else if self.check(&Token::Colon) {
+            self.advance();
+            true
+        } else {
+            self.consume(&Token::LeftBrace, "Expected '{' or ':' after contract name")?;
+            false
+        };
 
         let mut model_kind = String::from("reasoning");
         let mut temperature = None;
         let mut max_tokens = None;
         let mut min_confidence = None;
 
-        while !self.check(&Token::RightBrace) && !self.is_at_end() {
+        let is_block_done = |p: &Self| -> bool {
+            if use_end {
+                p.check(&Token::End) || p.is_at_end()
+            } else {
+                p.check(&Token::RightBrace) || p.is_at_end()
+            }
+        };
+
+        while !is_block_done(self) {
             match self.peek() {
                 Token::Model => {
                     self.advance();
@@ -133,9 +189,11 @@ impl Parser {
                         self.advance();
                     }
                 }
-                Token::Invariant => {
+                Token::Invariant | Token::Require => {
                     self.advance();
-                    self.consume(&Token::Colon, "Expected ':' after 'invariant'")?;
+                    if self.check(&Token::Colon) {
+                        self.advance();
+                    }
                     // Format: confidence >= 0.85
                     if self.check(&Token::Confidence) {
                         self.advance();
@@ -158,11 +216,19 @@ impl Parser {
                         self.advance();
                     }
                 }
+                Token::Semi => {
+                    self.advance();
+                }
                 other => return Err(anyhow!("Unexpected token inside contract definition: {:?}", other)),
             }
         }
 
-        self.consume(&Token::RightBrace, "Expected '}' closing contract")?;
+        if use_end {
+            self.consume(&Token::End, "Expected 'end' closing model block")?;
+        } else {
+            self.consume(&Token::RightBrace, "Expected '}' closing contract")?;
+        }
+
         Ok(ModelContract {
             name,
             model_kind,
@@ -175,20 +241,38 @@ impl Parser {
     fn parse_struct(&mut self) -> Result<StructDef> {
         self.consume(&Token::Struct, "Expected 'struct'")?;
         let name = self.consume_ident("Expected struct name")?;
-        self.consume(&Token::LeftBrace, "Expected '{' after struct name")?;
+        let use_end = if self.check(&Token::Colon) {
+            self.advance();
+            true
+        } else {
+            self.consume(&Token::LeftBrace, "Expected '{' or ':' after struct name")?;
+            false
+        };
+
+        let is_block_done = |p: &Self| -> bool {
+            if use_end {
+                p.check(&Token::End) || p.is_at_end()
+            } else {
+                p.check(&Token::RightBrace) || p.is_at_end()
+            }
+        };
 
         let mut fields = Vec::new();
-        while !self.check(&Token::RightBrace) && !self.is_at_end() {
+        while !is_block_done(self) {
             let field_name = self.consume_ident("Expected struct field name")?;
             self.consume(&Token::Colon, "Expected ':' after field name")?;
             let ty = self.parse_type()?;
             fields.push(StructField { name: field_name, ty });
-            if self.check(&Token::Comma) {
+            if self.check(&Token::Comma) || self.check(&Token::Semi) {
                 self.advance();
             }
         }
 
-        self.consume(&Token::RightBrace, "Expected '}' after struct fields")?;
+        if use_end {
+            self.consume(&Token::End, "Expected 'end' closing struct definition")?;
+        } else {
+            self.consume(&Token::RightBrace, "Expected '}' after struct fields")?;
+        }
         Ok(StructDef { name, fields })
     }
 
@@ -197,13 +281,32 @@ impl Parser {
         let name = self.consume_ident("Expected guard name")?;
         self.consume(&Token::LeftParen, "Expected '(' after guard name")?;
         let param_name = self.consume_ident("Expected guard parameter name")?;
-        self.consume(&Token::Colon, "Expected ':' after guard parameter name")?;
-        let param_type = self.parse_type()?;
+        let param_type = if self.check(&Token::Colon) {
+            self.advance();
+            self.parse_type()?
+        } else {
+            Type::Certain(PrimitiveType::String)
+        };
         self.consume(&Token::RightParen, "Expected ')' closing guard parameter list")?;
 
-        self.consume(&Token::LeftBrace, "Expected '{' opening guard body")?;
+        let use_end = if self.check(&Token::Colon) {
+            self.advance();
+            true
+        } else {
+            self.consume(&Token::LeftBrace, "Expected '{' or ':' opening guard body")?;
+            false
+        };
+
         let body = self.parse_expr()?;
-        self.consume(&Token::RightBrace, "Expected '}' closing guard body")?;
+        if self.check(&Token::Semi) {
+            self.advance();
+        }
+
+        if use_end {
+            self.consume(&Token::End, "Expected 'end' closing guard body")?;
+        } else {
+            self.consume(&Token::RightBrace, "Expected '}' closing guard body")?;
+        }
 
         Ok(GuardDef {
             name,
@@ -214,36 +317,78 @@ impl Parser {
     }
 
     fn parse_function(&mut self) -> Result<FunctionDef> {
-        self.consume(&Token::Fn, "Expected 'fn'")?;
+        if self.check(&Token::Action) {
+            self.advance();
+        } else {
+            self.consume(&Token::Fn, "Expected 'fn' or 'action'")?;
+        }
         let name = self.consume_ident("Expected function name")?;
-        self.consume(&Token::LeftParen, "Expected '(' after function name")?;
-
         let mut params = Vec::new();
-        while !self.check(&Token::RightParen) && !self.is_at_end() {
-            let param_name = self.consume_ident("Expected parameter name")?;
-            self.consume(&Token::Colon, "Expected ':' after parameter name")?;
-            let ty = self.parse_type()?;
-            params.push(Param { name: param_name, ty });
-            if self.check(&Token::Comma) {
-                self.advance();
+        if self.check(&Token::LeftParen) {
+            self.advance();
+            while !self.check(&Token::RightParen) && !self.is_at_end() {
+                let param_name = self.consume_ident("Expected parameter name")?;
+                self.consume(&Token::Colon, "Expected ':' after parameter name")?;
+                let ty = self.parse_type()?;
+                params.push(Param { name: param_name, ty });
+                if self.check(&Token::Comma) {
+                    self.advance();
+                }
             }
+            self.consume(&Token::RightParen, "Expected ')' after parameter list")?;
         }
 
-        self.consume(&Token::RightParen, "Expected ')' after parameter list")?;
-
-        let return_type = if self.check(&Token::ThinArrow) {
+        let (return_type, use_end) = if self.check(&Token::ThinArrow) {
             self.advance();
-            self.parse_type()?
+            let ty = self.parse_type()?;
+            let use_end = if self.check(&Token::Colon) {
+                self.advance();
+                true
+            } else {
+                self.consume(&Token::LeftBrace, "Expected '{' or ':' opening function body")?;
+                false
+            };
+            (ty, use_end)
+        } else if self.check(&Token::Colon) {
+            // Can be `: ReturnType:` or `: ReturnType {` or directly `:` opening body with Type::Unit!
+            self.advance();
+            if matches!(self.peek(), Token::TypeInt | Token::TypeFloat | Token::TypeBool | Token::TypeString | Token::TypeJson | Token::Certain | Token::Belief) {
+                let ty = self.parse_type()?;
+                let use_end = if self.check(&Token::Colon) {
+                    self.advance();
+                    true
+                } else {
+                    self.consume(&Token::LeftBrace, "Expected '{' or ':' opening function body")?;
+                    false
+                };
+                (ty, use_end)
+            } else {
+                // `:` directly introduces body with Type::Unit return
+                (Type::Unit, true)
+            }
         } else {
-            Type::Unit
+            self.consume(&Token::LeftBrace, "Expected '{' or ':' opening function body")?;
+            (Type::Unit, false)
         };
 
-        self.consume(&Token::LeftBrace, "Expected '{' opening function body")?;
+        let is_block_done = |p: &Self| -> bool {
+            if use_end {
+                p.check(&Token::End) || p.is_at_end()
+            } else {
+                p.check(&Token::RightBrace) || p.is_at_end()
+            }
+        };
+
         let mut body = Vec::new();
-        while !self.check(&Token::RightBrace) && !self.is_at_end() {
+        while !is_block_done(self) {
             body.push(self.parse_stmt()?);
         }
-        self.consume(&Token::RightBrace, "Expected '}' closing function body")?;
+
+        if use_end {
+            self.consume(&Token::End, "Expected 'end' closing function body")?;
+        } else {
+            self.consume(&Token::RightBrace, "Expected '}' closing function body")?;
+        }
 
         Ok(FunctionDef {
             name,
@@ -318,13 +463,24 @@ impl Parser {
                 };
                 self.consume(&Token::Equal, "Expected '=' in variable declaration")?;
                 let value = self.parse_expr()?;
-                self.consume(&Token::Semi, "Expected ';' after let statement")?;
+                if self.check(&Token::Semi) {
+                    self.advance();
+                }
                 Ok(Stmt::Let { name, ty, value })
             }
             Token::Print => {
                 self.advance();
-                let expr = self.parse_expr()?;
-                self.consume(&Token::Semi, "Expected ';' after print statement")?;
+                let expr = if self.check(&Token::LeftParen) {
+                    self.advance();
+                    let e = self.parse_expr()?;
+                    self.consume(&Token::RightParen, "Expected ')' closing print argument")?;
+                    e
+                } else {
+                    self.parse_expr()?
+                };
+                if self.check(&Token::Semi) {
+                    self.advance();
+                }
                 Ok(Stmt::Print(expr))
             }
             Token::Assert => {
@@ -343,7 +499,9 @@ impl Parser {
                 } else {
                     None
                 };
-                self.consume(&Token::Semi, "Expected ';' after assert statement")?;
+                if self.check(&Token::Semi) {
+                    self.advance();
+                }
                 Ok(Stmt::Assert { condition, message })
             }
             Token::Return => {
@@ -351,9 +509,13 @@ impl Parser {
                 if self.check(&Token::Semi) {
                     self.advance();
                     Ok(Stmt::Return(None))
+                } else if matches!(self.peek(), Token::End | Token::RightBrace | Token::Eof) {
+                    Ok(Stmt::Return(None))
                 } else {
                     let expr = self.parse_expr()?;
-                    self.consume(&Token::Semi, "Expected ';' after return value")?;
+                    if self.check(&Token::Semi) {
+                        self.advance();
+                    }
                     Ok(Stmt::Return(Some(expr)))
                 }
             }
@@ -363,7 +525,9 @@ impl Parser {
                 if self.check(&Token::Equal) {
                     self.advance();
                     let val = self.parse_expr()?;
-                    self.consume(&Token::Semi, "Expected ';' after assignment")?;
+                    if self.check(&Token::Semi) {
+                        self.advance();
+                    }
                     if let Expr::Ident(id) = expr {
                         Ok(Stmt::Assign { target: id, value: val })
                     } else {
@@ -594,25 +758,36 @@ impl Parser {
             }
             Token::Confidence => {
                 self.advance();
-                self.consume(&Token::LeftParen, "Expected '(' after confidence")?;
-                let target = self.parse_expr()?;
-                self.consume(&Token::RightParen, "Expected ')' closing confidence(...)")?;
+                let target = if self.check(&Token::LeftParen) {
+                    self.advance();
+                    let t = self.parse_expr()?;
+                    self.consume(&Token::RightParen, "Expected ')' closing confidence(...)")?;
+                    t
+                } else {
+                    self.parse_postfix()?
+                };
                 Ok(Expr::Confidence(Box::new(target)))
             }
             Token::Justification => {
                 self.advance();
-                self.consume(&Token::LeftParen, "Expected '(' after justification")?;
-                let target = self.parse_expr()?;
-                self.consume(&Token::RightParen, "Expected ')' closing justification(...)")?;
+                let target = if self.check(&Token::LeftParen) {
+                    self.advance();
+                    let t = self.parse_expr()?;
+                    self.consume(&Token::RightParen, "Expected ')' closing justification(...)")?;
+                    t
+                } else {
+                    self.parse_postfix()?
+                };
                 Ok(Expr::Justification(Box::new(target)))
             }
-            Token::Verify => {
+            Token::Verify | Token::Require => {
                 // verify <target> with <guard_name> [fallback <expr>]
+                // require <target> with <guard_name> [else <expr>]
                 self.advance();
-                let target = self.parse_expr()?;
+                let target = self.parse_postfix()?;
                 self.consume(&Token::With, "Expected 'with' in verify expression")?;
                 let guard_name = self.consume_ident("Expected guard name after 'with'")?;
-                let fallback = if self.check(&Token::Fallback) {
+                let fallback = if self.check(&Token::Fallback) || self.check(&Token::Else) {
                     self.advance();
                     Some(Box::new(self.parse_expr()?))
                 } else {
@@ -624,10 +799,11 @@ impl Parser {
                     fallback,
                 })
             }
-            Token::Consensus => {
+            Token::Consensus | Token::Quorum => {
                 // consensus(n, threshold) { oracle<Contract>.method(prompt) }
+                // or quorum(3, 0.70): ... end
                 self.advance();
-                self.consume(&Token::LeftParen, "Expected '(' after 'consensus'")?;
+                self.consume(&Token::LeftParen, "Expected '(' after 'consensus' or 'quorum'")?;
                 let count = match self.peek() {
                     Token::Int(n) => {
                         let c = *n as usize;
@@ -651,13 +827,63 @@ impl Parser {
                     other => return Err(anyhow!("Expected float threshold for consensus, found {:?}", other)),
                 };
                 self.consume(&Token::RightParen, "Expected ')' after consensus parameters")?;
-                self.consume(&Token::LeftBrace, "Expected '{' enclosing consensus oracle call")?;
+
+                let use_end = if self.check(&Token::Colon) {
+                    self.advance();
+                    true
+                } else {
+                    self.consume(&Token::LeftBrace, "Expected '{' or ':' enclosing consensus oracle call")?;
+                    false
+                };
+
                 let oracle_call = self.parse_expr()?;
-                self.consume(&Token::RightBrace, "Expected '}' enclosing consensus oracle call")?;
+
+                if use_end {
+                    self.consume(&Token::End, "Expected 'end' closing quorum block")?;
+                } else {
+                    self.consume(&Token::RightBrace, "Expected '}' enclosing consensus oracle call")?;
+                }
+
                 Ok(Expr::Consensus {
                     count,
                     threshold,
                     oracle_call: Box::new(oracle_call),
+                })
+            }
+            Token::Ask => {
+                // ask ContractName.method(prompt)
+                // or ask ContractName(prompt)
+                // or ask ContractName "prompt"
+                self.advance();
+                let contract = self.consume_ident("Expected model name after 'ask'")?;
+                let target_type = if self.check(&Token::Colon) {
+                    self.advance();
+                    self.parse_type()?
+                } else {
+                    Type::Belief(PrimitiveType::String)
+                };
+
+                let method = if self.check(&Token::Dot) {
+                    self.advance();
+                    self.consume_ident("Expected model method name after '.'")?
+                } else {
+                    "ask".to_string()
+                };
+
+                let prompt_arg = if self.check(&Token::LeftParen) {
+                    self.advance();
+                    let arg = self.parse_expr()?;
+                    self.consume(&Token::RightParen, "Expected ')' after prompt argument")?;
+                    arg
+                } else {
+                    self.parse_expr()?
+                };
+
+                Ok(Expr::OracleCall {
+                    contract,
+                    method,
+                    prompt_arg: Box::new(prompt_arg),
+                    target_type,
                 })
             }
             Token::Oracle => {
@@ -688,16 +914,40 @@ impl Parser {
                     target_type,
                 })
             }
-            Token::Fork => {
-                // fork target { case Pattern => { stmts } ... fallback => { stmts } } collapse
+            Token::Fork | Token::When => {
+                // Classic: fork target { case Pattern => { stmts } ... fallback => { stmts } } collapse
+                // Natural: when target is:
+                //            case Pattern:
+                //              stmts
+                //            else:
+                //              stmts
+                //          end
                 self.advance();
                 let target = self.parse_expr()?;
-                self.consume(&Token::LeftBrace, "Expected '{' opening fork block")?;
+                if self.check(&Token::Is) {
+                    self.advance();
+                }
+
+                let use_end = if self.check(&Token::Colon) {
+                    self.advance();
+                    true
+                } else {
+                    self.consume(&Token::LeftBrace, "Expected '{' or ':' opening fork/when block")?;
+                    false
+                };
 
                 let mut cases = Vec::new();
                 let mut fallback = None;
 
-                while !self.check(&Token::RightBrace) && !self.is_at_end() {
+                let is_block_done = |p: &Self| -> bool {
+                    if use_end {
+                        p.check(&Token::End) || p.is_at_end()
+                    } else {
+                        p.check(&Token::RightBrace) || p.is_at_end()
+                    }
+                };
+
+                while !is_block_done(self) {
                     if self.check(&Token::Case) {
                         self.advance();
                         let pattern_name = self.consume_ident("Expected case pattern name")?;
@@ -709,35 +959,78 @@ impl Parser {
                         } else {
                             None
                         };
-                        self.consume(&Token::FatArrow, "Expected '=>' after case pattern")?;
-                        self.consume(&Token::LeftBrace, "Expected '{' opening case body")?;
+
+                        let case_use_end = if self.check(&Token::Colon) {
+                            self.advance();
+                            true
+                        } else {
+                            self.consume(&Token::FatArrow, "Expected '=>' or ':' after case pattern")?;
+                            if self.check(&Token::Colon) {
+                                self.advance();
+                                true
+                            } else {
+                                self.consume(&Token::LeftBrace, "Expected '{' or ':' opening case body")?;
+                                false
+                            }
+                        };
+
                         let mut body = Vec::new();
-                        while !self.check(&Token::RightBrace) && !self.is_at_end() {
-                            body.push(self.parse_stmt()?);
+                        if case_use_end {
+                            // In natural syntax: case body statements continue until the next 'case', 'else', 'fallback', or 'end'
+                            while !matches!(self.peek(), Token::Case | Token::Else | Token::Fallback | Token::End | Token::Eof) {
+                                body.push(self.parse_stmt()?);
+                            }
+                        } else {
+                            while !self.check(&Token::RightBrace) && !self.is_at_end() {
+                                body.push(self.parse_stmt()?);
+                            }
+                            self.consume(&Token::RightBrace, "Expected '}' closing case body")?;
                         }
-                        self.consume(&Token::RightBrace, "Expected '}' closing case body")?;
+
                         cases.push(ForkCase {
                             pattern_name,
                             binding,
                             body,
                         });
-                    } else if self.check(&Token::Fallback) {
+                    } else if self.check(&Token::Fallback) || self.check(&Token::Else) {
                         self.advance();
-                        self.consume(&Token::FatArrow, "Expected '=>' after fallback")?;
-                        self.consume(&Token::LeftBrace, "Expected '{' opening fallback body")?;
+                        let fallback_use_end = if self.check(&Token::Colon) {
+                            self.advance();
+                            true
+                        } else {
+                            self.consume(&Token::FatArrow, "Expected '=>' or ':' after fallback/else")?;
+                            if self.check(&Token::Colon) {
+                                self.advance();
+                                true
+                            } else {
+                                self.consume(&Token::LeftBrace, "Expected '{' or ':' opening fallback body")?;
+                                false
+                            }
+                        };
+
                         let mut body = Vec::new();
-                        while !self.check(&Token::RightBrace) && !self.is_at_end() {
-                            body.push(self.parse_stmt()?);
+                        if fallback_use_end {
+                            while !matches!(self.peek(), Token::Case | Token::Else | Token::Fallback | Token::End | Token::Eof) {
+                                body.push(self.parse_stmt()?);
+                            }
+                        } else {
+                            while !self.check(&Token::RightBrace) && !self.is_at_end() {
+                                body.push(self.parse_stmt()?);
+                            }
+                            self.consume(&Token::RightBrace, "Expected '}' closing fallback body")?;
                         }
-                        self.consume(&Token::RightBrace, "Expected '}' closing fallback body")?;
                         fallback = Some(body);
                     } else {
-                        return Err(anyhow!("Expected 'case' or 'fallback' inside fork, found {:?}", self.peek()));
+                        return Err(anyhow!("Expected 'case', 'else', or 'fallback' inside fork/when block, found {:?}", self.peek()));
                     }
                 }
 
-                self.consume(&Token::RightBrace, "Expected '}' closing fork block")?;
-                self.consume(&Token::Collapse, "Expected 'collapse' keyword after fork block")?;
+                if use_end {
+                    self.consume(&Token::End, "Expected 'end' closing when/fork block")?;
+                } else {
+                    self.consume(&Token::RightBrace, "Expected '}' closing fork block")?;
+                    self.consume(&Token::Collapse, "Expected 'collapse' keyword after fork block")?;
+                }
 
                 Ok(Expr::Fork {
                     target: Box::new(target),
@@ -747,7 +1040,7 @@ impl Parser {
             }
             Token::Ident(name) => {
                 self.advance();
-                // Check if this is a struct initialization: StructName { field: expr, ... }
+                // Check if this is a struct initialization: StructName { field: expr, ... } or StructName(field: expr, ...)
                 if self.check(&Token::LeftBrace) {
                     // Peek ahead to see if it looks like field: value
                     let is_struct_init = if self.current + 2 < self.tokens.len() {
@@ -764,16 +1057,55 @@ impl Parser {
                             self.consume(&Token::Colon, "Expected ':' after struct field name")?;
                             let f_val = self.parse_expr()?;
                             fields.push((f_name, f_val));
-                            if self.check(&Token::Comma) {
+                            if self.check(&Token::Comma) || self.check(&Token::Semi) {
                                 self.advance();
                             }
                         }
                         self.consume(&Token::RightBrace, "Expected '}' closing struct init")?;
                         return Ok(Expr::StructInit { name, fields });
                     }
+                } else if self.check(&Token::LeftParen) {
+                    // Peek ahead to see if it's named field initialization: StructName(field: val, ...)
+                    let is_struct_init = if self.current + 2 < self.tokens.len() {
+                        matches!((&self.tokens[self.current + 1], &self.tokens[self.current + 2]), (Token::Ident(_), Token::Colon))
+                    } else {
+                        false
+                    };
+
+                    if is_struct_init {
+                        self.advance(); // consume '('
+                        let mut fields = Vec::new();
+                        while !self.check(&Token::RightParen) && !self.is_at_end() {
+                            let f_name = self.consume_ident("Expected field name in struct init")?;
+                            self.consume(&Token::Colon, "Expected ':' after struct field name")?;
+                            let f_val = self.parse_expr()?;
+                            fields.push((f_name, f_val));
+                            if self.check(&Token::Comma) || self.check(&Token::Semi) {
+                                self.advance();
+                            }
+                        }
+                        self.consume(&Token::RightParen, "Expected ')' closing struct init")?;
+                        return Ok(Expr::StructInit { name, fields });
+                    }
                 }
 
                 Ok(Expr::Ident(name))
+            }
+            Token::Action => {
+                self.advance();
+                Ok(Expr::Ident("action".to_string()))
+            }
+            Token::Is => {
+                self.advance();
+                Ok(Expr::Ident("is".to_string()))
+            }
+            Token::In => {
+                self.advance();
+                Ok(Expr::Ident("in".to_string()))
+            }
+            Token::Model => {
+                self.advance();
+                Ok(Expr::Ident("model".to_string()))
             }
             other => Err(anyhow!("Unexpected token parsing primary expression: {:?}", other)),
         }
