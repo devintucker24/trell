@@ -33,3 +33,9 @@ semantic_dirs:
 types_extra: []
 router_seeds: host/router-seeds.md
 maintain_skill: docs/wiki/skills/wiki-maintain/SKILL.md
+graphify:
+  enabled: true
+  code_only: true
+  out: graphify-out
+  targets:
+    - src

@@ -24,11 +24,20 @@ Useful flags:
 - `--lane semantic|episodic|temporal|meta|all`
 - `--as-of 2026-09-04` — validity-window filter + temporal scoring
 - `--json` — machine-readable hits
+- `--code` — also run Graphify `query` against `graphify-out/graph.json` (AST/call graph)
 
 3. Open **only** the top 1–3 paths (or the matching `##` section).
-4. Optional: one-hop GRAPH neighbors from the #1 hit’s nodes.
-5. Answer with citations `[[folder/page]]`. Prefer filing durable answers back (query skill).
-6. Log: `## [YYYY-MM-DD] retrieve | <slug>`
+4. Claim-graph one-hop: frontmatter `edges` / compiled `_meta/GRAPH.yaml` (doctrine rels).
+5. Code/structure questions: **do not** invent a second AST graph.
+
+```bash
+python3 docs/wiki/scripts/wiki_graphify.py query "<same or narrower question>"
+python3 docs/wiki/scripts/wiki_graphify.py path Parser TypeChecker
+python3 docs/wiki/scripts/wiki_graphify.py explain TypeChecker
+```
+
+6. Answer with citations `[[folder/page]]`. Prefer filing durable answers back (query skill).
+7. Log: `## [YYYY-MM-DD] retrieve | <slug>`
 
 ## Scoring (v0 file-native)
 | Signal | Weight |
@@ -41,6 +50,8 @@ Useful flags:
 | MMR diversity | 0.10 |
 
 No embeddings required until corpus ≫ ~200 pages.
+
+Wiki retrieve ranks **compiled pages**. Graphify ranks **code symbols**. They are not interchangeable. `GRAPH.yaml` is only a dump of page frontmatter for claim proximity.
 
 ## Temporal rules
 - Pages with `temporal.valid_until ≤ as_of` are down-ranked (unless query is historical).

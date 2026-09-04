@@ -122,5 +122,14 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - All `wiki-*` Cursor/Claude skills point at `docs/wiki/skills/<name>/SKILL.md`
 - Catalog: `docs/wiki/_meta/usage-telemetry.md`; gitignore `events.jsonl`
 
+## [2026-09-04] schema | Graphify code graph + wiki-setup
+
+- Installed Graphify (`graphifyy`); code graph is `graphify-out/graph.json` (gitignored)
+- Wrapper: `docs/wiki/scripts/wiki_graphify.py` (sync/query/path/explain/god-nodes)
+- Setup: `docs/wiki/scripts/wiki_setup.py` + skill `wiki-setup`
+- Claim index remains `_meta/GRAPH.yaml` (frontmatter only) — not a second AST graph
+- Protocol: `docs/wiki/_meta/GRAPH.md` · pack: `FRAMEWORK.md`
+
+
 
 

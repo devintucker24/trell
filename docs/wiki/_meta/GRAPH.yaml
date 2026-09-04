@@ -154,6 +154,10 @@ nodes:
   kind: concept
   page: episodic/2026-09-04-brain-memory-upgrade
   label: Brain memory upgrade episode
+- id: episode-graphify-machine-graph
+  kind: concept
+  page: episodic/2026-09-04-graphify-machine-graph
+  label: Graphify machine-graph episode
 - id: epistemic-contamination
   kind: concept
   page: core/epistemic-foundations
@@ -370,6 +374,10 @@ nodes:
   kind: concept
   page: _meta/GRAPH
   label: wiki-graph-overview
+- id: wiki-graphify-bridge
+  kind: concept
+  page: _meta/GRAPH
+  label: Graphify code-graph bridge
 - id: wiki-inbox
   kind: concept
   page: inbox/README
@@ -390,6 +398,10 @@ nodes:
   kind: concept
   page: SCHEMA
   label: wiki-schema
+- id: wiki-setup
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki setup
 - id: wiki-usage-dashboard
   kind: concept
   page: _meta/usage-dashboard
@@ -498,6 +510,14 @@ edges:
   to: memory-temporal
   rel: related_to
   page: episodic/2026-09-04-brain-memory-upgrade
+- from: episode-graphify-machine-graph
+  to: wiki-graphify-bridge
+  rel: related_to
+  page: episodic/2026-09-04-graphify-machine-graph
+- from: episode-graphify-machine-graph
+  to: wiki-setup
+  rel: related_to
+  page: episodic/2026-09-04-graphify-machine-graph
 - from: epistemic-lie
   to: belief-type
   rel: depends_on
@@ -853,12 +873,24 @@ edges:
   rel: depends_on
   page: FRAMEWORK
 - from: wiki-brain-pack
+  to: wiki-setup
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
   to: wiki-usage-telemetry
   rel: related_to
   page: FRAMEWORK
 - from: wiki-graph-overview
   to: wiki-index
   rel: depends_on
+  page: _meta/GRAPH
+- from: wiki-graphify-bridge
+  to: wiki-brain-pack
+  rel: implements
+  page: FRAMEWORK
+- from: wiki-graphify-bridge
+  to: wiki-graph-overview
+  rel: implements
   page: _meta/GRAPH
 - from: wiki-inbox
   to: wiki-schema

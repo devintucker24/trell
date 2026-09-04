@@ -192,13 +192,30 @@ def main() -> None:
         WIKI / "scripts" / "wiki_retrieve.py",
         WIKI / "scripts" / "wiki_doctor.py",
         WIKI / "scripts" / "wiki_usage.py",
+        WIKI / "scripts" / "wiki_graphify.py",
+        WIKI / "scripts" / "wiki_setup.py",
         WIKI / "scripts" / "sync_graph.py",
+        WIKI / "skills" / "wiki-setup" / "SKILL.md",
         WIKI / "episodic" / "INDEX.md",
         WIKI / "temporal" / "TIMELINE.md",
     ]:
         if not req.exists():
             add(findings, "critical", "missing_artifact", f"Missing {req.relative_to(ROOT)}",
                 str(req.relative_to(ROOT)), "Restore from git / recreate")
+
+    gcfg = host.get("graphify") or {}
+    if gcfg.get("enabled", False):
+        from wiki_graphify import graph_json_path, find_graphify
+        gj = graph_json_path(gcfg if "out" in gcfg else None)
+        if not find_graphify():
+            add(findings, "low", "graphify_cli_missing",
+                "graphify CLI not on PATH (code graph owner)",
+                "graphify-out/graph.json", "pip install graphifyy")
+        elif not gj.exists():
+            add(findings, "low", "graphify_graph_missing",
+                "HOST.yaml enables Graphify but graph.json is missing",
+                str(gj.relative_to(ROOT)) if ROOT in gj.parents else str(gj),
+                "python3 docs/wiki/scripts/wiki_graphify.py sync")
 
     # Temporal hygiene: active pages with expired valid_until
     today = date.today()

@@ -32,6 +32,7 @@ related:
 - '[[episodic/INDEX]]'
 - '[[temporal/TIMELINE]]'
 - '[[FRAMEWORK]]'
+- '[[_meta/GRAPH]]'
 - '[[_meta/usage-telemetry]]'
 agent:
   priority: critical
@@ -52,11 +53,12 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 3. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
 4. [`OPERATOR.md`](OPERATOR.md) — detailed wiki operator manual
 5. Retrieve: `python3 docs/wiki/scripts/wiki_retrieve.py "<q>"` — [`docs/wiki/skills/wiki-retrieve`](skills/wiki-retrieve/SKILL.md)
-6. This INDEX — catalog when browsing structure
-7. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
-8. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
-9. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
-10. Skills: [`docs/wiki/skills/wiki-brain`](skills/wiki-brain/SKILL.md) · pack: [`FRAMEWORK.md`](FRAMEWORK.md)
+6. Code graph: `python3 docs/wiki/scripts/wiki_graphify.py query "<q>"` — [`_meta/GRAPH.md`](_meta/GRAPH.md)
+7. This INDEX — catalog when browsing structure
+8. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
+9. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
+10. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) (claim index) · [`log.md`](log.md)
+11. Skills: [`docs/wiki/skills/wiki-brain`](skills/wiki-brain/SKILL.md) · setup: [`wiki-setup`](skills/wiki-setup/SKILL.md) · pack: [`FRAMEWORK.md`](FRAMEWORK.md)
 
 **Layers:** raw (`raw/`, host sources) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + `docs/wiki/skills/`).
 **Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
@@ -112,7 +114,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | **Speculative Branches** | [[core/speculative-execution-engine]] | [[theory/hardware-silicon-codesign]], [[applications/autonomous-physical-systems]] |
 | **Market Niches** | [[applications/overview-and-safety-patterns]] | [[market/competitive-analysis]], [[market/regulatory-and-insurance-drivers]] |
 | **Future Roadmap** | [[roadmap/ten-year-vision]] | [[roadmap/phases-and-milestones]], [[theory/bayesian-and-distributional-types]] |
-| **Knowledge Graph** | [[_meta/GRAPH]] | [[SCHEMA]], `AGENTS.md` |
+| **Knowledge Graph** | [[_meta/GRAPH]] | Graphify `graph.json` (code) + GRAPH.yaml (claims) |
 | **Context Router** | [[ROUTER]] | [[_meta/CONTEXT_PROTOCOL]], [[FRAMEWORK]] |
 | **Episodic memory** | [[episodic/INDEX]] | [[episodic/session-current]], [[temporal/TIMELINE]] |
 | **Temporal memory** | [[temporal/TIMELINE]] | [[_meta/CONTEXT_PROTOCOL]], retrieve `--as-of` |
@@ -128,7 +130,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 * [[episodic/INDEX]]: Episodic memory catalog (session narratives)
 * [[temporal/TIMELINE]]: Temporal spine for as-of / what-changed recall
 * [[inbox/README]]: **Drop zone** — how humans/agents input material
-* [[_meta/GRAPH]]: Human graph overview + link to GRAPH.yaml
+* [[_meta/GRAPH]]: Machine graph protocol — Graphify code graph + claim index
 * [[raw/thesis]]: Pointer to immutable THESIS.md
 * [[raw/examples]]: Pointers to executable `.trell` examples
 * [[raw/market-research-2026-09-03]]: Historical market note (reconcile carefully)
@@ -152,6 +154,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | Lint | `docs/wiki/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
 | Query | `docs/wiki/skills/wiki-query/SKILL.md` | Answer + file synthesis |
 | Label | `docs/wiki/skills/wiki-label/SKILL.md` | Normalize frontmatter |
-| Maintain | `docs/wiki/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |
+| Maintain | `docs/wiki/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki claims ↔ Graphify |
 | Usage | `docs/wiki/skills/wiki-usage/SKILL.md` | Telemetry + context cost |
+| **Setup** | `docs/wiki/skills/wiki-setup/SKILL.md` | New repo / portable install |
 | Pack | `docs/wiki/FRAMEWORK.md` | Export into another project |

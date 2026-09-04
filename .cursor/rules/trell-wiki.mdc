@@ -7,16 +7,17 @@ alwaysApply: false
 # Wiki brain
 
 - Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/OPERATOR.md`. Canonical skills: `docs/wiki/skills/` (parent `wiki-brain`).
-- Context: `docs/wiki/ROUTER.md` — retrieve; do not dump INDEX/SCHEMA/GRAPH.
+- Context: `docs/wiki/ROUTER.md` — retrieve; do not dump INDEX/SCHEMA/GRAPH.yaml/graph.json.
 - New material → `docs/wiki/inbox/` only; triage before ingest.
 - No new folders/types/domains/rels without `docs/wiki/SCHEMA.md`.
 - Episodes and TIMELINE are not semantic truth until consolidated.
-- After structural edits: sync GRAPH (`python3 docs/wiki/scripts/sync_graph.py`) and prefer doctor/heal (`wiki-doctor` / `wiki-heal`).
+- After structural edits: sync claim graph (`python3 docs/wiki/scripts/sync_graph.py`). After `src/` edits: `python3 docs/wiki/scripts/wiki_graphify.py sync`. Prefer doctor/heal.
 
 ## Autonomous Skill Execution Checklist
 
-1. **Retrieval**: Before opening wiki files, run `python3 docs/wiki/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`.
+1. **Retrieval**: Before opening wiki files, run `python3 docs/wiki/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`. Code wiring: `python3 docs/wiki/scripts/wiki_graphify.py query "<task>"`.
 2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → execute `docs/wiki/skills/wiki-triage/SKILL.md` → execute `docs/wiki/skills/wiki-ingest/SKILL.md`.
 3. **Health & Linting**: Run `python3 docs/wiki/scripts/wiki_doctor.py`. If score < 95 or issues found, execute `docs/wiki/skills/wiki-heal/SKILL.md`.
-4. **Graph Synchronization**: Whenever page frontmatter `nodes` or `edges` are modified, always execute `python3 docs/wiki/scripts/sync_graph.py`.
-5. **Canonical skills** live in `docs/wiki/skills/` (portable). `.cursor/skills/wiki-*` are thin launchers only.
+4. **Claim graph**: Whenever page frontmatter `nodes` or `edges` are modified, execute `python3 docs/wiki/scripts/sync_graph.py`.
+5. **New repo / empty host**: execute `docs/wiki/skills/wiki-setup/SKILL.md` (`wiki_setup.py`).
+6. **Canonical skills** live in `docs/wiki/skills/` (portable). `.cursor/skills/wiki-*` are thin launchers only.

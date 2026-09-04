@@ -196,9 +196,9 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `wiki-triage` → `wiki-ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
 - **Usage:** [`usage-telemetry`](docs/wiki/_meta/usage-telemetry.md) · `python3 docs/wiki/scripts/wiki_usage.py report`
-- **Export:** [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md) · `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo`
-- Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
-- Scripts: [`docs/wiki/scripts/`](docs/wiki/scripts/) (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_usage.py`, `wiki_pack.py`, `sync_graph.py`)
+- **Export / setup:** [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md) · `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo` · then `wiki_setup.py` in the dest repo
+- Graphs: Graphify `graphify-out/graph.json` (code, gitignored) · claim index [`GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml) · protocol [`GRAPH.md`](docs/wiki/_meta/GRAPH.md)
+- Scripts: [`docs/wiki/scripts/`](docs/wiki/scripts/) (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_usage.py`, `wiki_pack.py`, `wiki_setup.py`, `wiki_graphify.py`, `sync_graph.py`)
 - Other Cursor/Claude skills (Matt Pocock, cargo-verify): [`.cursor/skills/`](.cursor/skills/) via [`skills-lock.json`](skills-lock.json)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 

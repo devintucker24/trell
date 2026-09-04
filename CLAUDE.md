@@ -25,6 +25,7 @@ Full always-on brief: **`AGENTS.md`**. Deep wiki ops: **`docs/wiki/OPERATOR.md`*
 
 ```bash
 python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_graphify.py query "<code question>"
 ```
 
 4. New material → `docs/wiki/inbox/` → triage → ingest (never invent taxonomy without `SCHEMA.md`).
@@ -40,6 +41,7 @@ Claude/Cursor copies under `.claude/skills/wiki-*` and `.cursor/skills/wiki-*` a
 | Slash / name | Purpose |
 |--------------|---------|
 | `wiki-brain` | Parent operator skill |
+| `wiki-setup` | New repo / portable install |
 | `wiki-retrieve` / `wiki-query` | File RAG + cited answers |
 | `wiki-triage` / `wiki-ingest` | Inbox pipeline |
 | `wiki-doctor` / `wiki-heal` | Brain health |

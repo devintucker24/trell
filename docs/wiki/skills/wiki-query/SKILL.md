@@ -21,6 +21,7 @@ python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 
    - Decisions/sessions → add `--lane episodic`
    - When/as-of/changed → `--as-of YYYY-MM-DD` and/or `--lane temporal`
+   - “Where in the compiler / who calls X” → `wiki_graphify.py query` (and retrieve `--code` if you want both)
 3. Read 2–6 top pages/sections (not the whole wiki).
 4. Answer with:
    - Direct verdict first

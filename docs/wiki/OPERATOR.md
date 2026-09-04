@@ -28,8 +28,9 @@ edges:
 related:
   - "[[SCHEMA]]"
   - "[[ROUTER]]"
-  - "[[FRAMEWORK]]"
   - "[[INDEX]]"
+  - "[[FRAMEWORK]]"
+  - "[[_meta/GRAPH]]"
 agent:
   priority: critical
   read_when:
@@ -154,14 +155,20 @@ If you create or edit a page without valid frontmatter, you have failed the sche
 | `owned_by` | Persona / agent role responsible |
 | `milestone_of` | Phase milestone belongs to vision |
 
-Canonical graph dump: `docs/wiki/_meta/GRAPH.yaml` 
-Agents must update GRAPH.yaml when adding/removing nodes or edges (using `docs/wiki/scripts/sync_graph.py`).
+Canonical **claim** dump: `docs/wiki/_meta/GRAPH.yaml` (compiled from page frontmatter via `sync_graph.py`).
+Canonical **code** graph: `graphify-out/graph.json` (Graphify; `wiki_graphify.py sync`). Do not hand-build a second AST graph. Do not dump either file into context. See [[_meta/GRAPH]].
 
 ---
 
 ## 6. Operational Workflows
 
-### 6.0 Inbox drop (default on-ramp)
+### 6.0 New repo / portable install
+Skill: `docs/wiki/skills/wiki-setup/SKILL.md`  
+From a repo that already has the pack: `python3 docs/wiki/scripts/wiki_setup.py`.  
+Export first if needed: `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo`.  
+Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Details: [[FRAMEWORK]].
+
+### 6.0b Inbox drop (default on-ramp)
 1. Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md` from `inbox/_TEMPLATE.md`  
    — or accept user phrase: *"Inbox this: …"*
 2. Leave `triage_status: pending`.

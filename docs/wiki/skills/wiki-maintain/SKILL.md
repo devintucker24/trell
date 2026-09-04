@@ -1,6 +1,6 @@
 ---
 name: wiki-maintain
-description: Keep the Trell wiki synchronized with the compiler, examples, THESIS, and GRAPH.yaml. Use after language changes, new examples, or roadmap updates.
+description: Keep compiled wiki claims in sync with the compiler/examples/THESIS, regenerate GRAPH.yaml from frontmatter, and refresh the Graphify code graph after src changes.
 ---
 
 # Skill: Wiki Maintain
@@ -9,7 +9,18 @@ description: Keep the Trell wiki synchronized with the compiler, examples, THESI
 - Parser/lexer/typechecker/interpreter semantics change
 - New `examples/*.trell` added
 - Roadmap or market thesis updates
-- Need to regenerate GRAPH.yaml from page frontmatter
+- Code moved/renamed (Graphify graph stale)
+- Need to regenerate `_meta/GRAPH.yaml` from page frontmatter
+
+## Always (code changed)
+
+```bash
+python3 docs/wiki/scripts/wiki_graphify.py sync
+```
+
+That **pulls** Graphify’s AST graph. Do not hand-edit `graphify-out/graph.json`. Do not rebuild a parallel call graph.
+
+Then update the few claim pages in the matrix below. Point at code with `implements_code:`; do not paste `src/` into wiki pages.
 
 ## Sync matrix
 
@@ -22,12 +33,10 @@ description: Keep the Trell wiki synchronized with the compiler, examples, THESI
 | New vertical example | matching `applications/*` + INDEX |
 | Competitor landscape | `market/competitive-analysis` |
 
-## GRAPH regenerate algorithm
-1. Scan all `docs/wiki/**/*.md` with YAML frontmatter.
-2. Collect `nodes` → GRAPH.yaml `nodes` (include `page:` relative path).
-3. Collect `edges` → GRAPH.yaml `edges`.
-4. Deduplicate by `(id)` for nodes and `(from,to,rel)` for edges.
-5. Set `updated` date.
+## Claim-graph regenerate
+1. Scan wiki markdown with YAML frontmatter (skip `skills/`, `scripts/`, `pack/`).
+2. Collect `nodes` / `edges` → `_meta/GRAPH.yaml` (machine claim index).
+3. Deduplicate; set `updated`.
 
 Helper: `python3 docs/wiki/scripts/sync_graph.py`
 

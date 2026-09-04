@@ -1,42 +1,74 @@
 ---
 id: wiki-graph-overview
-title: Knowledge Graph Overview
+title: Machine graph protocol (Graphify + claim index)
 type: meta
 status: active
 created: 2026-09-04
 updated: 2026-09-04
-tags: [graph, meta, navigation]
+tags: [graph, meta, navigation, graphify]
 domain: meta
-summary: "Human-readable map of GRAPH.yaml hubs, edge types, and traversal tips for agents."
+summary: "Agent/machine protocol: Graphify owns the code graph; GRAPH.yaml is a compiled claim index. Not a human map."
 nodes:
   - id: wiki-graph-overview
     kind: concept
+  - id: wiki-graphify-bridge
+    kind: concept
+    label: Graphify code-graph bridge
 edges:
   - from: wiki-graph-overview
     to: wiki-index
     rel: depends_on
+  - from: wiki-graphify-bridge
+    to: wiki-graph-overview
+    rel: implements
 related:
   - "[[INDEX]]"
   - "[[SCHEMA]]"
+  - "[[FRAMEWORK]]"
 agent:
   priority: high
   read_when:
     - "understanding the knowledge graph"
+    - "code vs claim questions"
     - "debugging orphan nodes"
   maintain:
-    - "regenerate stats after sync_graph.py"
+    - "keep Graphify vs GRAPH.yaml split honest"
 ---
 
-# Knowledge Graph Overview
+# Machine graph protocol
 
-Machine-readable graph: [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml)
+These files are for **agents and scripts**. Do not render them as a human product surface. Do not paste `GRAPH.yaml` or `graph.json` into context.
 
-Regenerate:
+## Code graph (pull from Graphify)
+
+Path: `graphify-out/graph.json` (gitignored).
+
+```bash
+python3 docs/wiki/scripts/wiki_graphify.py sync
+python3 docs/wiki/scripts/wiki_graphify.py status
+python3 docs/wiki/scripts/wiki_graphify.py query "who uses TypeChecker"
+python3 docs/wiki/scripts/wiki_graphify.py path Parser TypeChecker
+python3 docs/wiki/scripts/wiki_graphify.py explain TypeChecker
+python3 docs/wiki/scripts/wiki_graphify.py god-nodes
+```
+
+Install: `pip install graphifyy` (CLI name `graphify`). Config: `HOST.yaml` `graphify:`.
+
+Every Graphify edge is `EXTRACTED`, `INFERRED`, or `AMBIGUOUS`. Prefer EXTRACTED when asserting what the compiler does.
+
+Optional: `wiki_graphify.py export-wiki` → `graphify-out/wiki/` (regenerated community articles; **not** wiki-brain doctrine).
+
+## Claim graph (compiled from pages)
+
+Path: [`GRAPH.yaml`](GRAPH.yaml)
+
 ```bash
 python3 docs/wiki/scripts/sync_graph.py
 ```
 
-## Hub Nodes (high connectivity)
+This index exists so retrieve can hop `reduces_via` / `contradicts` without parsing every page. Source of truth for those rels is **page frontmatter**, not this dump.
+
+## Claim hubs (this host, for one-hop recipes)
 
 | Node | Kind | Why it matters |
 |------|------|----------------|
@@ -49,13 +81,10 @@ python3 docs/wiki/scripts/sync_graph.py
 | `ten-year-vision` | concept | Strategic north star |
 | `phase-4-iso-silicon` | phase | Hardware endgame |
 
-## Edge Vocabulary
+Edge vocabulary: [[SCHEMA]] — `depends_on`, `implements`, `reduces_via`, `enforces`, `extends`, `applies_to`, `competes_with`, `accelerates`, `regulated_by`, `owned_by`, `milestone_of`, `contradicts`, `related_to`.
 
-See [[SCHEMA]] — `depends_on`, `implements`, `reduces_via`, `enforces`, `extends`, `applies_to`, `competes_with`, `accelerates`, `regulated_by`, `owned_by`, `milestone_of`, `contradicts`, `related_to`.
+## Agent recipes
 
-## Agent Traversal Recipes
-
-1. **Explain Trell in one hop:** `belief-type` → `reduces_via` → `certain-type` via `guard-verify`
-2. **Industry map:** `three-beat-safety-pattern` → `applies_to` → `app-*`
-3. **Competition:** `natural-trell-syntax` → `competes_with` → `comp-*`
-4. **Future tech:** `phase-4-iso-silicon` ← `milestone_of` ← `tech-npu-semantic-branching`
+1. **Doctrine:** retrieve wiki → open 1–3 pages. Example hop: `belief-type` → `reduces_via` → `certain-type`.
+2. **Compiler wiring:** Graphify query/path. Example: `Type` in `ast.rs` → `TypeChecker` in `typecheck.rs`.
+3. **Do not** cite Graphify INFERRED edges as Trell thesis. Do not cite seed pages (`graphify-seed`) as truth.

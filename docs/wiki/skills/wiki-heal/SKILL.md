@@ -36,6 +36,7 @@ Read `doctor-latest.json` (or today's `doctor-YYYY-MM-DD.md`).
 | 5 | stale inbox `pending` | run **triage** (don't silently ingest without classification) |
 | 6 | `status: stale` pages | bump content if still true, or mark deprecated |
 | 7 | code drift | update wiki to match `src/` / examples (or file inbox item if large) |
+| 8 | `graphify_graph_missing` | `python3 docs/wiki/scripts/wiki_graphify.py sync` (needs `pip install graphifyy`) |
 
 ### 3. Never auto-heal (escalate)
 - New top-level folder needed

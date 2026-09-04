@@ -29,7 +29,7 @@ Do **not** dilute this thesis. Abandoned LangChain-workflow sketches in `docs/re
 | `docs/wiki/` | Compounding knowledge brain (semantic + episodic + temporal) |
 | `docs/wiki/skills/` | Canonical wiki-brain playbooks (`wiki-brain`, retrieve, doctor, …) |
 | `docs/wiki/HOST.yaml` | Host overlay (project name, domains) — not copied as Trell corpus |
-| `docs/wiki/scripts/` | Wiki automation (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_usage.py`, `wiki_pack.py`, `sync_graph.py`) |
+| `docs/wiki/scripts/` | Wiki automation (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_setup.py`, `wiki_graphify.py`, `wiki_pack.py`, `sync_graph.py`) |
 | `.cursor/rules/` | Cursor rules (file-scoped conventions and triggers) |
 | `.cursor/skills/` | Thin launchers + other Cursor skills (Matt Pocock, cargo-verify) |
 | `.claude/skills/` | Thin launchers + other Claude Code skills |
@@ -47,6 +47,8 @@ Do **not** dilute this thesis. Abandoned LangChain-workflow sketches in `docs/re
 ```bash
 # File RAG over the wiki brain
 python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+# Code/structure graph (Graphify — do not dump graph.json)
+python3 docs/wiki/scripts/wiki_graphify.py query "<question>"
 ```
 
 ---
@@ -64,11 +66,13 @@ python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 | Health | `wiki-doctor` → `wiki-heal` (or shortcut `wiki-lint`) |
 | Usage / tokens | `wiki-usage` → `python3 docs/wiki/scripts/wiki_usage.py report` |
 | Code ↔ wiki sync | `wiki-maintain` |
+| New repo / empty host | `wiki-setup` |
+| Code wiring (AST/calls) | `wiki_graphify.py query` (Graphify) |
 | Rust verify | `cargo-verify` |
 | Session handoff | `/handoff` → `.handoffs/` → next chat `/read-handoff` |
 | Stress-test a plan | `/grill-me` (uses `/grilling`) |
 
-Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Usage dashboard”*, *“Write an episode”*, *“Handoff…”* / `/handoff`, *“Read handoff”* / `/read-handoff`, *“Grill me…”* / `/grill-me`.
+Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Usage dashboard”*, *“Write an episode”*, *“Set up the wiki”* / *“wiki-setup”*, *“Handoff…”* / `/handoff`, *“Read handoff”* / `/read-handoff`, *“Grill me…”* / `/grill-me`.
 
 **Matt Pocock skills:** installed project-wide via `npx skills add mattpocock/skills` (see `skills-lock.json`). Those stay under `.cursor/skills/` · `.claude/skills/` — **not** a repo-root `skills/` tree and **not** mixed into `docs/wiki/skills/`.
 
@@ -90,7 +94,8 @@ Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…
 | Topic | Read |
 |-------|------|
 | Wiki operator manual | `docs/wiki/OPERATOR.md` |
-| Frontmatter / graph schema | `docs/wiki/SCHEMA.md` |
+| Frontmatter / graph schema | `docs/wiki/SCHEMA.md` · `docs/wiki/_meta/GRAPH.md` |
+| Portable pack / setup | `docs/wiki/FRAMEWORK.md` · `docs/wiki/skills/wiki-setup/SKILL.md` |
 | Context / memory protocol | `docs/wiki/_meta/CONTEXT_PROTOCOL.md` |
 | Claude Code twin brief | `CLAUDE.md` |
 

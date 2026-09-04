@@ -21,4 +21,7 @@ python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 | New material | inbox → `wiki-triage` → `wiki-ingest` |
 | Health | `wiki-doctor` → `wiki-heal` |
 | Context cost | `wiki-usage` |
-| Export this brain | `docs/wiki/FRAMEWORK.md` |
+| Export this brain | `docs/wiki/FRAMEWORK.md` + `wiki-setup` |
+| Code wiring | `wiki_graphify.py query` |
+
+New checkout: `python3 docs/wiki/scripts/wiki_setup.py`

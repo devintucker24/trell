@@ -3,6 +3,7 @@
 
   python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo
   python3 docs/wiki/scripts/wiki_pack.py install-launchers
+  python3 docs/wiki/scripts/wiki_pack.py setup
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ SKILL_NAMES = [
     "wiki-label",
     "wiki-maintain",
     "wiki-usage",
+    "wiki-setup",
 ]
 
 LAUNCHER = """---
@@ -62,6 +64,7 @@ DESCRIPTIONS = {
     "wiki-label": "Normalize wiki frontmatter. Canonical: docs/wiki/skills/wiki-label/SKILL.md",
     "wiki-maintain": "Sync code and wiki GRAPH. Canonical: docs/wiki/skills/wiki-maintain/SKILL.md",
     "wiki-usage": "Wiki usage telemetry and context cost. Canonical: docs/wiki/skills/wiki-usage/SKILL.md",
+    "wiki-setup": "Stand up wiki-brain in a repo (HOST.yaml, launchers, Graphify). Canonical: docs/wiki/skills/wiki-setup/SKILL.md",
 }
 
 
@@ -110,7 +113,9 @@ def cmd_export(dest_repo: Path) -> None:
         print(f"wrote stub {dest_rel}")
 
     print(f"Exported pack → {dest_wiki}")
-    print("Next: fill HOST.yaml, host/router-seeds.md, then wiki_pack.py install-launchers")
+    print("Next: in the dest repo run")
+    print("  python3 docs/wiki/scripts/wiki_setup.py")
+    print("(fills HOST.yaml, launchers, Graphify code graph; optional --seed-pages)")
 
 
 def cmd_install_launchers() -> None:
@@ -131,6 +136,11 @@ def cmd_install_launchers() -> None:
 
 
 def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "setup":
+        from wiki_setup import main as setup_main
+        sys.argv = [sys.argv[0], *sys.argv[2:]]
+        setup_main()
+        return
     ap = argparse.ArgumentParser(description="Wiki-brain pack export / launchers")
     sub = ap.add_subparsers(dest="cmd", required=True)
     ex = sub.add_parser("export")

@@ -54,6 +54,7 @@ Narrative memory of **what happened** — not the compiled thesis. Cite episodes
 | Date | Page | Salience |
 |---|---|---|
 | 2026-09-04 | [[episodic/2026-09-04-brain-memory-upgrade]] | high — memory architecture |
+| 2026-09-04 | [[episodic/2026-09-04-graphify-machine-graph]] | high — Graphify code graph + wiki-setup |
 
 ## Session scratch
 

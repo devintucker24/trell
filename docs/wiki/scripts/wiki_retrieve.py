@@ -273,6 +273,11 @@ def main() -> None:
     )
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     ap.add_argument("--no-log", action="store_true", help="do not append usage telemetry")
+    ap.add_argument(
+        "--code",
+        action="store_true",
+        help="also query Graphify graph.json (AST/call graph) after wiki hits",
+    )
     args = ap.parse_args()
 
     t0 = time.perf_counter()
@@ -405,13 +410,20 @@ def main() -> None:
             source="script",
         )
 
+    code_note = _code_graph_note(args.query, run=args.code)
+
     if args.json:
         import json
-        print(json.dumps({"query": args.query, "as_of": args.as_of, "lane": args.lane, "hits": packed}, indent=2))
+        payload = {"query": args.query, "as_of": args.as_of, "lane": args.lane, "hits": packed}
+        if code_note:
+            payload["code_graph"] = code_note
+        print(json.dumps(payload, indent=2))
         return
 
     print(f"# retrieve: {args.query!r}")
     print(f"# lane={args.lane} as_of={args.as_of or 'none'} hits={len(packed)} ~tokens={used}")
+    if code_note.get("status"):
+        print(f"# code-graph: {code_note['status']}")
     print()
     for i, c in enumerate(packed, 1):
         heading = f" › {c['heading']}" if c["heading"] else ""
@@ -420,6 +432,39 @@ def main() -> None:
         print(f"   why: {c['why']}")
         print(f"   {c['excerpt'][:220]}…")
         print()
+    if args.code and code_note.get("query_output"):
+        print("## code graph (Graphify)")
+        print(code_note["query_output"])
+
+
+def _code_graph_note(query: str, run: bool = False) -> dict:
+    """Pointer to Graphify; optionally run query. Never dump graph.json."""
+    try:
+        from wiki_graphify import graph_json_path, load_code_graph, find_graphify, run_graphify
+    except Exception:  # noqa: BLE001
+        return {}
+    path = graph_json_path()
+    if not path.exists():
+        return {"status": "missing graphify-out/graph.json — wiki_graphify.py sync"}
+    g = load_code_graph()
+    n, e = len(g.get("nodes") or []), len(g.get("edges") or [])
+    note = {
+        "status": f"{path.relative_to(ROOT)} ({n}n/{e}e) — python3 docs/wiki/scripts/wiki_graphify.py query {query!r}",
+        "nodes": n,
+        "edges": e,
+    }
+    if run and find_graphify():
+        import subprocess
+        try:
+            proc = run_graphify(
+                ["query", query, "--graph", str(path), "--budget", "800"],
+                check=False,
+                capture=True,
+            )
+            note["query_output"] = ((proc.stdout or "") + (proc.stderr or ""))[:4000]
+        except (OSError, subprocess.SubprocessError) as exc:
+            note["query_output"] = str(exc)
+    return note
 
 
 def _why(lex, gprox, tscore, fboost) -> str:

@@ -58,7 +58,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 
 | Intent signal | Seed pages (open these first) |
 |---|---|
-| wiki / memory / RAG / retrieval / context / pack / export | `FRAMEWORK.md`, `_meta/CONTEXT_PROTOCOL.md`, `_meta/usage-telemetry.md` |
+| wiki / memory / RAG / retrieval / context / pack / export / setup / graphify | `FRAMEWORK.md`, `_meta/GRAPH.md`, `_meta/CONTEXT_PROTOCOL.md` |
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
 | health / orphans / doctor / heal | run `wiki-doctor` (then `wiki-heal` if score < 95) |
 | usage / tokens / context cost / telemetry | `_meta/usage-telemetry.md` + `wiki_usage.py report` |
@@ -67,7 +67,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 
 **Host-specific:** read `docs/wiki/host/router-seeds.md` (path in `HOST.yaml` `router_seeds`).
 
-After seeding, expand **one hop** via frontmatter `edges` or `GRAPH.yaml` — not whole categories.
+After seeding, expand **one hop** via frontmatter `edges` (claim graph) — not whole categories. For code wiring use Graphify (`wiki_graphify.py query`), not `GRAPH.yaml`.
 
 ## Tier 2 — Retrieve + rerank (+ temporal)
 
@@ -75,6 +75,8 @@ After seeding, expand **one hop** via frontmatter `edges` or `GRAPH.yaml` — no
 python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --budget-tokens 3500
 # time-aware:
 python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --as-of 2026-09-04 --budget-tokens 3500
+# compiler/structure (Graphify):
+python3 docs/wiki/scripts/wiki_graphify.py query "<query>"
 ```
 
 See `docs/wiki/skills/wiki-retrieve/SKILL.md`. Open **only** top hits that fit budget.
@@ -91,6 +93,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 | “What we did / decided / failed” | Episodic | `episodic/` |
 | “When / as-of / what superseded what” | Temporal | `temporal/TIMELINE.md` + page `temporal:` fields |
 | “How to operate” | Procedural | `AGENTS.md`, `docs/wiki/skills/` |
+| “Who calls / where defined” | Code graph | `graphify-out/graph.json` via `wiki_graphify.py` |
 
 ## Hard budget defaults
 
@@ -106,7 +109,8 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 
 - Loading `INDEX.md` “just in case”
 - Dumping a whole domain folder
-- Pasting full `GRAPH.yaml`
+- Pasting full `GRAPH.yaml` or `graph.json`
+- Treating Graphify `--wiki` articles or `graphify-seed` drafts as compiled thesis
 - Citing inbox / unconsolidated episodes as semantic truth
 - Ignoring `valid_until` / superseded pages (stale temporal memory)
 
@@ -114,7 +118,9 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 
 | Need | Do |
 |---|---|
+| New clone / empty host | `wiki-setup` |
 | Find knowledge | `retrieve` → open top hits |
+| Code wiring | `wiki_graphify.py query` |
 | Add knowledge | `inbox/` → triage → ingest |
 | Remember a decision | write `episodic/YYYY-MM-DD-<slug>.md` + append TIMELINE |
 | Ask “as of date” | `retrieve --as-of` + TIMELINE |
