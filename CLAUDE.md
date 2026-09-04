@@ -46,7 +46,23 @@ Claude Code can load project skills from `.claude/skills/` (wrappers) or follow 
 | `wiki-doctor` / `wiki-heal` | Brain health |
 | `cargo-verify` | `fmt` / `clippy` / `test` |
 
-Full Matt Pocock set is under `.claude/skills/` / `skills/` (`skills-lock.json`). Run `/setup-matt-pocock-skills` once if you want his issue-tracker/docs defaults.
+Full Matt Pocock set is under `.claude/skills/` / `skills/` (`skills-lock.json`).
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for `devintucker24/trell` (via `gh`). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
 
 ---
 
