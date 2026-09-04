@@ -27,3 +27,10 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Report: `docs/wiki/_meta/health-2026-09-04.md`
 - Status: PASS (bootstrap) with documented follow-ups
+
+## [2026-09-04] query | wiki-brain simulation grading
+
+- Scenario: "How does Trell keep autonomous ships safe?"
+- Report: `docs/wiki/_meta/sim-2026-09-04.md`
+- Navigate hit #1: applications/autonomous-physical-systems.md
+- Graph: 82 nodes / 62 valid edges; 27 hard-orphan leaf nodes flagged for denser linking
