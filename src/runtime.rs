@@ -1,27 +1,62 @@
-// Palimpsest Runtime Engine: Epistemic Store, Scopes, Authorities, Lifetimes & TMS
+// The Palimpsest runtime.
+//
+// Resolution is the whole point of the language, so the rule is stated once,
+// here, and never varies:
+//
+//   1. Highest authority wins.
+//   2. Among equals, the most specific scope wins.
+//   3. Among equals, the most recent wins.
+//
+// Everything else — lifetimes, provenance demands, retraction — is applied to
+// the belief that rule selects, never as a way of selecting it.
 
 use std::collections::{BTreeMap, HashMap, HashSet};
+
 use crate::ast::*;
 use crate::error::PalimpsestError;
 use crate::time::{Duration, Timestamp};
 use crate::types::*;
 
+/// The default trust order, used when a program does not declare its own.
+const DEFAULT_TRUST: &[&str] = &[
+    "system",
+    "legal",
+    "compliance",
+    "policy",
+    "staff",
+    "user",
+    "guest",
+    "rumor",
+];
+
 #[derive(Debug)]
 pub struct Runtime {
-    pub current_time: Timestamp,
-    pub authority_lattice: HashMap<String, usize>,
-    pub next_belief_id: usize,
-    pub beliefs: Vec<Belief>,
-    pub path_to_beliefs: HashMap<String, Vec<usize>>,
-    pub episodes: HashMap<String, Episode>,
-    pub retracted_sources: HashSet<String>,
-    pub retracted_episodes: HashSet<String>,
-    pub source_to_beliefs: HashMap<String, Vec<usize>>,
-    pub episode_to_beliefs: HashMap<String, Vec<usize>>,
-    pub conflict_log: Vec<DefeasanceConflict>,
-    pub scope_stack: Vec<String>,
-    pub variables: HashMap<String, Value>,
-    pub output_log: Vec<String>,
+    pub now: Timestamp,
+
+    trust: Vec<String>,
+    ranks: HashMap<String, usize>,
+
+    beliefs: Vec<Belief>,
+    by_path: HashMap<String, Vec<usize>>,
+    by_source: HashMap<String, Vec<usize>>,
+    by_episode: HashMap<String, Vec<usize>>,
+
+    episodes: BTreeMap<String, Episode>,
+    episodes_by_source: HashMap<String, Vec<String>>,
+    forgotten_sources: HashSet<String>,
+
+    conflicts: Vec<Conflict>,
+    scope: Vec<String>,
+    vars: HashMap<String, Value>,
+
+    /// Set while ingesting a markdown page so facts inherit the page as their
+    /// source without repeating it on every line.
+    pub ambient_source: Option<String>,
+    /// Human-readable location used in diagnostics.
+    pub origin: String,
+
+    pub output: Vec<String>,
+    pub quiet: bool,
 }
 
 impl Default for Runtime {
@@ -32,849 +67,961 @@ impl Default for Runtime {
 
 impl Runtime {
     pub fn new() -> Self {
-        let mut authority_lattice = HashMap::new();
-        // Default authority lattice
-        authority_lattice.insert("System".to_string(), 600);
-        authority_lattice.insert("Legal".to_string(), 500);
-        authority_lattice.insert("Compliance".to_string(), 400);
-        authority_lattice.insert("Policy".to_string(), 300);
-        authority_lattice.insert("VerifiedUser".to_string(), 200);
-        authority_lattice.insert("User".to_string(), 100);
-        authority_lattice.insert("Guest".to_string(), 50);
-        authority_lattice.insert("Unverified".to_string(), 0);
-
-        // Default virtual clock: 2026-09-04T12:00:00Z
-        let initial_time = Timestamp::parse_iso("2026-09-04T12:00:00Z").unwrap();
+        let trust: Vec<String> = DEFAULT_TRUST.iter().map(|s| s.to_string()).collect();
+        let ranks = build_ranks(&trust);
 
         Self {
-            current_time: initial_time,
-            authority_lattice,
-            next_belief_id: 1,
+            // A fixed default clock keeps every example reproducible.
+            now: Timestamp::parse_iso("2026-09-04T12:00:00Z").unwrap(),
+            trust,
+            ranks,
             beliefs: Vec::new(),
-            path_to_beliefs: HashMap::new(),
-            episodes: HashMap::new(),
-            retracted_sources: HashSet::new(),
-            retracted_episodes: HashSet::new(),
-            source_to_beliefs: HashMap::new(),
-            episode_to_beliefs: HashMap::new(),
-            conflict_log: Vec::new(),
-            scope_stack: Vec::new(),
-            variables: HashMap::new(),
-            output_log: Vec::new(),
+            by_path: HashMap::new(),
+            by_source: HashMap::new(),
+            by_episode: HashMap::new(),
+            episodes: BTreeMap::new(),
+            episodes_by_source: HashMap::new(),
+            forgotten_sources: HashSet::new(),
+            conflicts: Vec::new(),
+            scope: Vec::new(),
+            vars: HashMap::new(),
+            ambient_source: None,
+            origin: "<input>".into(),
+            output: Vec::new(),
+            quiet: false,
         }
     }
 
-    pub fn execute_program(&mut self, program: &Program) -> Result<(), PalimpsestError> {
+    // ---- accessors used by tests and tooling ---------------------------
+
+    pub fn beliefs(&self) -> &[Belief] {
+        &self.beliefs
+    }
+
+    pub fn conflicts(&self) -> &[Conflict] {
+        &self.conflicts
+    }
+
+    pub fn episodes(&self) -> impl Iterator<Item = &Episode> {
+        self.episodes.values()
+    }
+
+    pub fn var(&self, name: &str) -> Option<&Value> {
+        self.vars.get(name)
+    }
+
+    pub fn trust_order(&self) -> &[String] {
+        &self.trust
+    }
+
+    // ---- execution ------------------------------------------------------
+
+    pub fn run(&mut self, program: &Program) -> Result<(), PalimpsestError> {
         for stmt in &program.statements {
-            self.execute_stmt(stmt)?;
+            self.exec(stmt)?;
         }
         Ok(())
     }
 
-    pub fn execute_stmt(&mut self, stmt: &Stmt) -> Result<(), PalimpsestError> {
+    pub fn exec(&mut self, stmt: &Stmt) -> Result<(), PalimpsestError> {
         match stmt {
-            Stmt::AuthorityDecl(tiers) => {
-                self.authority_lattice.clear();
-                let count = tiers.len();
-                for (idx, tier) in tiers.iter().enumerate() {
-                    let rank = (count - idx) * 100;
-                    self.authority_lattice.insert(tier.clone(), rank);
-                }
+            Stmt::Trust(tiers) => {
+                self.trust = tiers.iter().map(|t| t.to_ascii_lowercase()).collect();
+                self.ranks = build_ranks(&self.trust);
                 Ok(())
             }
 
-            Stmt::Scope { prefix, body } => {
-                let saved_len = self.scope_stack.len();
-                self.scope_stack.extend(prefix.clone());
-                for inner in body {
-                    self.execute_stmt(inner)?;
-                }
-                self.scope_stack.truncate(saved_len);
-                Ok(())
+            Stmt::About { prefix, body } => {
+                let depth = self.scope.len();
+                self.scope.extend(prefix.iter().cloned());
+                let result = body.iter().try_for_each(|s| self.exec(s));
+                self.scope.truncate(depth);
+                result
             }
 
-            Stmt::Assert { path, value, modifiers } => {
-                let eval_value = self.eval_expr(value)?;
-                self.assert_belief(path, eval_value, modifiers)
+            Stmt::Fact {
+                path,
+                value,
+                facets,
+                line,
+            } => {
+                let value = self.eval(value)?;
+                self.inscribe(path, value, facets, *line)
             }
 
-            Stmt::Episode { id, at, actors, context, summary } => {
-                let at_val = self.eval_expr(at)?;
-                let at_ts = self.value_to_timestamp(&at_val)?;
-
-                let mut actor_strings = Vec::new();
-                for a in actors {
-                    let av = self.eval_expr(a)?;
-                    match av {
-                        Value::String(s) => actor_strings.push(s),
-                        other => actor_strings.push(format!("{}", other)),
+            Stmt::Episode {
+                id,
+                happened,
+                involved,
+                details,
+                summary,
+            } => {
+                let happened = match happened {
+                    Some(expr) => {
+                        let v = self.eval(expr)?;
+                        self.as_timestamp(&v)?
                     }
+                    None => self.now,
+                };
+
+                let mut people = Vec::new();
+                for expr in involved {
+                    people.push(self.eval(expr)?.plain());
                 }
 
-                let mut context_map = BTreeMap::new();
-                for (k, v_expr) in context {
-                    let v = self.eval_expr(v_expr)?;
-                    context_map.insert(k.clone(), v);
+                let mut detail_map = BTreeMap::new();
+                for (key, expr) in details {
+                    let v = self.eval(expr)?;
+                    detail_map.insert(key.clone(), v);
                 }
 
-                let summary_val = self.eval_expr(summary)?;
-                let summary_str = match summary_val {
-                    Value::String(s) => s,
-                    other => format!("{}", other),
+                let summary = match summary {
+                    Some(expr) => self.eval(expr)?.plain(),
+                    None => String::new(),
                 };
 
-                let ep = Episode {
-                    id: id.clone(),
-                    at: at_ts,
-                    actors: actor_strings,
-                    context: context_map,
-                    summary: summary_str,
-                    is_retracted: false,
-                };
+                let source = self.ambient_source.clone();
+                if let Some(src) = &source {
+                    self.episodes_by_source
+                        .entry(src.clone())
+                        .or_default()
+                        .push(id.clone());
+                }
 
-                self.episodes.insert(id.clone(), ep);
+                self.episodes.insert(
+                    id.clone(),
+                    Episode {
+                        id: id.clone(),
+                        happened,
+                        involved: people,
+                        details: detail_map,
+                        summary,
+                        source,
+                        retracted: false,
+                    },
+                );
                 Ok(())
             }
 
-            Stmt::RetractSource(expr) => {
-                let val = self.eval_expr(expr)?;
-                let source_name = match val {
-                    Value::String(s) => s,
-                    other => format!("{}", other),
-                };
-                self.retract_source(&source_name);
+            Stmt::ForgetSource(expr) => {
+                let name = self.eval(expr)?.plain();
+                self.forget_source(&name);
                 Ok(())
             }
 
-            Stmt::RetractBelief(path) => {
-                let canonical_path = self.resolve_canonical_path(path);
-                self.retract_belief(&canonical_path);
+            Stmt::ForgetEpisode(id) => {
+                self.forget_episode(id);
                 Ok(())
             }
 
-            Stmt::RetractEpisode(ep_id) => {
-                self.retract_episode(ep_id);
+            Stmt::ForgetPath(path) => {
+                let full = self.qualify(path);
+                self.forget_path(&full);
                 Ok(())
             }
 
             Stmt::Let { name, expr } => {
-                let val = self.eval_expr(expr)?;
-                self.variables.insert(name.clone(), val);
+                let value = self.eval(expr)?;
+                self.vars.insert(name.clone(), value);
                 Ok(())
             }
 
-            Stmt::Print(expr) => {
-                let val = self.eval_expr(expr)?;
-                let line = format!("{}", val);
-                println!("{}", line);
-                self.output_log.push(line);
-                Ok(())
-            }
-
-            Stmt::AssertEq { left, right } => {
-                let l_val = self.eval_expr(left)?;
-                let r_val = self.eval_expr(right)?;
-
-                // Compare unwrap_value if both are comparable
-                if l_val != r_val {
-                    return Err(PalimpsestError::AssertionFailed {
-                        message: "Values do not match".to_string(),
-                        left: format!("{}", l_val),
-                        right: format!("{}", r_val),
-                    });
+            Stmt::Show(expr) => {
+                let value = self.eval(expr)?;
+                let text = value.plain();
+                if !self.quiet {
+                    println!("{}", text);
                 }
+                self.output.push(text);
                 Ok(())
             }
 
-            Stmt::SetTime(expr) => {
-                let val = self.eval_expr(expr)?;
-                self.current_time = self.value_to_timestamp(&val)?;
+            Stmt::Expect { left, right, line } => {
+                let a = self.eval(left)?;
+                let b = self.eval(right)?;
+                if a == b {
+                    return Ok(());
+                }
+                // A stale wrapper compares equal to its settled value only when
+                // the expectation names the value explicitly.
+                if a.settled() == b.settled() && !a.is_stale() && !b.is_stale() {
+                    return Ok(());
+                }
+                Err(PalimpsestError::ExpectationFailed {
+                    line: *line,
+                    left: a.to_string(),
+                    right: b.to_string(),
+                })
+            }
+
+            Stmt::NowIs(expr) => {
+                let v = self.eval(expr)?;
+                self.now = self.as_timestamp(&v)?;
                 Ok(())
             }
 
-            Stmt::AdvanceTime(expr) => {
-                let val = self.eval_expr(expr)?;
-                let dur = self.value_to_duration(&val)?;
-                self.current_time = self.current_time.add_duration(dur);
-                Ok(())
-            }
-
-            Stmt::Expr(expr) => {
-                self.eval_expr(expr)?;
+            Stmt::LaterBy(expr) => {
+                let v = self.eval(expr)?;
+                let d = self.as_duration(&v)?;
+                self.now = self.now.plus(d);
                 Ok(())
             }
         }
     }
 
-    pub fn get_authority_rank(&self, auth_name: &str) -> usize {
-        self.authority_lattice.get(auth_name).copied().unwrap_or(50)
-    }
+    // ---- writing --------------------------------------------------------
 
-    fn resolve_canonical_path(&self, segments: &[String]) -> String {
-        if self.scope_stack.is_empty() {
-            segments.join(".")
+    fn qualify(&self, path: &[String]) -> String {
+        if self.scope.is_empty() {
+            path.join(".")
         } else {
-            let mut full = self.scope_stack.clone();
-            full.extend_from_slice(segments);
-            full.join(".")
+            let mut all = self.scope.clone();
+            all.extend_from_slice(path);
+            all.join(".")
         }
     }
 
-    fn assert_belief(
-        &mut self,
-        path_segments: &[String],
-        value: Value,
-        modifiers: &AssertModifiers,
-    ) -> Result<(), PalimpsestError> {
-        let canonical_path = self.resolve_canonical_path(path_segments);
-
-        // Authority
-        let authority = modifiers.authority.clone().unwrap_or_else(|| "User".to_string());
-        let authority_rank = self.get_authority_rank(&authority);
-
-        // Source
-        let source = if let Some(ref src_expr) = modifiers.source {
-            let v = self.eval_expr(src_expr)?;
-            Some(match v {
-                Value::String(s) => s,
-                other => format!("{}", other),
+    fn rank_of(&self, authority: &str) -> Result<usize, PalimpsestError> {
+        self.ranks
+            .get(&authority.to_ascii_lowercase())
+            .copied()
+            .ok_or_else(|| {
+                PalimpsestError::Runtime(format!(
+                    "`{}` is not one of the authorities this program trusts. Known authorities, strongest first: {}. Declare more with `trust a above b above c`.",
+                    authority,
+                    self.trust.join(", ")
+                ))
             })
-        } else {
-            None
+    }
+
+    fn inscribe(
+        &mut self,
+        path: &[String],
+        value: Value,
+        facets: &Facets,
+        line: usize,
+    ) -> Result<(), PalimpsestError> {
+        let full = self.qualify(path);
+
+        let authority = facets
+            .authority
+            .clone()
+            .unwrap_or_else(|| self.default_authority());
+        let rank = self.rank_of(&authority)?;
+
+        let source = match &facets.source {
+            Some(expr) => Some(self.eval(expr)?.plain()),
+            None => self.ambient_source.clone(),
         };
 
-        // Verified flag
-        let verified = if let Some(v) = modifiers.verified {
-            v
-        } else if authority == "Unverified" {
-            false
-        } else if authority_rank >= self.get_authority_rank("VerifiedUser") {
-            true
-        } else {
-            source.is_some()
-        };
+        // The weakest tier is hearsay by definition; everything else counts as
+        // verified once it can name where it came from.
+        let bottom = self.ranks.values().copied().min().unwrap_or(0);
+        let verified = facets
+            .verified
+            .unwrap_or_else(|| source.is_some() && rank > bottom);
 
-        // Asserted at timestamp
-        let (asserted_at, explicit_timestamp) = if let Some(ref at_expr) = modifiers.at {
-            let v = self.eval_expr(at_expr)?;
-            (self.value_to_timestamp(&v)?, true)
-        } else {
-            (self.current_time, false)
-        };
-
-        // TTL and valid_until
-        let valid_until = if let Some(ref vu_expr) = modifiers.valid_until {
-            let v = self.eval_expr(vu_expr)?;
-            Some(self.value_to_timestamp(&v)?)
-        } else if let Some(ref ttl_expr) = modifiers.ttl {
-            let v = self.eval_expr(ttl_expr)?;
-            let dur = self.value_to_duration(&v)?;
-            Some(asserted_at.add_duration(dur))
-        } else {
-            None
-        };
-
-        // Episode grounding
-        let grounded_in = modifiers.grounded_in.clone();
-
-        // Check for Defeasance Conflict against existing active beliefs on the same path
-        if let Some(existing_ids) = self.path_to_beliefs.get(&canonical_path) {
-            for &b_id in existing_ids {
-                let existing = &self.beliefs[b_id - 1];
-                if !existing.is_retracted && existing.value != value {
-                    if existing.authority_rank > authority_rank {
-                        // High authority already asserted a different value!
-                        // The incoming assertion is defeated by existing higher authority.
-                        self.conflict_log.push(DefeasanceConflict {
-                            path: canonical_path.clone(),
-                            high_authority: existing.authority.clone(),
-                            high_source: existing.provenance.source.clone(),
-                            high_value: existing.value.clone(),
-                            low_authority: authority.clone(),
-                            low_source: source.clone(),
-                            low_value: value.clone(),
-                            reason: format!(
-                                "Attempted override by authority '{}' defeated by established authority '{}'",
-                                authority, existing.authority
-                            ),
-                        });
-                    } else if existing.authority_rank < authority_rank {
-                        // High authority supersedes an older lower-authority belief.
-                        // We also log the override notice.
-                        self.conflict_log.push(DefeasanceConflict {
-                            path: canonical_path.clone(),
-                            high_authority: authority.clone(),
-                            high_source: source.clone(),
-                            high_value: value.clone(),
-                            low_authority: existing.authority.clone(),
-                            low_source: existing.provenance.source.clone(),
-                            low_value: existing.value.clone(),
-                            reason: format!(
-                                "Higher authority '{}' superseded lower-authority belief from '{}'",
-                                authority, existing.authority
-                            ),
-                        });
-                    }
-                }
+        let (asserted_at, dated_explicitly) = match &facets.asserted_at {
+            Some(expr) => {
+                let v = self.eval(expr)?;
+                (self.as_timestamp(&v)?, true)
             }
-        }
+            None => (self.now, false),
+        };
 
-        let id = self.next_belief_id;
-        self.next_belief_id += 1;
+        let expires_at = match (&facets.until, &facets.ttl) {
+            (Some(expr), _) => {
+                let v = self.eval(expr)?;
+                Some(self.as_timestamp(&v)?)
+            }
+            (None, Some(expr)) => {
+                let v = self.eval(expr)?;
+                let d = self.as_duration(&v)?;
+                Some(asserted_at.plus(d))
+            }
+            (None, None) => None,
+        };
 
-        let provenance = Provenance::new(source.clone(), verified, grounded_in.clone());
+        self.record_conflicts(&full, &value, &authority, rank, source.as_deref());
 
-        let belief = Belief {
+        let id = self.beliefs.len() + 1;
+        self.beliefs.push(Belief {
             id,
-            path: canonical_path.clone(),
+            path: full.clone(),
             value,
             authority,
-            authority_rank,
-            provenance,
+            rank,
+            provenance: Provenance {
+                source: source.clone(),
+                verified,
+                because: facets.because.clone(),
+            },
             asserted_at,
-            explicit_timestamp,
-            valid_until,
-            is_retracted: false,
-            retraction_reason: None,
-        };
+            dated_explicitly,
+            expires_at,
+            retracted: None,
+            origin: format!("{}:{}", self.origin, line),
+        });
 
-        self.beliefs.push(belief);
-        self.path_to_beliefs.entry(canonical_path.clone()).or_default().push(id);
-
+        self.by_path.entry(full).or_default().push(id);
         if let Some(src) = source {
-            self.source_to_beliefs.entry(src).or_default().push(id);
+            self.by_source.entry(src).or_default().push(id);
         }
-
-        if let Some(ep) = grounded_in {
-            self.episode_to_beliefs.entry(ep).or_default().push(id);
+        if let Some(ep) = &facets.because {
+            self.by_episode.entry(ep.clone()).or_default().push(id);
         }
 
         Ok(())
     }
 
-    pub fn retract_source(&mut self, source_name: &str) {
-        self.retracted_sources.insert(source_name.to_string());
-        if let Some(b_ids) = self.source_to_beliefs.get(source_name).cloned() {
-            for id in b_ids {
-                self.retract_belief_by_id(id, &format!("Retraction of source '{}'", source_name));
-            }
-        }
+    /// The tier a fact is filed under when it does not name one. This is the
+    /// weakest tier, so an unlabelled claim can never quietly outrank a
+    /// labelled one.
+    fn default_authority(&self) -> String {
+        self.trust.last().cloned().unwrap_or_else(|| "rumor".into())
     }
 
-    pub fn retract_episode(&mut self, episode_id: &str) {
-        self.retracted_episodes.insert(episode_id.to_string());
-        if let Some(ep) = self.episodes.get_mut(episode_id) {
-            ep.is_retracted = true;
-        }
-        if let Some(b_ids) = self.episode_to_beliefs.get(episode_id).cloned() {
-            for id in b_ids {
-                self.retract_belief_by_id(id, &format!("Retraction of episode '{}'", episode_id));
+    /// Notes any live belief on the same name that this write disagrees with
+    /// across a difference in standing. Same-standing disagreement is ordinary
+    /// supersession and is not a conflict.
+    fn record_conflicts(
+        &mut self,
+        path: &str,
+        value: &Value,
+        authority: &str,
+        rank: usize,
+        source: Option<&str>,
+    ) {
+        let Some(ids) = self.by_path.get(path) else {
+            return;
+        };
+
+        let mut found = Vec::new();
+        for &id in ids {
+            let existing = &self.beliefs[id - 1];
+            if !existing.is_live() || &existing.value == value || existing.rank == rank {
+                continue;
             }
+
+            let incoming_wins = rank > existing.rank;
+            found.push(Conflict {
+                path: path.to_string(),
+                winner_authority: if incoming_wins {
+                    authority.to_string()
+                } else {
+                    existing.authority.clone()
+                },
+                winner_source: if incoming_wins {
+                    source.map(str::to_string)
+                } else {
+                    existing.provenance.source.clone()
+                },
+                winner_value: if incoming_wins {
+                    value.clone()
+                } else {
+                    existing.value.clone()
+                },
+                loser_authority: if incoming_wins {
+                    existing.authority.clone()
+                } else {
+                    authority.to_string()
+                },
+                loser_source: if incoming_wins {
+                    existing.provenance.source.clone()
+                } else {
+                    source.map(str::to_string)
+                },
+                loser_value: if incoming_wins {
+                    existing.value.clone()
+                } else {
+                    value.clone()
+                },
+            });
         }
+
+        self.conflicts.extend(found);
     }
 
-    pub fn retract_belief(&mut self, canonical_path: &str) {
-        if let Some(ids) = self.path_to_beliefs.get(canonical_path).cloned() {
+    // ---- forgetting -----------------------------------------------------
+
+    pub fn forget_source(&mut self, name: &str) {
+        self.forgotten_sources.insert(name.to_string());
+
+        if let Some(ids) = self.by_source.get(name).cloned() {
+            let reason = format!("source `{}` was forgotten", name);
             for id in ids {
-                self.retract_belief_by_id(id, &format!("Direct retraction of path '{}'", canonical_path));
+                self.retract(id, &reason);
+            }
+        }
+
+        // Episodes reported by the same document go with it, and so does
+        // anything resting on them.
+        if let Some(episode_ids) = self.episodes_by_source.get(name).cloned() {
+            for episode in episode_ids {
+                self.forget_episode(&episode);
             }
         }
     }
 
-    fn retract_belief_by_id(&mut self, id: usize, reason: &str) {
-        if id > 0 && id <= self.beliefs.len() {
-            let belief = &mut self.beliefs[id - 1];
-            if !belief.is_retracted {
-                belief.is_retracted = true;
-                belief.retraction_reason = Some(reason.to_string());
+    pub fn forget_episode(&mut self, id: &str) {
+        if let Some(ep) = self.episodes.get_mut(id) {
+            ep.retracted = true;
+        }
+        if let Some(ids) = self.by_episode.get(id).cloned() {
+            let reason = format!("episode `{}` was forgotten", id);
+            for bid in ids {
+                self.retract(bid, &reason);
             }
         }
     }
 
-    pub fn resolve_path(
-        &self,
-        path_segments: &[String],
-        as_of: Option<Timestamp>,
-        fresh: bool,
-        verified_only: bool,
-        min_authority: Option<&str>,
-    ) -> Result<Value, PalimpsestError> {
-        let eval_time = as_of.unwrap_or(self.current_time);
-
-        // Build potential candidate path matches:
-        // 1. Qualified in current scope: scope_stack + path_segments
-        // 2. Exact match: path_segments
-        // 3. Suffix match if partial
-        let exact_path = path_segments.join(".");
-        let scoped_path = if !self.scope_stack.is_empty() {
-            format!("{}.{}", self.scope_stack.join("."), exact_path)
-        } else {
-            exact_path.clone()
-        };
-
-        // Find candidate IDs
-        let mut candidate_ids: Vec<usize> = Vec::new();
-        if let Some(ids) = self.path_to_beliefs.get(&scoped_path) {
-            candidate_ids.extend(ids);
-        }
-        if scoped_path != exact_path {
-            if let Some(ids) = self.path_to_beliefs.get(&exact_path) {
-                for id in ids {
-                    if !candidate_ids.contains(id) {
-                        candidate_ids.push(*id);
-                    }
-                }
+    pub fn forget_path(&mut self, path: &str) {
+        if let Some(ids) = self.by_path.get(path).cloned() {
+            let reason = format!("`{}` was forgotten directly", path);
+            for id in ids {
+                self.retract(id, &reason);
             }
         }
-
-        // If still empty, search for any path ending in exact_path
-        if candidate_ids.is_empty() {
-            for (p, ids) in &self.path_to_beliefs {
-                if p.ends_with(&exact_path) {
-                    for id in ids {
-                        if !candidate_ids.contains(id) {
-                            candidate_ids.push(*id);
-                        }
-                    }
-                }
-            }
-        }
-
-        if candidate_ids.is_empty() {
-            return Err(PalimpsestError::PathNotFoundError {
-                path: exact_path,
-                scope: self.scope_stack.join("."),
-            });
-        }
-
-        // Filter valid candidates at eval_time
-        let mut valid_candidates: Vec<&Belief> = Vec::new();
-        for &id in &candidate_ids {
-            let b = &self.beliefs[id - 1];
-            // Must not be retracted
-            if b.is_retracted {
-                continue;
-            }
-            // Must have been asserted on or before eval_time
-            if b.asserted_at.0 > eval_time.0 {
-                continue;
-            }
-            valid_candidates.push(b);
-        }
-
-        if valid_candidates.is_empty() {
-            return Err(PalimpsestError::PathNotFoundError {
-                path: exact_path,
-                scope: format!("{}(at time {})", self.scope_stack.join("."), eval_time.to_iso()),
-            });
-        }
-
-        // Step 1: Authority Lattice Dominance
-        // Find highest authority rank
-        let max_rank = valid_candidates.iter().map(|b| b.authority_rank).max().unwrap();
-        let top_auth_candidates: Vec<&Belief> = valid_candidates
-            .into_iter()
-            .filter(|b| b.authority_rank == max_rank)
-            .collect();
-
-        // Step 2: Recency / Shadowing within highest authority
-        // Sort by asserted_at descending, tie-breaking with insertion id descending
-        let mut sorted = top_auth_candidates;
-        sorted.sort_by(|a, b| (b.asserted_at, b.id).cmp(&(a.asserted_at, a.id)));
-
-        let winning_belief = sorted[0];
-
-        // Check for equal-authority contradiction:
-        // Only if two beliefs share an explicitly asserted identical timestamp at equal authority
-        for other in sorted.iter().skip(1) {
-            if other.explicit_timestamp
-                && winning_belief.explicit_timestamp
-                && other.asserted_at == winning_belief.asserted_at
-                && other.value != winning_belief.value
-            {
-                return Err(PalimpsestError::ContradictionError {
-                    path: exact_path,
-                    conflicting_values: vec![
-                        format!("{}", winning_belief.value),
-                        format!("{}", other.value),
-                    ],
-                    authority: winning_belief.authority.clone(),
-                });
-            }
-        }
-
-        // Step 3: Provenance & Verification guard
-        if verified_only && (!winning_belief.provenance.verified || winning_belief.authority == "Unverified") {
-            return Err(PalimpsestError::UnverifiedBeliefRefusal {
-                path: winning_belief.path.clone(),
-                source: winning_belief.provenance.source.clone(),
-                authority: winning_belief.authority.clone(),
-                reason: "Query explicitly demanded 'verified', but belief lacks verified provenance or authentic authority."
-                    .to_string(),
-            });
-        }
-
-        // Step 4: Minimum Authority guard
-        if let Some(req_auth) = min_authority {
-            let req_rank = self.get_authority_rank(req_auth);
-            if winning_belief.authority_rank < req_rank {
-                return Err(PalimpsestError::InsufficientAuthorityError {
-                    path: winning_belief.path.clone(),
-                    required_authority: req_auth.to_string(),
-                    actual_authority: winning_belief.authority.clone(),
-                });
-            }
-        }
-
-        // Step 5: Staleness / Expiry check
-        if let Some(vu) = winning_belief.valid_until {
-            if eval_time.0 > vu.0 {
-                let age = eval_time.0.saturating_sub(winning_belief.asserted_at.0);
-                let ttl = vu.0.saturating_sub(winning_belief.asserted_at.0);
-
-                if fresh {
-                    return Err(PalimpsestError::StaleBeliefError {
-                        path: winning_belief.path.clone(),
-                        age_secs: age,
-                        ttl_secs: ttl,
-                        expired_at: vu.to_iso(),
-                    });
-                } else {
-                    return Ok(Value::Stale {
-                        value: Box::new(winning_belief.value.clone()),
-                        age_secs: age,
-                        ttl_secs: ttl,
-                    });
-                }
-            }
-        }
-
-        Ok(winning_belief.value.clone())
     }
 
-    pub fn audit_path(&self, path_segments: &[String]) -> Value {
-        let exact_path = path_segments.join(".");
-        let scoped_path = if !self.scope_stack.is_empty() {
-            format!("{}.{}", self.scope_stack.join("."), exact_path)
-        } else {
-            exact_path.clone()
-        };
-
-        let mut candidate_ids = Vec::new();
-        if let Some(ids) = self.path_to_beliefs.get(&scoped_path) {
-            candidate_ids.extend(ids);
-        }
-        if scoped_path != exact_path {
-            if let Some(ids) = self.path_to_beliefs.get(&exact_path) {
-                for id in ids {
-                    if !candidate_ids.contains(id) {
-                        candidate_ids.push(*id);
-                    }
-                }
+    fn retract(&mut self, id: usize, reason: &str) {
+        if let Some(b) = self.beliefs.get_mut(id - 1) {
+            if b.retracted.is_none() {
+                b.retracted = Some(reason.to_string());
             }
         }
-        if candidate_ids.is_empty() {
-            for (p, ids) in &self.path_to_beliefs {
-                if p.ends_with(&exact_path) {
-                    for id in ids {
-                        if !candidate_ids.contains(id) {
-                            candidate_ids.push(*id);
-                        }
-                    }
-                }
-            }
-        }
+    }
 
-        // Find active max authority among non-retracted beliefs
-        let max_active_rank = candidate_ids
-            .iter()
-            .map(|&id| &self.beliefs[id - 1])
-            .filter(|b| !b.is_retracted)
-            .map(|b| b.authority_rank)
-            .max();
+    // ---- resolution -----------------------------------------------------
 
-        // Find active winner id
-        let active_winner_id = if let Some(max_rank) = max_active_rank {
-            let mut top: Vec<&Belief> = candidate_ids
-                .iter()
-                .map(|&id| &self.beliefs[id - 1])
-                .filter(|b| !b.is_retracted && b.authority_rank == max_rank)
-                .collect();
-            top.sort_by(|a, b| b.asserted_at.cmp(&a.asserted_at));
-            top.first().map(|b| b.id)
-        } else {
-            None
-        };
+    /// Every candidate for a name, paired with the scope depth it was found
+    /// at. Depth is searched innermost-first so specificity can break ties.
+    fn candidates(&self, path: &[String]) -> Vec<(usize, usize)> {
+        let tail = path.join(".");
+        let mut out = Vec::new();
+        let mut seen = HashSet::new();
 
-        let mut entries = Vec::new();
-
-        for &id in &candidate_ids {
-            let b = &self.beliefs[id - 1];
-            let status = if b.is_retracted {
-                AuditStatus::Retracted {
-                    reason: b.retraction_reason.clone().unwrap_or_else(|| "Retracted".to_string()),
-                }
-            } else if Some(b.id) == active_winner_id {
-                if let Some(vu) = b.valid_until {
-                    if self.current_time.0 > vu.0 {
-                        AuditStatus::Expired { expired_at: vu }
-                    } else {
-                        AuditStatus::Active
-                    }
-                } else {
-                    AuditStatus::Active
-                }
-            } else if let Some(max_rank) = max_active_rank {
-                if b.authority_rank < max_rank {
-                    AuditStatus::DefeatedByHigherAuthority {
-                        belief_id: active_winner_id.unwrap_or(0),
-                        authority: if let Some(wid) = active_winner_id {
-                            self.beliefs[wid - 1].authority.clone()
-                        } else {
-                            "Higher".to_string()
-                        },
-                    }
-                } else {
-                    // Same authority rank, but shadowed by newer assertion
-                    AuditStatus::ShadowedBy {
-                        belief_id: active_winner_id.unwrap_or(0),
-                        timestamp: if let Some(wid) = active_winner_id {
-                            self.beliefs[wid - 1].asserted_at
-                        } else {
-                            b.asserted_at
-                        },
-                    }
-                }
+        for depth in (0..=self.scope.len()).rev() {
+            let full = if depth == 0 {
+                tail.clone()
             } else {
-                AuditStatus::Active
+                format!("{}.{}", self.scope[..depth].join("."), tail)
             };
 
-            entries.push(AuditEntry {
-                belief_id: b.id,
-                path: b.path.clone(),
-                value: b.value.clone(),
-                authority: b.authority.clone(),
-                source: b.provenance.source.clone(),
-                verified: b.provenance.verified,
-                timestamp: b.asserted_at,
-                valid_until: b.valid_until,
-                status,
+            if let Some(ids) = self.by_path.get(&full) {
+                for &id in ids {
+                    if seen.insert(id) {
+                        out.push((id, depth));
+                    }
+                }
+            }
+        }
+
+        out
+    }
+
+    pub fn resolve(
+        &self,
+        path: &[String],
+        as_of: Option<Timestamp>,
+        demands: &Demands,
+    ) -> Result<Value, PalimpsestError> {
+        let at = as_of.unwrap_or(self.now);
+        let name = path.join(".");
+
+        let mut live: Vec<(&Belief, usize)> = self
+            .candidates(path)
+            .into_iter()
+            .map(|(id, depth)| (&self.beliefs[id - 1], depth))
+            .filter(|(b, _)| b.is_live() && b.asserted_at <= at)
+            .collect();
+
+        if live.is_empty() {
+            return Err(PalimpsestError::Unknown {
+                path: name,
+                scope: self.scope.join("."),
             });
         }
 
-        Value::AuditLog(entries)
+        // Authority, then specificity, then recency.
+        live.sort_by(|(a, ad), (b, bd)| {
+            b.rank
+                .cmp(&a.rank)
+                .then(bd.cmp(ad))
+                .then(b.asserted_at.cmp(&a.asserted_at))
+                .then(b.id.cmp(&a.id))
+        });
+
+        let (winner, winner_depth) = live[0];
+
+        // Two beliefs that claim the same stated moment at the same standing
+        // are a genuine contradiction; the language will not pick one.
+        let tied: Vec<&Belief> = live
+            .iter()
+            .filter(|(b, d)| {
+                b.rank == winner.rank
+                    && *d == winner_depth
+                    && b.dated_explicitly
+                    && winner.dated_explicitly
+                    && b.asserted_at == winner.asserted_at
+                    && b.value != winner.value
+            })
+            .map(|(b, _)| *b)
+            .collect();
+
+        if !tied.is_empty() {
+            let mut values = vec![winner.value.to_string()];
+            values.extend(tied.iter().map(|b| b.value.to_string()));
+            return Err(PalimpsestError::Contested {
+                path: name,
+                authority: winner.authority.clone(),
+                values,
+            });
+        }
+
+        if demands.verified && !winner.provenance.verified {
+            return Err(PalimpsestError::Unverified {
+                path: winner.path.clone(),
+                source: winner.provenance.source.clone(),
+                authority: winner.authority.clone(),
+            });
+        }
+
+        if let Some(required) = &demands.min_authority {
+            let needed = self.rank_of(required)?;
+            if winner.rank < needed {
+                return Err(PalimpsestError::Untrusted {
+                    path: winner.path.clone(),
+                    required: required.to_ascii_lowercase(),
+                    actual: winner.authority.clone(),
+                });
+            }
+        }
+
+        if let Some(expiry) = winner.expires_at {
+            if at > expiry {
+                let over_by = at.since(expiry);
+                if demands.fresh {
+                    return Err(PalimpsestError::Stale {
+                        path: winner.path.clone(),
+                        expired_at: expiry,
+                        over_by,
+                    });
+                }
+                return Ok(Value::Stale {
+                    value: Box::new(winner.value.clone()),
+                    age: at.since(winner.asserted_at),
+                    lifetime: expiry.since(winner.asserted_at),
+                });
+            }
+        }
+
+        Ok(winner.value.clone())
     }
 
-    pub fn eval_expr(&mut self, expr: &Expr) -> Result<Value, PalimpsestError> {
-        match expr {
-            Expr::Literal(val) => Ok(val.clone()),
+    /// Every layer ever written under a name, oldest first, each labelled with
+    /// why it is or is not the answer today.
+    pub fn history(&self, path: &[String]) -> Value {
+        let mut ids: Vec<usize> = self.candidates(path).into_iter().map(|(id, _)| id).collect();
+        ids.sort_unstable();
 
-            Expr::Variable(name) => {
-                if let Some(v) = self.variables.get(name) {
-                    Ok(v.clone())
-                } else {
-                    // Try resolving as 1-segment path in epistemic memory
-                    match self.resolve_path(&[name.clone()], None, false, false, None) {
-                        Ok(v) => Ok(v),
-                        Err(_) => Err(PalimpsestError::RuntimeError(format!("Undefined variable or memory path: '{}'", name))),
+        let winner = self
+            .resolve_winner_id(path)
+            .filter(|_| !ids.is_empty());
+
+        let top_rank = ids
+            .iter()
+            .map(|&id| &self.beliefs[id - 1])
+            .filter(|b| b.is_live())
+            .map(|b| b.rank)
+            .max();
+
+        let layers = ids
+            .into_iter()
+            .map(|id| {
+                let b = &self.beliefs[id - 1];
+                let standing = if let Some(reason) = &b.retracted {
+                    Standing::Forgotten {
+                        reason: reason.clone(),
                     }
-                }
-            }
-
-            Expr::Path(segments) => {
-                if !segments.is_empty() && self.variables.contains_key(&segments[0]) {
-                    let mut current = self.variables.get(&segments[0]).unwrap().clone();
-                    for field in &segments[1..] {
-                        current = self.eval_field_access(current, field)?;
+                } else if Some(id) == winner {
+                    match b.expires_at {
+                        Some(exp) if self.now > exp => Standing::Expired { at: exp },
+                        _ => Standing::Current,
                     }
-                    Ok(current)
+                } else if top_rank.map(|r| b.rank < r).unwrap_or(false) {
+                    let w = winner.map(|w| &self.beliefs[w - 1]);
+                    Standing::Outranked {
+                        by: winner.unwrap_or(0),
+                        authority: w.map(|w| w.authority.clone()).unwrap_or_default(),
+                    }
                 } else {
-                    self.resolve_path(segments, None, false, false, None)
-                }
-            }
-
-            Expr::Recall { path, as_of, fresh, verified_only, min_authority } => {
-                let as_of_ts = if let Some(as_of_expr) = as_of {
-                    let v = self.eval_expr(as_of_expr)?;
-                    Some(self.value_to_timestamp(&v)?)
-                } else {
-                    None
+                    Standing::Overwritten {
+                        by: winner.unwrap_or(0),
+                        at: winner
+                            .map(|w| self.beliefs[w - 1].asserted_at)
+                            .unwrap_or(b.asserted_at),
+                    }
                 };
 
-                self.resolve_path(
-                    path,
-                    as_of_ts,
-                    *fresh,
-                    *verified_only,
-                    min_authority.as_deref(),
+                Layer {
+                    id: b.id,
+                    path: b.path.clone(),
+                    value: b.value.clone(),
+                    authority: b.authority.clone(),
+                    source: b.provenance.source.clone(),
+                    verified: b.provenance.verified,
+                    asserted_at: b.asserted_at,
+                    standing,
+                }
+            })
+            .collect();
+
+        Value::History(layers)
+    }
+
+    /// The id the ordinary resolution rule selects, ignoring every demand.
+    fn resolve_winner_id(&self, path: &[String]) -> Option<usize> {
+        let mut live: Vec<(&Belief, usize)> = self
+            .candidates(path)
+            .into_iter()
+            .map(|(id, depth)| (&self.beliefs[id - 1], depth))
+            .filter(|(b, _)| b.is_live() && b.asserted_at <= self.now)
+            .collect();
+
+        live.sort_by(|(a, ad), (b, bd)| {
+            b.rank
+                .cmp(&a.rank)
+                .then(bd.cmp(ad))
+                .then(b.asserted_at.cmp(&a.asserted_at))
+                .then(b.id.cmp(&a.id))
+        });
+
+        live.first().map(|(b, _)| b.id)
+    }
+
+    // ---- check ----------------------------------------------------------
+
+    /// A health pass over the whole store. This is the operation that has no
+    /// equivalent in a retrieval system: it reports on the belief set itself
+    /// rather than on any particular question.
+    pub fn check(&self) -> Report {
+        let mut findings = Vec::new();
+        let live: Vec<&Belief> = self.beliefs.iter().filter(|b| b.is_live()).collect();
+
+        for b in &live {
+            // Anything a `verified` question would refuse is worth reporting
+            // before somebody asks that question in production.
+            if !b.provenance.verified {
+                findings.push(Finding::Unsourced {
+                    id: b.id,
+                    path: b.path.clone(),
+                    authority: b.authority.clone(),
+                    source: b.provenance.source.clone(),
+                });
+            }
+
+            if let Some(ep) = &b.provenance.because {
+                if !self.episodes.contains_key(ep) {
+                    findings.push(Finding::Orphaned {
+                        id: b.id,
+                        path: b.path.clone(),
+                        episode: ep.clone(),
+                    });
+                }
+            }
+        }
+
+        // Staleness and contradiction are properties of what a query would
+        // actually reach, so they are evaluated per resolvable name.
+        let mut names: Vec<&String> = self.by_path.keys().collect();
+        names.sort();
+
+        for name in names {
+            let segments: Vec<String> = name.split('.').map(str::to_string).collect();
+
+            let Some(winner_id) = self.resolve_winner_id(&segments) else {
+                continue;
+            };
+            let winner = &self.beliefs[winner_id - 1];
+
+            if let Some(exp) = winner.expires_at {
+                if self.now > exp {
+                    findings.push(Finding::Stale {
+                        id: winner.id,
+                        path: winner.path.clone(),
+                        expired_at: exp,
+                        over_by: self.now.since(exp),
+                    });
+                }
+            }
+
+            if let Err(PalimpsestError::Contested {
+                authority, values, ..
+            }) = self.resolve(&segments, None, &Demands::default())
+            {
+                findings.push(Finding::Contested {
+                    path: name.clone(),
+                    authority,
+                    values,
+                });
+            }
+        }
+
+        for c in &self.conflicts {
+            findings.push(Finding::Refused {
+                path: c.path.clone(),
+                loser: c.loser_authority.clone(),
+                winner: c.winner_authority.clone(),
+            });
+        }
+
+        Report {
+            findings,
+            total_beliefs: self.beliefs.len(),
+            live_beliefs: live.len(),
+            episodes: self.episodes.values().filter(|e| !e.retracted).count(),
+        }
+    }
+
+    // ---- evaluation -----------------------------------------------------
+
+    pub fn eval(&mut self, expr: &Expr) -> Result<Value, PalimpsestError> {
+        match expr {
+            Expr::Literal(v) => Ok(v.clone()),
+
+            Expr::Variable(name) => {
+                if let Some(v) = self.vars.get(name) {
+                    return Ok(v.clone());
+                }
+                self.resolve(
+                    std::slice::from_ref(name),
+                    None,
+                    &Demands::default(),
                 )
             }
 
-            Expr::History(path) | Expr::Audit(path) => {
-                Ok(self.audit_path(path))
-            }
-
-            Expr::Conflicts => {
-                Ok(Value::ConflictList(self.conflict_log.clone()))
-            }
-
-            Expr::Episodes => {
-                let mut list = Vec::new();
-                for ep in self.episodes.values() {
-                    if !ep.is_retracted {
-                        let mut rec = BTreeMap::new();
-                        rec.insert("id".to_string(), Value::String(ep.id.clone()));
-                        rec.insert("at".to_string(), Value::Timestamp(ep.at));
-                        rec.insert("actors".to_string(), Value::List(ep.actors.iter().map(|a| Value::String(a.clone())).collect()));
-                        rec.insert("context".to_string(), Value::Record(ep.context.clone()));
-                        rec.insert("summary".to_string(), Value::String(ep.summary.clone()));
-                        list.push(Value::Record(rec));
+            Expr::Ask {
+                path,
+                as_of,
+                demands,
+            } => {
+                // A dotted name whose head is a bound variable is a field
+                // lookup on that value, not a question about memory.
+                if as_of.is_none() && !demands.any() && path.len() > 1 {
+                    if let Some(base) = self.vars.get(&path[0]).cloned() {
+                        let mut current = base;
+                        for field in &path[1..] {
+                            current = self.field(current, field)?;
+                        }
+                        return Ok(current);
                     }
                 }
+
+                let at = match as_of {
+                    Some(expr) => {
+                        let v = self.eval(expr)?;
+                        Some(self.as_timestamp(&v)?)
+                    }
+                    None => None,
+                };
+
+                self.resolve(path, at, demands)
+            }
+
+            Expr::Why(path) => Ok(self.history(path)),
+
+            Expr::Conflicts => Ok(Value::Conflicts(self.conflicts.clone())),
+
+            Expr::Check => Ok(Value::Report(self.check())),
+
+            Expr::Episodes => {
+                let list = self
+                    .episodes
+                    .values()
+                    .filter(|e| !e.retracted)
+                    .map(|e| {
+                        let mut rec = BTreeMap::new();
+                        rec.insert("name".into(), Value::String(e.id.clone()));
+                        rec.insert("happened".into(), Value::Timestamp(e.happened));
+                        rec.insert(
+                            "involved".into(),
+                            Value::List(
+                                e.involved.iter().cloned().map(Value::String).collect(),
+                            ),
+                        );
+                        rec.insert("details".into(), Value::Record(e.details.clone()));
+                        rec.insert("summary".into(), Value::String(e.summary.clone()));
+                        Value::Record(rec)
+                    })
+                    .collect();
                 Ok(Value::List(list))
             }
 
-            Expr::List(exprs) => {
-                let mut vals = Vec::new();
-                for e in exprs {
-                    vals.push(self.eval_expr(e)?);
+            Expr::List(items) => {
+                let mut out = Vec::with_capacity(items.len());
+                for item in items {
+                    out.push(self.eval(item)?);
                 }
-                Ok(Value::List(vals))
+                Ok(Value::List(out))
             }
 
             Expr::Record(fields) => {
-                let mut rec = BTreeMap::new();
-                for (k, e) in fields {
-                    rec.insert(k.clone(), self.eval_expr(e)?);
+                let mut out = BTreeMap::new();
+                for (k, v) in fields {
+                    let value = self.eval(v)?;
+                    out.insert(k.clone(), value);
                 }
-                Ok(Value::Record(rec))
+                Ok(Value::Record(out))
             }
 
-            Expr::BinaryOp { op, left, right } => {
-                let l_val = self.eval_expr(left)?;
-                let r_val = self.eval_expr(right)?;
-                self.eval_binop(*op, l_val, r_val)
+            Expr::Binary { op, left, right } => {
+                let a = self.eval(left)?;
+                let b = self.eval(right)?;
+                binary(*op, a, b)
             }
 
-            Expr::UnaryOp { op, expr } => {
-                let val = self.eval_expr(expr)?;
-                match op {
-                    UnOp::Not => match val {
-                        Value::Bool(b) => Ok(Value::Bool(!b)),
-                        other => Err(PalimpsestError::TypeError(format!("Cannot apply '!' to {}", other.type_name()))),
-                    },
-                    UnOp::Neg => match val {
-                        Value::Int(n) => Ok(Value::Int(-n)),
-                        Value::Float(n) => Ok(Value::Float(-n)),
-                        other => Err(PalimpsestError::TypeError(format!("Cannot apply '-' to {}", other.type_name()))),
-                    },
-                }
-            }
-
-            Expr::FieldAccess { expr, field } => {
-                let base = self.eval_expr(expr)?;
-                self.eval_field_access(base, field)
-            }
-        }
-    }
-
-    pub fn eval_field_access(&self, base: Value, field: &str) -> Result<Value, PalimpsestError> {
-        match base {
-            Value::Record(entries) => {
-                entries.get(field).cloned().ok_or_else(|| {
-                    PalimpsestError::RuntimeError(format!("Record missing field '{}'", field))
-                })
-            }
-            Value::Stale { value, age_secs, ttl_secs } => {
-                match field {
-                    "value" => Ok(*value),
-                    "age" => Ok(Value::Int(age_secs as i64)),
-                    "ttl" => Ok(Value::Int(ttl_secs as i64)),
-                    "is_stale" => Ok(Value::Bool(true)),
-                    other => Err(PalimpsestError::RuntimeError(format!("Unknown field '{}' on Stale value", other))),
-                }
-            }
-            other => {
-                if field == "is_stale" {
-                    Ok(Value::Bool(false))
-                } else if field == "type" {
-                    Ok(Value::String(other.type_name().to_string()))
-                } else {
-                    Err(PalimpsestError::TypeError(format!(
-                        "Cannot access field '{}' on type {}",
-                        field,
+            Expr::Unary { op, expr } => {
+                let v = self.eval(expr)?;
+                match (op, v) {
+                    (UnOp::Not, Value::Bool(b)) => Ok(Value::Bool(!b)),
+                    (UnOp::Neg, Value::Int(n)) => Ok(Value::Int(-n)),
+                    (UnOp::Neg, Value::Float(n)) => Ok(Value::Float(-n)),
+                    (_, other) => Err(PalimpsestError::TypeError(format!(
+                        "cannot apply that operator to {}",
                         other.type_name()
-                    )))
+                    ))),
                 }
+            }
+
+            Expr::Field { expr, field } => {
+                let base = self.eval(expr)?;
+                self.field(base, field)
             }
         }
     }
 
-    fn eval_binop(&self, op: BinOp, left: Value, right: Value) -> Result<Value, PalimpsestError> {
-        // Handle equality and inequality for all values
-        if op == BinOp::Eq {
-            return Ok(Value::Bool(left == right));
-        }
-        if op == BinOp::NotEq {
-            return Ok(Value::Bool(left != right));
-        }
+    fn field(&self, base: Value, field: &str) -> Result<Value, PalimpsestError> {
+        match base {
+            Value::Record(fields) => fields.get(field).cloned().ok_or_else(|| {
+                PalimpsestError::Runtime(format!("this record has no field `{}`", field))
+            }),
 
-        match (op, left, right) {
-            (BinOp::Add, Value::Int(a), Value::Int(b)) => Ok(Value::Int(a + b)),
-            (BinOp::Add, Value::Float(a), Value::Float(b)) => Ok(Value::Float(a + b)),
-            (BinOp::Add, Value::String(a), Value::String(b)) => Ok(Value::String(format!("{}{}", a, b))),
-            (BinOp::Sub, Value::Int(a), Value::Int(b)) => Ok(Value::Int(a - b)),
-            (BinOp::Sub, Value::Float(a), Value::Float(b)) => Ok(Value::Float(a - b)),
-            (BinOp::Mul, Value::Int(a), Value::Int(b)) => Ok(Value::Int(a * b)),
-            (BinOp::Mul, Value::Float(a), Value::Float(b)) => Ok(Value::Float(a * b)),
-            (BinOp::Div, Value::Int(a), Value::Int(b)) => {
-                if b == 0 {
-                    Err(PalimpsestError::RuntimeError("Division by zero".to_string()))
-                } else {
-                    Ok(Value::Int(a / b))
-                }
-            }
-            (BinOp::Div, Value::Float(a), Value::Float(b)) => {
-                if b == 0.0 {
-                    Err(PalimpsestError::RuntimeError("Division by zero".to_string()))
-                } else {
-                    Ok(Value::Float(a / b))
-                }
-            }
-            (BinOp::Lt, Value::Int(a), Value::Int(b)) => Ok(Value::Bool(a < b)),
-            (BinOp::LtEq, Value::Int(a), Value::Int(b)) => Ok(Value::Bool(a <= b)),
-            (BinOp::Gt, Value::Int(a), Value::Int(b)) => Ok(Value::Bool(a > b)),
-            (BinOp::GtEq, Value::Int(a), Value::Int(b)) => Ok(Value::Bool(a >= b)),
-            (BinOp::Lt, Value::Float(a), Value::Float(b)) => Ok(Value::Bool(a < b)),
-            (BinOp::LtEq, Value::Float(a), Value::Float(b)) => Ok(Value::Bool(a <= b)),
-            (BinOp::Gt, Value::Float(a), Value::Float(b)) => Ok(Value::Bool(a > b)),
-            (BinOp::GtEq, Value::Float(a), Value::Float(b)) => Ok(Value::Bool(a >= b)),
-            (BinOp::And, Value::Bool(a), Value::Bool(b)) => Ok(Value::Bool(a && b)),
-            (BinOp::Or, Value::Bool(a), Value::Bool(b)) => Ok(Value::Bool(a || b)),
-            (op, l, r) => Err(PalimpsestError::TypeError(format!(
-                "Invalid operands for {:?}: {} and {}",
-                op,
-                l.type_name(),
-                r.type_name()
+            Value::Stale {
+                value,
+                age,
+                lifetime,
+            } => match field {
+                "value" => Ok(*value),
+                "stale" => Ok(Value::Bool(true)),
+                "age" => Ok(Value::Duration(age)),
+                "lifetime" => Ok(Value::Duration(lifetime)),
+                other => Err(PalimpsestError::Runtime(format!(
+                    "a stale value has `value`, `stale`, `age` and `lifetime`, not `{}`",
+                    other
+                ))),
+            },
+
+            other => match field {
+                "stale" => Ok(Value::Bool(false)),
+                "value" => Ok(other),
+                _ => Err(PalimpsestError::TypeError(format!(
+                    "cannot read `{}` from {}",
+                    field,
+                    other.type_name()
+                ))),
+            },
+        }
+    }
+
+    fn as_timestamp(&self, v: &Value) -> Result<Timestamp, PalimpsestError> {
+        match v {
+            Value::Timestamp(t) => Ok(*t),
+            Value::String(s) => Timestamp::parse_iso(s).map_err(PalimpsestError::Runtime),
+            Value::Int(n) => Ok(Timestamp::from_secs(*n as u64)),
+            other => Err(PalimpsestError::TypeError(format!(
+                "expected a date, found {}",
+                other.type_name()
             ))),
         }
     }
 
-    pub fn value_to_timestamp(&self, val: &Value) -> Result<Timestamp, PalimpsestError> {
-        match val {
-            Value::Timestamp(t) => Ok(*t),
-            Value::String(s) => Timestamp::parse_iso(s).map_err(|e| PalimpsestError::RuntimeError(e)),
-            Value::Int(i) => Ok(Timestamp::from_secs(*i as u64)),
-            other => Err(PalimpsestError::TypeError(format!("Expected timestamp, found {}", other.type_name()))),
+    fn as_duration(&self, v: &Value) -> Result<Duration, PalimpsestError> {
+        match v {
+            Value::Duration(d) => Ok(*d),
+            Value::String(s) => Duration::parse_str(s).map_err(PalimpsestError::Runtime),
+            Value::Int(n) => Ok(Duration::from_secs(*n as u64)),
+            other => Err(PalimpsestError::TypeError(format!(
+                "expected a length of time, found {}",
+                other.type_name()
+            ))),
         }
+    }
+}
+
+fn build_ranks(trust: &[String]) -> HashMap<String, usize> {
+    let n = trust.len();
+    trust
+        .iter()
+        .enumerate()
+        .map(|(i, name)| (name.to_ascii_lowercase(), (n - i) * 100))
+        .collect()
+}
+
+fn binary(op: BinOp, a: Value, b: Value) -> Result<Value, PalimpsestError> {
+    use BinOp::*;
+
+    if op == Eq {
+        return Ok(Value::Bool(a == b));
+    }
+    if op == NotEq {
+        return Ok(Value::Bool(a != b));
     }
 
-    pub fn value_to_duration(&self, val: &Value) -> Result<Duration, PalimpsestError> {
-        match val {
-            Value::Duration(d) => Ok(*d),
-            Value::String(s) => Duration::parse_str(s).map_err(|e| PalimpsestError::RuntimeError(e)),
-            Value::Int(i) => Ok(Duration::from_secs(*i as u64)),
-            other => Err(PalimpsestError::TypeError(format!("Expected duration, found {}", other.type_name()))),
-        }
+    // Adding anything to text builds a sentence. This is the one implicit
+    // conversion in the language, and it exists because programs are mostly
+    // written to be read aloud.
+    if op == Add && (matches!(a, Value::String(_)) || matches!(b, Value::String(_))) {
+        return Ok(Value::String(format!("{}{}", a.plain(), b.plain())));
     }
+
+    let out = match (op, &a, &b) {
+        (Add, Value::Int(x), Value::Int(y)) => Value::Int(x + y),
+        (Add, Value::Float(x), Value::Float(y)) => Value::Float(x + y),
+        (Sub, Value::Int(x), Value::Int(y)) => Value::Int(x - y),
+        (Sub, Value::Float(x), Value::Float(y)) => Value::Float(x - y),
+        (Mul, Value::Int(x), Value::Int(y)) => Value::Int(x * y),
+        (Mul, Value::Float(x), Value::Float(y)) => Value::Float(x * y),
+
+        (Div, Value::Int(_), Value::Int(0)) => {
+            return Err(PalimpsestError::Runtime("cannot divide by zero".into()))
+        }
+        (Div, Value::Int(x), Value::Int(y)) => Value::Int(x / y),
+        (Div, Value::Float(x), Value::Float(y)) if *y != 0.0 => Value::Float(x / y),
+
+        (Lt, Value::Int(x), Value::Int(y)) => Value::Bool(x < y),
+        (LtEq, Value::Int(x), Value::Int(y)) => Value::Bool(x <= y),
+        (Gt, Value::Int(x), Value::Int(y)) => Value::Bool(x > y),
+        (GtEq, Value::Int(x), Value::Int(y)) => Value::Bool(x >= y),
+        (Lt, Value::Float(x), Value::Float(y)) => Value::Bool(x < y),
+        (LtEq, Value::Float(x), Value::Float(y)) => Value::Bool(x <= y),
+        (Gt, Value::Float(x), Value::Float(y)) => Value::Bool(x > y),
+        (GtEq, Value::Float(x), Value::Float(y)) => Value::Bool(x >= y),
+
+        (Lt, Value::Duration(x), Value::Duration(y)) => Value::Bool(x < y),
+        (Gt, Value::Duration(x), Value::Duration(y)) => Value::Bool(x > y),
+
+        (And, Value::Bool(x), Value::Bool(y)) => Value::Bool(*x && *y),
+        (Or, Value::Bool(x), Value::Bool(y)) => Value::Bool(*x || *y),
+
+        _ => {
+            return Err(PalimpsestError::TypeError(format!(
+                "cannot combine {} and {} that way",
+                a.type_name(),
+                b.type_name()
+            )))
+        }
+    };
+
+    Ok(out)
 }
