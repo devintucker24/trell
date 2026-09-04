@@ -358,6 +358,10 @@ nodes:
   kind: primitive
   page: theory/affine-cognitive-economics
   label: token-budget
+- id: wiki-brain
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki-brain
 - id: wiki-brain-pack
   kind: concept
   page: FRAMEWORK
@@ -836,6 +840,10 @@ edges:
   to: speculative-execution
   rel: depends_on
   page: applications/overview-and-safety-patterns
+- from: wiki-brain
+  to: wiki-brain-pack
+  rel: implements
+  page: FRAMEWORK
 - from: wiki-brain-pack
   to: wiki-router
   rel: depends_on
@@ -900,6 +908,10 @@ edges:
   to: wiki-usage-telemetry
   rel: implements
   page: _meta/usage-dashboard
+- from: wiki-usage-telemetry
+  to: wiki-brain-pack
+  rel: depends_on
+  page: _meta/usage-telemetry
 - from: wiki-usage-telemetry
   to: wiki-router
   rel: related_to

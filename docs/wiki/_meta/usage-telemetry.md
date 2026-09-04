@@ -78,6 +78,8 @@ python3 docs/wiki/scripts/wiki_usage.py report --days 30
 - **Dump admissions** — skipped retrieve
 - **Last doctor score** — structural health (not usefulness)
 - **Hottest pages** — coverage vs dead weight
+- **Mean retrieve latency** — `duration_ms` (script cost, not LLM)
+- **Citation overlap** — `cited ∩ pages_opened / pages_opened` when agents log query events
 
 ## Metrics worth adding later
 

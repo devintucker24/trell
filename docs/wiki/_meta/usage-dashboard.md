@@ -33,23 +33,23 @@ agent:
 Generated `2026-09-04` from local `docs/wiki/_meta/usage/events.jsonl` (last **30** days).
 Raw events are gitignored; this page is the shareable snapshot.
 
-**Usefulness index:** 81.0/100  
+**Usefulness index:** 82.5/100  
 (heuristic: retrieval hit quality + last doctor score + activity − INDEX-dump admissions)
 
 | Metric | Value |
 |--------|------:|
-| Events | 2 |
-| Retrieves | 1 |
-| Est. retrieve tokens (sum) | 1228 |
-| Est. tokens / event with tokens | 1228 |
-| Budget utilization | 61.4% |
-| Mean top hit score | 0.853 |
+| Events | 5 |
+| Retrieves | 2 |
+| Est. retrieve tokens (sum) | 2257 |
+| Est. tokens / event with tokens | 1128.5 |
+| Budget utilization | 45.4% |
+| Mean top hit score | 0.845 |
 | Weak-hit rate (top < 0.25) | 0.0 |
 | Strong-hit rate (top ≥ 0.45) | 1.0 |
 | Last doctor score | 100.0 |
 | Repeat-query groups (≥3) | 0 |
 | Dump admissions | 0 |
-| Mean latency (ms) | 98 |
+| Mean latency (ms) | 102.5 |
 | Pages opened / cited | 0 / 0 |
 | Citation overlap (cited ∩ opened / opened) | — |
 
@@ -57,19 +57,21 @@ Raw events are gitignored; this page is the shareable snapshot.
 
 | op | count |
 |----|------:|
-| `doctor` | 1 |
-| `retrieve` | 1 |
+| `doctor` | 3 |
+| `retrieve` | 2 |
 
 ## Hottest retrieve pages
 
 | path | hits |
 |------|-----:|
-| `FRAMEWORK.md` | 3 |
-| `INDEX.md` | 1 |
+| `FRAMEWORK.md` | 5 |
+| `INDEX.md` | 2 |
+| `OPERATOR.md` | 2 |
+| `_meta/usage-telemetry.md` | 2 |
 | `_meta/CONTEXT_PROTOCOL.md` | 1 |
 | `host/router-seeds.md` | 1 |
-| `OPERATOR.md` | 1 |
-| `_meta/usage-telemetry.md` | 1 |
+| `temporal/TIMELINE.md` | 1 |
+| `inbox/README.md` | 1 |
 
 ## How to read this
 
