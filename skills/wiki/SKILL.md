@@ -1,21 +1,24 @@
 ---
 name: trell-wiki
-description: Operate the Trell Karpathy-style epistemic wiki brain — navigate, triage, ingest, query, doctor, heal, lint, label, and maintain docs/wiki with YAML graph metadata. Use whenever working with Trell knowledge base, AGENTS.md, or long-term research docs.
+description: Operate the Trell Karpathy-style epistemic wiki brain — retrieve, navigate, triage, ingest, query, doctor, heal, lint, label, and maintain docs/wiki with YAML graph metadata plus episodic/temporal memory. Use whenever working with Trell knowledge base, AGENTS.md, or long-term research docs.
 ---
 
 # Trell Wiki Brain — Parent Skill
 
-This skill family implements the **Karpathy LLM Wiki** pattern for Trell.
+This skill family implements the **Karpathy LLM Wiki** pattern for Trell, extended as a **file RAG + multi-lane memory** system.
 
 ## Architecture reminder
 - **Schema:** `AGENTS.md`, `docs/wiki/SCHEMA.md`, `skills/wiki/*`
 - **Wiki:** `docs/wiki/**` with YAML nodes/edges
+- **Memory lanes:** semantic pages · `episodic/` · `temporal/TIMELINE.md`
+- **Context:** `docs/wiki/ROUTER.md` + `_meta/CONTEXT_PROTOCOL.md` (progressive disclosure)
 - **Raw:** `docs/wiki/raw/`, `THESIS.md`, `examples/`, `src/`
 - **Inbox:** `docs/wiki/inbox/` → triage → ingest
 
 ## Subskills
 | Task | Skill |
 |------|-------|
+| **Retrieve / file RAG** | [retrieve/SKILL.md](retrieve/SKILL.md) |
 | Find pages / traverse graph | [navigate/SKILL.md](navigate/SKILL.md) |
 | Classify inbox drops | [triage/SKILL.md](triage/SKILL.md) |
 | Add research / sources | [ingest/SKILL.md](ingest/SKILL.md) |
@@ -32,6 +35,13 @@ chat paste / URL / note  →  docs/wiki/inbox/  →  triage  →  ingest  →  w
 ```
 Do not invent folders during ingest. Taxonomy changes go through SCHEMA §7.
 
+## Memory path
+```
+decision/failure  →  episodic/YYYY-MM-DD-*.md  →  temporal/TIMELINE.md
+durable lesson    →  consolidate into semantic page  →  mark episode stale
+as-of question    →  TIMELINE slice + retrieve --as-of
+```
+
 ## Health path
 ```
 wiki doctor  →  (optional) wiki heal  →  wiki doctor again
@@ -39,12 +49,13 @@ wiki doctor  →  (optional) wiki heal  →  wiki doctor again
 
 ## References
 - [frontmatter-schemas.md](references/frontmatter-schemas.md)
-- Scripts: [scripts/sync_graph.py](scripts/sync_graph.py), [scripts/wiki_doctor.py](scripts/wiki_doctor.py)
+- Scripts: [scripts/wiki_retrieve.py](scripts/wiki_retrieve.py), [scripts/sync_graph.py](scripts/sync_graph.py), [scripts/wiki_doctor.py](scripts/wiki_doctor.py)
 
 ## Session bootstrap
 ```
-1. Read AGENTS.md
-2. Read docs/wiki/INDEX.md
-3. Choose subskill
-4. Append docs/wiki/log.md when done
+1. Read AGENTS.md (§§1–2, §8)
+2. Read docs/wiki/ROUTER.md
+3. retrieve "<task>"  (not full INDEX)
+4. Choose subskill
+5. Append docs/wiki/log.md when done
 ```

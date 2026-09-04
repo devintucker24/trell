@@ -3,12 +3,12 @@
   "score": 100.0,
   "counts": {},
   "graph": {
-    "nodes": 83,
-    "edges": 90,
+    "nodes": 94,
+    "edges": 112,
     "hard_orphans": 0
   },
-  "pages_with_frontmatter": 30,
-  "pages_scanned": 30,
+  "pages_with_frontmatter": 38,
+  "pages_scanned": 38,
   "findings": [],
   "heal_recommended": false
 }

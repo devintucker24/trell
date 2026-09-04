@@ -15,8 +15,8 @@
 |   Tells agents HOW to navigate, heal, label, ingest, maintain   |
 ├─────────────────────────────────────────────────────────────────┤
 | LAYER 2 — WIKI (LLM-owned, compounding)                         |
-|   docs/wiki/**/*.md  ·  INDEX.md  ·  GRAPH.yaml  ·  log.md      |
-|   inbox/ (pending) → triage → ingested pages                    |
+|   docs/wiki/**/*.md  ·  ROUTER.md  ·  INDEX.md  ·  GRAPH.yaml   |
+|   episodic/ · temporal/ · inbox/ → triage → ingested pages      |
 |   Syntheses, concepts, applications, market, roadmap            |
 |   Every page has YAML frontmatter with nodes + edges            |
 ├─────────────────────────────────────────────────────────────────┤
@@ -28,16 +28,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Rule:** Knowledge is *compiled once* into the wiki and kept current. Do not re-derive the entire thesis from `src/` on every query. Read `docs/wiki/INDEX.md` first, then drill into pages.
+**Rule:** Knowledge is *compiled once* into the wiki and kept current. Do not re-derive the entire thesis from `src/` on every query. Start from `docs/wiki/ROUTER.md`, then **retrieve** — do not dump the whole INDEX into context.
 
 ---
 
 ## 2. First Actions on Every Session
 
-1. Read this file (`AGENTS.md`).
-2. Read `docs/wiki/INDEX.md` (catalog).
-3. If maintaining graph health: read `docs/wiki/_meta/GRAPH.yaml` and `docs/wiki/log.md` (tail).
-4. Load the relevant skill from `skills/wiki/` for the task:
+1. Read this file (`AGENTS.md`) — at least §§1–2 and §8.
+2. Read `docs/wiki/ROUTER.md` (tiered loading + budgets). **Do not** dump full INDEX into context.
+3. Retrieve on demand: `python3 skills/wiki/scripts/wiki_retrieve.py "<task>"` (skill: `skills/wiki/retrieve`).
+4. For when/as-of/what-changed: `docs/wiki/temporal/TIMELINE.md` + retrieve `--as-of`.
+5. For prior decisions: `docs/wiki/episodic/INDEX.md` (then dated episodes).
+6. Only then open `INDEX.md` / `SCHEMA.md` if browsing or editing structure.
+7. Load the relevant skill from `skills/wiki/` for the task:
+   - Retrieve → `skills/wiki/retrieve/SKILL.md`  ← **prefer for Q&A**
    - Navigate → `skills/wiki/navigate/SKILL.md`
    - Triage → `skills/wiki/triage/SKILL.md`
    - Ingest → `skills/wiki/ingest/SKILL.md`
@@ -60,10 +64,13 @@
 | `market` | `docs/wiki/market/` | Rewriteable | Competitors, regulation, personas |
 | `roadmap` | `docs/wiki/roadmap/` | Rewriteable | Vision + phased milestones |
 | `schema` | `docs/wiki/SCHEMA.md`, `AGENTS.md` | Human+agent co-evolve | Operating rules |
-| `meta` | `docs/wiki/_meta/` | Agent-maintained | GRAPH.yaml, health reports |
+| `meta` | `docs/wiki/_meta/`, `docs/wiki/ROUTER.md` | Agent-maintained | GRAPH, health, router, protocols |
+| `episode` | `docs/wiki/episodic/` | Append + consolidate | Episodic memory (not semantic truth) |
 | `inbox-item` | `docs/wiki/inbox/` | Pending → archive | Unprocessed drops (not wiki truth) |
 | `log` | `docs/wiki/log.md` | Append-only | Chronological ops |
 | `raw-pointer` | `docs/wiki/raw/` | Append-only pointers | Links to immutable sources |
+
+**Temporal spine:** `docs/wiki/temporal/TIMELINE.md` (`domain: temporal`) — knowledge chronology for as-of recall.
 
 ---
 
@@ -131,10 +138,24 @@ Skill: `skills/wiki/ingest/SKILL.md`
 5. Append `## [YYYY-MM-DD] ingest | <title>` to `docs/wiki/log.md`.
 
 ### 6.3 Query (answer from wiki)
-1. Read INDEX → select pages → cite with wikilinks.
-2. Prefer filing valuable answers back as new wiki pages (`type: synthesis` or expand existing).
-3. Log: `## [YYYY-MM-DD] query | <question slug>`
-4. Pending `inbox/` items are not settled knowledge.
+1. Prefer `skills/wiki/retrieve` (scored top-k) over skimming all of INDEX.
+2. For time questions: consult `temporal/TIMELINE.md` and/or `retrieve --as-of`.
+3. Read 2–6 relevant pages (not the whole wiki); cite with wikilinks.
+4. Prefer filing valuable answers back as new wiki pages (`type: synthesis` or expand existing).
+5. Log: `## [YYYY-MM-DD] query | <question slug>`
+6. Pending `inbox/` items and unconsolidated episodes are not settled knowledge.
+
+### 6.3b Retrieve (file RAG)
+Skill: `skills/wiki/retrieve/SKILL.md`  
+`python3 skills/wiki/scripts/wiki_retrieve.py "<q>" --budget-tokens 3500`  
+Hybrid lexical + graph + **temporal** rerank + MMR diversity.
+
+### 6.3c Episodic / temporal write path
+1. New session decision/failure → `episodic/YYYY-MM-DD-<slug>.md` from `_TEMPLATE.md`
+2. Append event to `temporal/TIMELINE.md`
+3. Keep `episodic/session-current.md` under ~800 tokens
+4. On consolidate: merge lessons into semantic pages; set episode `status: stale` if done
+5. Log: `## [YYYY-MM-DD] episodic | <slug>` or `temporal | <slug>`
 
 ### 6.4 Wiki Doctor (diagnose only)
 Skill: `skills/wiki/doctor/SKILL.md`  
@@ -188,6 +209,7 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 
 | Skill | Path | Use when |
 |-------|------|----------|
+| Retrieve | `skills/wiki/retrieve/SKILL.md` | File RAG: scored top-k with temporal/graph rerank |
 | Navigate | `skills/wiki/navigate/SKILL.md` | Finding pages / graph traversal |
 | Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
 | Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
@@ -206,7 +228,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `inbox | triage | ingest | query | doctor | heal | lint | label | maintain | schema | graph`.
+Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 
@@ -219,3 +241,5 @@ This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 - Do not invent unverifiable market share numbers; prefer qualitative competitive maps + regulatory drivers.
 - Do not delete log entries (append-only).
 - Do not invent new wiki folders/types/rels from a single inbox note — triage to `needs-human` and update SCHEMA first.
+- Do not dump the full wiki (~32k tokens) into context; follow `ROUTER.md` budgets.
+- Do not cite episodic or temporal timeline entries as semantic product truth until consolidated into domain pages.

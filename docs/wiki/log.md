@@ -41,3 +41,37 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Added `skills/wiki/triage/SKILL.md`; updated ingest + AGENTS.md + SCHEMA §6–§8
 - Input path: inbox → triage → ingest → wiki/raw/GRAPH/log
 - Taxonomy gate: no new folders/types/rels/tags without SCHEMA update
+
+## [2026-09-04] doctor | initial diagnosis
+
+- Script: `skills/wiki/scripts/wiki_doctor.py`
+- Score: 72.8/100 (0 critical, 0 high, 27 medium orphan nodes, 1 low)
+- Report: `docs/wiki/_meta/doctor-2026-09-04.md`
+
+## [2026-09-04] heal | link hard orphans
+
+- Linked 27 orphan nodes to hubs; archived example inbox item
+- Re-doctor score: **100/100**
+- Report: `docs/wiki/_meta/heal-2026-09-04.md`
+
+## [2026-09-04] schema | memory lanes + retrieve
+
+- Added ROUTER.md + _meta/CONTEXT_PROTOCOL.md (progressive disclosure budgets)
+- Added episodic/ (INDEX, template, session-current, brain-memory-upgrade episode)
+- Added temporal/TIMELINE.md + SCHEMA §9 temporal/episode contracts
+- Added skills/wiki/retrieve + wiki_retrieve.py (lexical+graph+temporal+MMR)
+- Added _meta/eval-queries.yaml golden set; doctor checks expired valid_until
+- AGENTS/INDEX/README bootstrap now: ROUTER → retrieve (not full INDEX dump)
+- Doctor score after wire: 100/100
+
+## [2026-09-04] retrieve | smoke golden queries
+
+- maritime COLREGs → applications/autonomous-physical-systems (ships section)
+- belief/verify → core/epistemic-foundations
+- episodic memory decision → episodic/2026-09-04-brain-memory-upgrade
+- temporal timeline → temporal/TIMELINE.md
+
+## [2026-09-04] episodic | 2026-09-04-brain-memory-upgrade
+
+- Recorded gap-analysis → router/episodic/temporal/retrieve implementation episode
+- Appended temporal/TIMELINE.md

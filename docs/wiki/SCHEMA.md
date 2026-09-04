@@ -5,9 +5,9 @@ type: schema
 status: active
 created: 2026-09-04
 updated: 2026-09-04
-tags: [schema, frontmatter, graph, agents]
+tags: [schema, frontmatter, graph, agents, temporal, episodic]
 domain: meta
-summary: "Canonical YAML contracts for page frontmatter, node kinds, and edge relations."
+summary: "Canonical YAML contracts for page frontmatter, node kinds, edge relations, and temporal fields."
 nodes:
   - id: wiki-schema
     kind: concept
@@ -15,8 +15,14 @@ edges:
   - from: wiki-schema
     to: agents-md
     rel: depends_on
+  - from: wiki-schema
+    to: memory-temporal
+    rel: related_to
 related:
   - "[[INDEX]]"
+  - "[[ROUTER]]"
+  - "[[_meta/CONTEXT_PROTOCOL]]"
+  - "[[temporal/TIMELINE]]"
 agent:
   priority: critical
   read_when:
@@ -38,12 +44,12 @@ This document is the **machine-oriented contract** for every page under `docs/wi
 ---
 id: string                 # globally unique kebab-case slug
 title: string              # human title
-type: index|concept|application|market|roadmap|schema|meta|synthesis|raw-pointer|inbox-item
+type: index|concept|application|market|roadmap|schema|meta|synthesis|raw-pointer|inbox-item|episode
 status: draft|active|stale|deprecated
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [string, ...]        # lowercase kebab or single words
-domain: core|theory|applications|market|roadmap|meta
+domain: core|theory|applications|market|roadmap|meta|episodic|temporal
 summary: string            # <= 160 chars, one sentence
 nodes:                     # graph nodes this page owns or defines
   - id: string
@@ -58,10 +64,21 @@ related:                   # wikilink strings
   - "[[path/page]]"
 implements_code:           # optional binding to repo paths
   - src/typecheck.rs
+temporal:                  # optional — required for episode pages; encouraged on claims that can go stale
+  observed_at: YYYY-MM-DD  # when we learned / wrote this
+  valid_from: YYYY-MM-DD   # when the claim became true
+  valid_until: YYYY-MM-DD|null  # null = still valid
+  supersedes: [string, ...]     # page or node ids this replaces
+  superseded_by: string|null
+episode:                   # optional — only for type: episode
+  goal: string
+  outcome: success|partial|failed|deferred
+  promote: boolean         # true = lessons should become semantic
 agent:
   priority: critical|high|medium|low
   read_when: [string, ...]
   maintain: [string, ...]
+  context_tier: 1|2|3      # optional progressive-disclosure hint
 ---
 ```
 
@@ -174,12 +191,13 @@ Inbox pages are **not** query authorities until ingested.
 ## 7. Taxonomy Evolution Rules (when agents may invent structure)
 
 ### Allowed without human approval
-- New **page** under an existing domain folder
+- New **page** under an existing domain folder (`core/`, `theory/`, `applications/`, `market/`, `roadmap/`, `_meta/`, `raw/`, `inbox/`, `episodic/`, `temporal/`)
 - New **node id** (kebab-case, correct prefix)
 - New **edge** using an existing `rel`
 - Reuse of an existing **tag**
 - New **raw-pointer**
 - New **inbox-item**
+- New **episode** under `episodic/` (must append `temporal/TIMELINE.md`)
 
 ### Requires SCHEMA.md + AGENTS.md update first (and `needs-human` if unsure)
 - New **top-level folder** under `docs/wiki/` (e.g. inventing `docs/wiki/hardware/`)
@@ -188,6 +206,13 @@ Inbox pages are **not** query authorities until ingested.
 - New **`rel:`** edge relation
 - New **node `kind:`**
 - Renaming/splitting a domain
+
+### Memory-lane folders (canonical)
+| Folder | Domain | Purpose |
+|--------|--------|---------|
+| `episodic/` | `episodic` | Session narratives, decisions, failures |
+| `temporal/` | `temporal` | TIMELINE spine + as-of indices |
+| (existing domains) | semantic lanes | Stable compiled knowledge |
 
 ### Decision heuristic
 1. Can this claim live on an existing page? → **merge**
@@ -207,6 +232,15 @@ Prefer these. Add new recurring tags here when promoted from inbox.
 
 **Market / roadmap:** `market`, `regulation`, `insurance`, `personas`, `adoption`, `roadmap`, `phases`, `vision`
 
-**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`
+**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`
 
 One-off adjectives do **not** belong in `tags:` — put them in the body.
+
+---
+
+## 9. Temporal & episodic contracts
+
+1. Every `type: episode` page **must** include `temporal.observed_at`, `temporal.valid_from`, and `episode.goal`.
+2. Claiming a fact is no longer true: set `temporal.valid_until`, optionally `status: stale|deprecated`, set `superseded_by`, and append a `supersede` line to `temporal/TIMELINE.md`.
+3. `log.md` = ops chronology; `temporal/TIMELINE.md` = knowledge chronology for as-of retrieve.
+4. Episodes are **not** semantic authorities until consolidated (`episode.promote: true` → merge into domain pages).

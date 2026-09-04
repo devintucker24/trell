@@ -26,8 +26,11 @@ edges:
   rel: related_to
 related:
 - '[[SCHEMA]]'
+- '[[ROUTER]]'
 - '[[core/epistemic-foundations]]'
 - '[[roadmap/ten-year-vision]]'
+- '[[episodic/INDEX]]'
+- '[[temporal/TIMELINE]]'
 agent:
   priority: critical
   read_when:
@@ -42,14 +45,17 @@ agent:
 Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's networked hyperlinked wiki system (LLM Wiki). This repository is a **compounding brain**: agents compile knowledge into interlinked markdown with YAML graph metadata; they do not re-derive everything from raw sources on every query.
 
 ### Agent bootstrap (read first)
-1. [`AGENTS.md`](../../AGENTS.md) — schema: how to navigate, heal, label, ingest, maintain
-2. This INDEX — catalog of pages
-3. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge vocabulary
-4. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) / [`_meta/GRAPH.md`](_meta/GRAPH.md) — knowledge graph
-5. [`log.md`](log.md) — chronological ops
-6. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
+1. [`AGENTS.md`](../../AGENTS.md) — schema / operating rules
+2. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
+3. Retrieve: `python3 skills/wiki/scripts/wiki_retrieve.py "<q>"` — [`skills/wiki/retrieve`](../../skills/wiki/retrieve/SKILL.md)
+4. This INDEX — catalog when browsing structure
+5. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
+6. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
+7. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
+8. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
 
-**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree) → schema (`AGENTS.md` + skills).
+**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + skills).
+**Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
 
 ---
 
@@ -103,11 +109,19 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | **Market Niches** | [[applications/overview-and-safety-patterns]] | [[market/competitive-analysis]], [[market/regulatory-and-insurance-drivers]] |
 | **Future Roadmap** | [[roadmap/ten-year-vision]] | [[roadmap/phases-and-milestones]], [[theory/bayesian-and-distributional-types]] |
 | **Knowledge Graph** | [[_meta/GRAPH]] | [[SCHEMA]], `AGENTS.md` |
+| **Context Router** | [[ROUTER]] | [[_meta/CONTEXT_PROTOCOL]], [[_meta/brain-gap-analysis-2026-09-04]] |
+| **Episodic memory** | [[episodic/INDEX]] | [[episodic/session-current]], [[temporal/TIMELINE]] |
+| **Temporal memory** | [[temporal/TIMELINE]] | [[_meta/CONTEXT_PROTOCOL]], retrieve `--as-of` |
 
 ---
 
-## 6. Brain Ops (Schema, Graph, Raw, Inbox, Log)
-* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relations, **taxonomy evolution**, known tags
+## 6. Brain Ops (Schema, Graph, Memory, Raw, Inbox, Log)
+* [[ROUTER]]: Progressive-disclosure router + token budgets (always-on for agents)
+* [[_meta/CONTEXT_PROTOCOL]]: Semantic / episodic / temporal assembly rules
+* [[_meta/brain-gap-analysis-2026-09-04]]: Memory/RAG gap analysis vs 2026 research
+* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relations, **temporal fields**, taxonomy evolution
+* [[episodic/INDEX]]: Episodic memory catalog (session narratives)
+* [[temporal/TIMELINE]]: Temporal spine for as-of / what-changed recall
 * [[inbox/README]]: **Drop zone** — how humans/agents input material
 * [[_meta/GRAPH]]: Human graph overview + link to GRAPH.yaml
 * [[raw/thesis]]: Pointer to immutable THESIS.md
@@ -121,6 +135,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | Skill | Path | Job |
 |-------|------|-----|
 | Parent | `skills/wiki/SKILL.md` | Entry point |
+| **Retrieve** | `skills/wiki/retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
 | Navigate | `skills/wiki/navigate/SKILL.md` | INDEX + graph traversal |
 | Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
 | Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |

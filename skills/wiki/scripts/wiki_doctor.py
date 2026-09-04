@@ -27,9 +27,12 @@ REQUIRED_FIELDS = [
 ]
 ALLOWED_TYPES = {
     "index", "concept", "application", "market", "roadmap", "schema",
-    "meta", "synthesis", "raw-pointer", "inbox-item",
+    "meta", "synthesis", "raw-pointer", "inbox-item", "episode",
 }
-ALLOWED_DOMAINS = {"core", "theory", "applications", "market", "roadmap", "meta"}
+ALLOWED_DOMAINS = {
+    "core", "theory", "applications", "market", "roadmap", "meta",
+    "episodic", "temporal",
+}
 ALLOWED_RELS = {
     "depends_on", "implements", "contradicts", "extends", "applies_to",
     "competes_with", "enforces", "reduces_via", "accelerates", "regulated_by",
@@ -125,15 +128,19 @@ def main() -> None:
             f"Node `{n}` has no edges", "_meta/GRAPH.yaml",
             "Link from hub via applies_to/related_to on owning page")
 
-    # Wikilinks
+    # Wikilinks (skip generated reports — they quote prior findings)
     all_stems = {p.relative_to(WIKI).as_posix()[:-3] for p in WIKI.rglob("*.md")}
     aliases = set(all_stems) | {s.split("/")[-1] for s in all_stems} | {
-        "INDEX", "SCHEMA", "log", "inbox/README",
+        "INDEX", "SCHEMA", "log", "ROUTER", "inbox/README",
+        "episodic/INDEX", "temporal/TIMELINE",
     }
+    skip_link_scan = ("_meta/doctor-", "_meta/heal-", "_meta/health-", "_meta/sim-")
     for p in md_files:
         if p.name == "_TEMPLATE.md":
             continue
         rel = p.relative_to(WIKI).as_posix()
+        if any(rel.startswith(s) for s in skip_link_scan):
+            continue
         for m in LINK_RE.finditer(p.read_text(encoding="utf-8")):
             target = m.group(1).strip()
             if target.startswith("examples/") or target == "path/page":
@@ -170,10 +177,41 @@ def main() -> None:
         ROOT / "skills" / "wiki" / "doctor" / "SKILL.md",
         ROOT / "skills" / "wiki" / "heal" / "SKILL.md",
         ROOT / "skills" / "wiki" / "triage" / "SKILL.md",
+        ROOT / "skills" / "wiki" / "retrieve" / "SKILL.md",
+        WIKI / "ROUTER.md",
+        WIKI / "episodic" / "INDEX.md",
+        WIKI / "temporal" / "TIMELINE.md",
     ]:
         if not req.exists():
             add(findings, "critical", "missing_artifact", f"Missing {req.relative_to(ROOT)}",
                 str(req.relative_to(ROOT)), "Restore from git / recreate")
+
+    # Temporal hygiene: active pages with expired valid_until
+    today = date.today()
+    for rel, meta in metas.items():
+        temporal = meta.get("temporal") or {}
+        until = temporal.get("valid_until")
+        until_d = None
+        if until not in (None, "", "null"):
+            try:
+                until_d = until if isinstance(until, date) else date.fromisoformat(str(until)[:10])
+            except ValueError:
+                add(findings, "low", "bad_valid_until", f"Unparseable temporal.valid_until={until!r}", rel,
+                    "Use YYYY-MM-DD or null")
+                continue
+        if until_d and until_d <= today and meta.get("status") == "active":
+            add(findings, "medium", "expired_still_active",
+                f"valid_until {until_d} but status=active", rel,
+                "Set status stale/deprecated or clear valid_until")
+        if meta.get("type") == "episode":
+            ep = meta.get("episode") or {}
+            if not (temporal.get("observed_at") and temporal.get("valid_from")):
+                add(findings, "high", "episode_missing_temporal",
+                    "episode lacks temporal.observed_at/valid_from", rel, "SCHEMA §9")
+            if not ep.get("goal") and rel.endswith("_TEMPLATE.md") is False:
+                if "TEMPLATE" not in rel:
+                    add(findings, "medium", "episode_missing_goal",
+                        "episode.goal missing", rel, "Fill episode.goal")
 
     # Score
     sev = Counter(f["severity"] for f in findings)

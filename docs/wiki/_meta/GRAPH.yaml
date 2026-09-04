@@ -102,6 +102,10 @@ nodes:
   kind: type
   page: core/epistemic-foundations
   label: belief<T>
+- id: brain-gap-analysis
+  kind: concept
+  page: _meta/brain-gap-analysis-2026-09-04
+  label: brain-gap-analysis
 - id: branch-collapse
   kind: engine
   page: core/speculative-execution-engine
@@ -138,10 +142,18 @@ nodes:
   kind: concept
   page: null
   label: competitive-analysis
+- id: context-protocol
+  kind: concept
+  page: _meta/CONTEXT_PROTOCOL
+  label: Agent Context Protocol
 - id: distributional-types
   kind: type
   page: theory/bayesian-and-distributional-types
   label: distributional-types
+- id: episode-2026-09-04-brain-memory
+  kind: concept
+  page: episodic/2026-09-04-brain-memory-upgrade
+  label: Brain memory upgrade episode
 - id: epistemic-contamination
   kind: concept
   page: core/epistemic-foundations
@@ -202,6 +214,22 @@ nodes:
   kind: primitive
   page: core/natural-syntax-specification
   label: keyword-when
+- id: memory-episodic
+  kind: concept
+  page: episodic/INDEX
+  label: Episodic Memory
+- id: memory-semantic
+  kind: concept
+  page: _meta/brain-gap-analysis-2026-09-04
+  label: memory-semantic
+- id: memory-temporal
+  kind: concept
+  page: temporal/TIMELINE
+  label: Temporal Memory
+- id: memory-working
+  kind: concept
+  page: _meta/brain-gap-analysis-2026-09-04
+  label: memory-working
 - id: model-contract
   kind: primitive
   page: core/contract-and-guard-system
@@ -274,6 +302,14 @@ nodes:
   kind: regulation
   page: market/regulatory-and-insurance-drivers
   label: reg-sr-11-7
+- id: retrieval-rerank
+  kind: technology
+  page: _meta/brain-gap-analysis-2026-09-04
+  label: retrieval-rerank
+- id: session-scratch
+  kind: concept
+  page: episodic/session-current
+  label: Session Scratch
 - id: speculative-execution
   kind: engine
   page: core/speculative-execution-engine
@@ -302,6 +338,10 @@ nodes:
   kind: technology
   page: market/competitive-analysis
   label: tech-xgrammar
+- id: temporal-timeline
+  kind: concept
+  page: temporal/TIMELINE
+  label: Wiki Timeline
 - id: ten-year-vision
   kind: concept
   page: roadmap/ten-year-vision
@@ -326,6 +366,10 @@ nodes:
   kind: concept
   page: INDEX
   label: Wiki Index
+- id: wiki-router
+  kind: concept
+  page: ROUTER
+  label: Wiki Context Router
 - id: wiki-schema
   kind: concept
   page: SCHEMA
@@ -398,6 +442,14 @@ edges:
   to: raw-market-research-2026-09-03
   rel: depends_on
   page: raw/market-research-2026-09-03
+- from: context-protocol
+  to: memory-temporal
+  rel: depends_on
+  page: _meta/CONTEXT_PROTOCOL
+- from: context-protocol
+  to: wiki-router
+  rel: depends_on
+  page: _meta/CONTEXT_PROTOCOL
 - from: distributional-types
   to: belief-type
   rel: extends
@@ -406,6 +458,18 @@ edges:
   to: phase-4-iso-silicon
   rel: milestone_of
   page: theory/bayesian-and-distributional-types
+- from: episode-2026-09-04-brain-memory
+  to: brain-gap-analysis
+  rel: depends_on
+  page: episodic/2026-09-04-brain-memory-upgrade
+- from: episode-2026-09-04-brain-memory
+  to: memory-episodic
+  rel: related_to
+  page: episodic/2026-09-04-brain-memory-upgrade
+- from: episode-2026-09-04-brain-memory
+  to: memory-temporal
+  rel: related_to
+  page: episodic/2026-09-04-brain-memory-upgrade
 - from: epistemic-lie
   to: belief-type
   rel: depends_on
@@ -458,6 +522,46 @@ edges:
   to: speculative-execution
   rel: implements
   page: core/natural-syntax-specification
+- from: memory-episodic
+  to: context-protocol
+  rel: depends_on
+  page: episodic/INDEX
+- from: memory-episodic
+  to: memory-temporal
+  rel: related_to
+  page: episodic/INDEX
+- from: memory-episodic
+  to: wiki-inbox
+  rel: related_to
+  page: _meta/brain-gap-analysis-2026-09-04
+- from: memory-episodic
+  to: wiki-router
+  rel: depends_on
+  page: episodic/INDEX
+- from: memory-semantic
+  to: wiki-index
+  rel: implements
+  page: _meta/brain-gap-analysis-2026-09-04
+- from: memory-temporal
+  to: context-protocol
+  rel: depends_on
+  page: temporal/TIMELINE
+- from: memory-temporal
+  to: memory-episodic
+  rel: related_to
+  page: _meta/CONTEXT_PROTOCOL
+- from: memory-temporal
+  to: wiki-router
+  rel: related_to
+  page: temporal/TIMELINE
+- from: memory-working
+  to: agents-md
+  rel: depends_on
+  page: _meta/brain-gap-analysis-2026-09-04
+- from: memory-working
+  to: wiki-router
+  rel: depends_on
+  page: _meta/CONTEXT_PROTOCOL
 - from: model-contract
   to: affine-cognitive-budget
   rel: depends_on
@@ -555,6 +659,14 @@ edges:
   to: belief-type
   rel: extends
   page: core/contract-and-guard-system
+- from: retrieval-rerank
+  to: brain-gap-analysis
+  rel: depends_on
+  page: _meta/brain-gap-analysis-2026-09-04
+- from: session-scratch
+  to: memory-episodic
+  rel: related_to
+  page: episodic/session-current
 - from: speculative-execution
   to: belief-type
   rel: depends_on
@@ -589,6 +701,10 @@ edges:
   to: natural-trell-syntax
   rel: accelerates
   page: market/competitive-analysis
+- from: temporal-timeline
+  to: memory-temporal
+  rel: implements
+  page: temporal/TIMELINE
 - from: three-beat-safety-pattern
   to: app-drone-airspace
   rel: applies_to
@@ -712,9 +828,25 @@ edges:
   to: three-beat-safety-pattern
   rel: related_to
   page: INDEX
+- from: wiki-router
+  to: context-protocol
+  rel: depends_on
+  page: ROUTER
+- from: wiki-router
+  to: memory-temporal
+  rel: depends_on
+  page: ROUTER
+- from: wiki-router
+  to: wiki-index
+  rel: related_to
+  page: ROUTER
 - from: wiki-schema
   to: agents-md
   rel: depends_on
+  page: SCHEMA
+- from: wiki-schema
+  to: memory-temporal
+  rel: related_to
   page: SCHEMA
 - from: zk-epistemic-proof
   to: app-aml-sar
