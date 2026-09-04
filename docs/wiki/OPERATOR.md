@@ -250,6 +250,7 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 
 | Skill | Path | Use when |
 |-------|------|----------|
+| Handoff | `skills/handoff/SKILL.md` | Compact this session → temp doc for a fresh agent (`/handoff`) |
 | Retrieve | `skills/wiki/retrieve/SKILL.md` | File RAG: scored top-k with temporal/graph rerank |
 | Navigate | `skills/wiki/navigate/SKILL.md` | Finding pages / graph traversal |
 | Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
@@ -269,7 +270,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal`.
+Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal | handoff`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 

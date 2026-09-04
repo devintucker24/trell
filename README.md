@@ -191,11 +191,11 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 
 **Karpathy LLM Wiki brain (for agents):**
 - Schema: [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) · [`docs/wiki/OPERATOR.md`](docs/wiki/OPERATOR.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md)
-- **Cursor:** [`.cursor/rules/`](.cursor/rules/) · [`.cursor/skills/`](.cursor/skills/) (launchers → `skills/wiki/`)
+- **Cursor:** [`.cursor/rules/`](.cursor/rules/) · [`.cursor/skills/`](.cursor/skills/) (launchers → `skills/`)
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `skills/wiki/triage` → `skills/wiki/ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
 - Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
-- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (retrieve · navigate · triage · ingest · doctor · heal · lint · label · maintain)
+- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (retrieve · navigate · triage · ingest · doctor · heal · lint · label · maintain) · [`skills/handoff/SKILL.md`](skills/handoff/SKILL.md) (`/handoff`)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 
 * **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)
