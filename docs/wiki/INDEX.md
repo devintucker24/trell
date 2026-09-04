@@ -106,8 +106,9 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 
 ---
 
-## 6. Brain Ops (Schema, Graph, Raw, Log)
-* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relation vocabulary
+## 6. Brain Ops (Schema, Graph, Raw, Inbox, Log)
+* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relations, **taxonomy evolution**, known tags
+* [[inbox/README]]: **Drop zone** — how humans/agents input material
 * [[_meta/GRAPH]]: Human graph overview + link to GRAPH.yaml
 * [[raw/thesis]]: Pointer to immutable THESIS.md
 * [[raw/examples]]: Pointers to executable `.trell` examples
@@ -121,7 +122,8 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 |-------|------|-----|
 | Parent | `skills/wiki/SKILL.md` | Entry point |
 | Navigate | `skills/wiki/navigate/SKILL.md` | INDEX + graph traversal |
-| Ingest | `skills/wiki/ingest/SKILL.md` | Compile sources into wiki |
+| Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
+| Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
 | Query | `skills/wiki/query/SKILL.md` | Answer + file synthesis |
 | Lint | `skills/wiki/lint/SKILL.md` | Heal orphans / contradictions |
 | Label | `skills/wiki/label/SKILL.md` | Normalize frontmatter |

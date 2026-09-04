@@ -1,33 +1,65 @@
 ---
 name: wiki-ingest
-description: Ingest new sources into the Trell wiki brain — extract claims, update concept/application pages, sync graph nodes/edges, update INDEX and append log. Use when adding research, papers, competitor notes, or new examples.
+description: Ingest triaged inbox items or approved sources into the Trell wiki — merge/create pages, raw pointers, frontmatter nodes/edges, GRAPH sync, INDEX, log. Use after triage, or when user names an explicit target page.
 ---
 
 # Skill: Wiki Ingest
 
 ## When to use
-- New research, competitor doc, regulation, or example lands
-- User says "add this to the knowledge base"
-- After shipping a major language feature that needs docs
+- After **triage** sets `suggested_action` to `merge-existing`, `new-page`, or `raw-only`
+- User explicitly: "update `market/competitive-analysis` with this"
+- Shipping a language feature that must sync docs (still prefer inbox if messy)
+
+## Prerequisite
+If material is still a chat paste / URL / unknown blob → run **`skills/wiki/triage`** first (or drop into `docs/wiki/inbox/`).
+
+---
 
 ## Procedure
-1. **Identify raw source.** Prefer immutable pointer under `docs/wiki/raw/`:
-   - Create `docs/wiki/raw/<slug>.md` with frontmatter `type: raw-pointer` and `origin:` path/URL.
-   - Do not silently rewrite `THESIS.md` / `src/` as wiki pages; cite them.
-2. **Extract.** Key claims, entities, concepts, contradictions with existing wiki.
-3. **Integrate.** Create or update pages under the correct `domain` folder.
-4. **Frontmatter.** Fill full SCHEMA.md contract including `nodes` and `edges`.
-5. **Graph sync.** Update `docs/wiki/_meta/GRAPH.yaml`.
-6. **Index.** Add/adjust one-line entry in `docs/wiki/INDEX.md` if structure changed.
-7. **Log.** Append to `docs/wiki/log.md`:
-   ```markdown
-   ## [YYYY-MM-DD] ingest | Short Title
-   - Source: ...
-   - Pages touched: ...
-   - Nodes added: ...
-   ```
+
+### A. From a triaged inbox item
+1. Open `docs/wiki/inbox/<item>.md` with `triage_status: classified|routed`.
+2. Honor `suggested_action` / `suggested_domain` / `suggested_type`.
+3. If `needs-human` → stop.
+4. Execute the matching path below.
+5. Set inbox `triage_status: ingested`, then move file to `docs/wiki/inbox/archive/` (create dir if needed).
+6. Sync graph + log.
+
+### B. Paths
+
+#### `merge-existing`
+1. Open target page(s) listed in triage.
+2. Integrate claims; preserve dual-track Trell thesis (don't dilute).
+3. Bump `updated`; add `nodes`/`edges`/`related` as needed.
+4. If contradiction with old claims → add `rel: contradicts` or rewrite with note in log.
+
+#### `new-page`
+1. Confirm domain folder already exists (`core|theory|applications|market|roadmap|meta|_meta|raw`).
+2. Create `docs/wiki/<domain>/<kebab-slug>.md` with **full** SCHEMA frontmatter.
+3. Add INDEX one-liner if it's a lasting page.
+4. Link from ≥1 existing hub page (`related` both ways when possible).
+
+#### `raw-only`
+1. Create `docs/wiki/raw/<slug>.md` (`type: raw-pointer`, `origin: ...`).
+2. Optionally schedule a follow-up concept merge (leave a new inbox item if needed).
+
+#### Feature sync (code → wiki)
+Use `skills/wiki/maintain` matrix; still log as `maintain` or `ingest`.
+
+### C. Always finish with
+1. `python3 skills/wiki/scripts/sync_graph.py`
+2. Log:
+```markdown
+## [YYYY-MM-DD] ingest | Short Title
+- Source: inbox/... or path/URL
+- Action: merge-existing|new-page|raw-only
+- Pages touched: ...
+- Nodes added: ...
+- Tags added: ... (must be SCHEMA-known or newly registered)
+```
 
 ## Quality bar
-- Cross-link related pages.
-- Flag `contradicts` edges explicitly when new data conflicts.
-- Keep Natural Trell examples compiling with current parser when showing code.
+- No page without SCHEMA frontmatter.
+- No new folder/type/rel without SCHEMA (+ AGENTS) update.
+- Cross-link; prefer merge over page sprawl.
+- Natural Trell samples must match current parser when claiming they run.

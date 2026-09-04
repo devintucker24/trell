@@ -38,7 +38,7 @@ This document is the **machine-oriented contract** for every page under `docs/wi
 ---
 id: string                 # globally unique kebab-case slug
 title: string              # human title
-type: index|concept|application|market|roadmap|schema|meta|synthesis|raw-pointer
+type: index|concept|application|market|roadmap|schema|meta|synthesis|raw-pointer|inbox-item
 status: draft|active|stale|deprecated
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
@@ -139,3 +139,74 @@ Agents can filter pages by:
 - `agent.priority: critical`
 - `status: stale` for lint targets
 - nodes with `kind: competitor` for market maps
+
+---
+
+## 6. Inbox → Triage → Ingest Pipeline
+
+```
+docs/wiki/inbox/   type: inbox-item   triage_status: pending
+        │
+        ▼  skills/wiki/triage
+   classified / routed / needs-human / rejected
+        │
+        ▼  skills/wiki/ingest
+   wiki page (domain folder)  +  optional raw/ pointer  +  GRAPH.yaml  +  log.md
+        │
+        ▼
+   inbox item → inbox/archive/  (triage_status: ingested)
+```
+
+### Inbox-only fields
+| Field | Values |
+|-------|--------|
+| `triage_status` | `pending` `classified` `routed` `ingested` `rejected` `needs-human` |
+| `suggested_domain` | existing domain or `null` |
+| `suggested_type` | existing type or `null` |
+| `suggested_action` | `merge-existing` `new-page` `raw-only` `discard` `needs-human` |
+| `origin` | URL, path, `user-paste`, `chat`, etc. |
+| `priority` | `critical` `high` `medium` `low` |
+
+Inbox pages are **not** query authorities until ingested.
+
+---
+
+## 7. Taxonomy Evolution Rules (when agents may invent structure)
+
+### Allowed without human approval
+- New **page** under an existing domain folder
+- New **node id** (kebab-case, correct prefix)
+- New **edge** using an existing `rel`
+- Reuse of an existing **tag**
+- New **raw-pointer**
+- New **inbox-item**
+
+### Requires SCHEMA.md + AGENTS.md update first (and `needs-human` if unsure)
+- New **top-level folder** under `docs/wiki/` (e.g. inventing `docs/wiki/hardware/`)
+- New **`domain:`** enum value
+- New **`type:`** enum value
+- New **`rel:`** edge relation
+- New **node `kind:`**
+- Renaming/splitting a domain
+
+### Decision heuristic
+1. Can this claim live on an existing page? → **merge**
+2. Can this claim be a new page in an existing folder? → **new-page**
+3. Is it only a source artifact? → **raw-only**
+4. Otherwise → **needs-human** taxonomy proposal (do not invent folders)
+
+---
+
+## 8. Known Tags (reuse before inventing)
+
+Prefer these. Add new recurring tags here when promoted from inbox.
+
+**Core / theory:** `epistemic-types`, `belief`, `certain`, `syntax`, `natural-trell`, `speculation`, `guards`, `contracts`, `quorum`, `type-theory`, `bayesian`, `affine-types`, `zk-snark`, `hardware`, `npu`
+
+**Applications:** `maritime`, `colregs`, `healthcare`, `finance`, `fedwire`, `grid`, `security`, `iam`, `satellites`, `pattern`, `three-beat`
+
+**Market / roadmap:** `market`, `regulation`, `insurance`, `personas`, `adoption`, `roadmap`, `phases`, `vision`
+
+**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`
+
+One-off adjectives do **not** belong in `tags:` — put them in the body.

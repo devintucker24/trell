@@ -191,8 +191,9 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 
 **Karpathy LLM Wiki brain (for agents):**
 - Schema: [`AGENTS.md`](AGENTS.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md)
+- **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `skills/wiki/triage` → `skills/wiki/ingest`
 - Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
-- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (navigate · ingest · query · lint · label · maintain)
+- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (navigate · triage · ingest · query · lint · label · maintain)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 
 * **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)

@@ -34,3 +34,10 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Report: `docs/wiki/_meta/sim-2026-09-04.md`
 - Navigate hit #1: applications/autonomous-physical-systems.md
 - Graph: 82 nodes / 62 valid edges; 27 hard-orphan leaf nodes flagged for denser linking
+
+## [2026-09-04] schema | Inbox + triage pipeline
+
+- Added `docs/wiki/inbox/` drop zone, `_TEMPLATE.md`, example item
+- Added `skills/wiki/triage/SKILL.md`; updated ingest + AGENTS.md + SCHEMA §6–§8
+- Input path: inbox → triage → ingest → wiki/raw/GRAPH/log
+- Taxonomy gate: no new folders/types/rels/tags without SCHEMA update

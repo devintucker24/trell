@@ -16,11 +16,18 @@ This skill family implements the **Karpathy LLM Wiki** pattern for Trell.
 | Task | Skill |
 |------|-------|
 | Find pages / traverse graph | [navigate/SKILL.md](navigate/SKILL.md) |
+| Classify inbox drops | [triage/SKILL.md](triage/SKILL.md) |
 | Add research / sources | [ingest/SKILL.md](ingest/SKILL.md) |
 | Answer with citations | [query/SKILL.md](query/SKILL.md) |
 | Health-check & heal | [lint/SKILL.md](lint/SKILL.md) |
 | Normalize frontmatter | [label/SKILL.md](label/SKILL.md) |
 | Sync code ↔ wiki ↔ GRAPH | [maintain/SKILL.md](maintain/SKILL.md) |
+
+## Input path (remember this)
+```
+chat paste / URL / note  →  docs/wiki/inbox/  →  triage  →  ingest  →  wiki + GRAPH + log
+```
+Do not invent folders during ingest. Taxonomy changes go through SCHEMA §7.
 
 ## References
 - [frontmatter-schemas.md](references/frontmatter-schemas.md)

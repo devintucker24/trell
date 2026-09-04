@@ -38,6 +38,7 @@
 3. If maintaining graph health: read `docs/wiki/_meta/GRAPH.yaml` and `docs/wiki/log.md` (tail).
 4. Load the relevant skill from `skills/wiki/` for the task:
    - Navigate → `skills/wiki/navigate/SKILL.md`
+   - Triage → `skills/wiki/triage/SKILL.md`
    - Ingest → `skills/wiki/ingest/SKILL.md`
    - Lint / Heal → `skills/wiki/lint/SKILL.md`
    - Label → `skills/wiki/label/SKILL.md`
@@ -57,6 +58,7 @@
 | `roadmap` | `docs/wiki/roadmap/` | Rewriteable | Vision + phased milestones |
 | `schema` | `docs/wiki/SCHEMA.md`, `AGENTS.md` | Human+agent co-evolve | Operating rules |
 | `meta` | `docs/wiki/_meta/` | Agent-maintained | GRAPH.yaml, health reports |
+| `inbox-item` | `docs/wiki/inbox/` | Pending → archive | Unprocessed drops (not wiki truth) |
 | `log` | `docs/wiki/log.md` | Append-only | Chronological ops |
 | `raw-pointer` | `docs/wiki/raw/` | Append-only pointers | Links to immutable sources |
 
@@ -105,26 +107,40 @@ Agents must update GRAPH.yaml when adding/removing nodes or edges.
 
 ## 6. Operational Workflows
 
-### 6.1 Ingest (new knowledge)
-1. Place or identify raw source under `docs/wiki/raw/` or cite existing `THESIS.md` / `examples/` / `src/`.
-2. Extract claims; create or update concept/application pages.
-3. Update frontmatter nodes/edges; sync `_meta/GRAPH.yaml`.
-4. Update `INDEX.md` one-line summary if needed.
+### 6.0 Inbox drop (default on-ramp)
+1. Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md` from `inbox/_TEMPLATE.md`  
+   — or accept user phrase: *"Inbox this: …"*
+2. Leave `triage_status: pending`.
+3. Do **not** cite inbox content as wiki truth yet.
+4. See `docs/wiki/inbox/README.md`.
+
+### 6.1 Triage (classify before writing)
+Skill: `skills/wiki/triage/SKILL.md`  
+Decide `suggested_action`: `merge-existing` | `new-page` | `raw-only` | `discard` | `needs-human`.  
+**Never invent a new top-level folder / type / domain / edge `rel` / recurring tag without updating `docs/wiki/SCHEMA.md` first** (and ask a human if unsure).
+
+### 6.2 Ingest (write wiki truth)
+Skill: `skills/wiki/ingest/SKILL.md`  
+1. Execute triaged action (merge / new page / raw pointer).
+2. Full frontmatter per SCHEMA; sync `_meta/GRAPH.yaml`.
+3. Update `INDEX.md` if structure changed.
+4. Archive inbox item → `inbox/archive/`; set `triage_status: ingested`.
 5. Append `## [YYYY-MM-DD] ingest | <title>` to `docs/wiki/log.md`.
 
-### 6.2 Query (answer from wiki)
+### 6.3 Query (answer from wiki)
 1. Read INDEX → select pages → cite with wikilinks.
 2. Prefer filing valuable answers back as new wiki pages (`type: synthesis` or expand existing).
 3. Log: `## [YYYY-MM-DD] query | <question slug>`
+4. Pending `inbox/` items are not settled knowledge.
 
-### 6.3 Lint / Heal
-Check for: orphan pages, missing inbound links, stale `updated` dates, broken wikilinks, nodes without edges, edges pointing to missing ids, contradictions, concepts mentioned in body but lacking pages, frontmatter schema violations.
+### 6.4 Lint / Heal
+Check for: orphan pages, missing inbound links, stale `updated` dates, broken wikilinks, nodes without edges, edges pointing to missing ids, contradictions, concepts mentioned in body but lacking pages, frontmatter schema violations, stale inbox (`pending` too long).
 Write a health report to `docs/wiki/_meta/health-YYYY-MM-DD.md` and append a log entry.
 
-### 6.4 Label
+### 6.5 Label
 Normalize tags, domains, node ids (kebab-case), edge relations to the allowed vocabulary in SCHEMA.md.
 
-### 6.5 Maintain (code ↔ wiki sync)
+### 6.6 Maintain (code ↔ wiki sync)
 When `src/` or `examples/` change epistemic semantics:
 1. Diff against wiki claims in `core/` and `theory/`.
 2. Update pages; bump `updated`.
@@ -161,7 +177,8 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 | Skill | Path | Use when |
 |-------|------|----------|
 | Navigate | `skills/wiki/navigate/SKILL.md` | Finding pages / graph traversal |
-| Ingest | `skills/wiki/ingest/SKILL.md` | Adding sources or new research |
+| Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
+| Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
 | Query | `skills/wiki/query/SKILL.md` | Answering questions from the brain |
 | Lint | `skills/wiki/lint/SKILL.md` | Health-check / heal orphans & contradictions |
 | Label | `skills/wiki/label/SKILL.md` | Frontmatter + tag normalization |
@@ -175,7 +192,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `ingest | query | lint | label | maintain | schema | graph`.
+Where `<op>` ∈ `inbox | triage | ingest | query | lint | label | maintain | schema | graph`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 
@@ -187,3 +204,4 @@ This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 - Do not cite abandoned `docs/research/` sketches as Trell product truth unless reconciled into wiki with explicit status.
 - Do not invent unverifiable market share numbers; prefer qualitative competitive maps + regulatory drivers.
 - Do not delete log entries (append-only).
+- Do not invent new wiki folders/types/rels from a single inbox note — triage to `needs-human` and update SCHEMA first.
