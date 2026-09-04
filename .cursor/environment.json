@@ -1,0 +1,4 @@
+{
+  "name": "Trell",
+  "install": "cargo fetch && cargo build --tests"
+}
