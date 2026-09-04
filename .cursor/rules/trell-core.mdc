@@ -1,0 +1,11 @@
+---
+description: Always-on Trell project pointers (thin). Prefer AGENTS.md detail.
+alwaysApply: true
+---
+
+# Trell agent pointers
+
+- Project brief: `AGENTS.md` (and `CLAUDE.md` for Claude Code).
+- Wiki map: `docs/wiki/ROUTER.md` → retrieve, don't dump the wiki.
+- Skills: `.cursor/skills/` (Cursor) launching `skills/wiki/` playbooks.
+- Verify Rust with `/cargo-verify` or `cargo test`.

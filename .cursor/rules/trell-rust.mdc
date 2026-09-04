@@ -1,0 +1,13 @@
+---
+description: Trell Rust compiler/runtime conventions
+globs: src/**/*.rs,tests/**/*.rs,examples/**/*.trell,Cargo.toml
+alwaysApply: false
+---
+
+# Rust / Trell code
+
+- `src/` is ground truth for runtime behavior; wiki describes intent.
+- Preserve epistemic invariants: no silent `belief` → `certain` coercion.
+- Prefer small, test-backed changes; run `cargo test` before claiming done.
+- When epistemic semantics change, update `docs/wiki/core/` or `theory/` and log the maintain op.
+- Examples in `examples/*.trell` should keep compiling with the CLI.

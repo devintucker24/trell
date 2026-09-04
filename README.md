@@ -190,7 +190,8 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
 
 **Karpathy LLM Wiki brain (for agents):**
-- Schema: [`AGENTS.md`](AGENTS.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md)
+- Schema: [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) · [`docs/wiki/OPERATOR.md`](docs/wiki/OPERATOR.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md)
+- **Cursor:** [`.cursor/rules/`](.cursor/rules/) · [`.cursor/skills/`](.cursor/skills/) (launchers → `skills/wiki/`)
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `skills/wiki/triage` → `skills/wiki/ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
 - Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)

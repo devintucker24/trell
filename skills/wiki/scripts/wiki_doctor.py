@@ -131,7 +131,7 @@ def main() -> None:
     # Wikilinks (skip generated reports — they quote prior findings)
     all_stems = {p.relative_to(WIKI).as_posix()[:-3] for p in WIKI.rglob("*.md")}
     aliases = set(all_stems) | {s.split("/")[-1] for s in all_stems} | {
-        "INDEX", "SCHEMA", "log", "ROUTER", "inbox/README",
+        "INDEX", "SCHEMA", "log", "ROUTER", "OPERATOR", "inbox/README",
         "episodic/INDEX", "temporal/TIMELINE",
     }
     skip_link_scan = ("_meta/doctor-", "_meta/heal-", "_meta/health-", "_meta/sim-")
@@ -143,7 +143,7 @@ def main() -> None:
             continue
         for m in LINK_RE.finditer(p.read_text(encoding="utf-8")):
             target = m.group(1).strip()
-            if target.startswith("examples/") or target == "path/page":
+            if target.startswith("examples/") or target in ("path/page", "folder/page-name", "path/page-name"):
                 continue
             ok = target in aliases or any(s == target or s.endswith("/" + target) for s in all_stems)
             if not ok:
@@ -169,8 +169,11 @@ def main() -> None:
     # Bootstrap artifacts
     for req in [
         ROOT / "AGENTS.md",
+        ROOT / "CLAUDE.md",
         WIKI / "INDEX.md",
         WIKI / "SCHEMA.md",
+        WIKI / "OPERATOR.md",
+        WIKI / "ROUTER.md",
         WIKI / "log.md",
         META / "GRAPH.yaml",
         ROOT / "skills" / "wiki" / "SKILL.md",
@@ -178,7 +181,8 @@ def main() -> None:
         ROOT / "skills" / "wiki" / "heal" / "SKILL.md",
         ROOT / "skills" / "wiki" / "triage" / "SKILL.md",
         ROOT / "skills" / "wiki" / "retrieve" / "SKILL.md",
-        WIKI / "ROUTER.md",
+        ROOT / ".cursor" / "skills" / "trell-wiki" / "SKILL.md",
+        ROOT / ".cursor" / "skills" / "cargo-verify" / "SKILL.md",
         WIKI / "episodic" / "INDEX.md",
         WIKI / "temporal" / "TIMELINE.md",
     ]:
@@ -208,10 +212,9 @@ def main() -> None:
             if not (temporal.get("observed_at") and temporal.get("valid_from")):
                 add(findings, "high", "episode_missing_temporal",
                     "episode lacks temporal.observed_at/valid_from", rel, "SCHEMA §9")
-            if not ep.get("goal") and rel.endswith("_TEMPLATE.md") is False:
-                if "TEMPLATE" not in rel:
-                    add(findings, "medium", "episode_missing_goal",
-                        "episode.goal missing", rel, "Fill episode.goal")
+            if not ep.get("goal") and "TEMPLATE" not in rel:
+                add(findings, "medium", "episode_missing_goal",
+                    "episode.goal missing", rel, "Fill episode.goal")
 
     # Score
     sev = Counter(f["severity"] for f in findings)

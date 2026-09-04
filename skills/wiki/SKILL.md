@@ -8,7 +8,10 @@ description: Operate the Trell Karpathy-style epistemic wiki brain — retrieve,
 This skill family implements the **Karpathy LLM Wiki** pattern for Trell, extended as a **file RAG + multi-lane memory** system.
 
 ## Architecture reminder
-- **Schema:** `AGENTS.md`, `docs/wiki/SCHEMA.md`, `skills/wiki/*`
+- **Schema (thin):** root `AGENTS.md`, `CLAUDE.md`
+- **Schema (deep):** `docs/wiki/OPERATOR.md`, `docs/wiki/SCHEMA.md`, `skills/wiki/*`
+- **Cursor discovery:** `.cursor/rules/*.mdc`, `.cursor/skills/*/SKILL.md` (launchers)
+- **Claude discovery:** `.claude/skills/*/SKILL.md` (same launchers)
 - **Wiki:** `docs/wiki/**` with YAML nodes/edges
 - **Memory lanes:** semantic pages · `episodic/` · `temporal/TIMELINE.md`
 - **Context:** `docs/wiki/ROUTER.md` + `_meta/CONTEXT_PROTOCOL.md` (progressive disclosure)
@@ -53,9 +56,11 @@ wiki doctor  →  (optional) wiki heal  →  wiki doctor again
 
 ## Session bootstrap
 ```
-1. Read AGENTS.md (§§1–2, §8)
+1. Read AGENTS.md (brief) — Claude Code also CLAUDE.md
 2. Read docs/wiki/ROUTER.md
 3. retrieve "<task>"  (not full INDEX)
-4. Choose subskill
+4. Choose subskill (skills/wiki/ or .cursor/skills/)
 5. Append docs/wiki/log.md when done
 ```
+
+Deep ops: `docs/wiki/OPERATOR.md`

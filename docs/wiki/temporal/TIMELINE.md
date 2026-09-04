@@ -72,6 +72,7 @@ Example: `- 14:00 | episode | brain upgrade | router+temporal | episodic/2026-09
 - — | schema | inbox+triage | taxonomy gate | [[inbox/README]]
 - — | decision | memory architecture | file RAG; progressive disclosure; no required vectors yet | [[_meta/brain-gap-analysis-2026-09-04]]
 - — | episode | brain memory upgrade | router + episodic + temporal + retrieve | [[episodic/2026-09-04-brain-memory-upgrade]]
+- — | schema | agent project setup | thin AGENTS.md + CLAUDE.md + .cursor skills/rules | [[OPERATOR]]
 - — | schema | temporal lane | `temporal:` frontmatter + domain/type episode | [[SCHEMA]]
 
 ---

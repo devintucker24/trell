@@ -75,3 +75,10 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Recorded gap-analysis → router/episodic/temporal/retrieve implementation episode
 - Appended temporal/TIMELINE.md
+
+## [2026-09-04] schema | AGENTS.md + CLAUDE.md + Cursor skills
+
+- Split thin always-on `AGENTS.md` / `CLAUDE.md` from detailed `docs/wiki/OPERATOR.md`
+- Added `.cursor/rules/*.mdc` (core, rust, wiki)
+- Added `.cursor/skills/` + `.claude/skills/` launchers → `skills/wiki/` + `cargo-verify`
+- Doctor now requires CLAUDE.md, OPERATOR.md, .cursor skill entrypoints
