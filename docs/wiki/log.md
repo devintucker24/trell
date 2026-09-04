@@ -98,3 +98,14 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Installed full set via `npx skills add mattpocock/skills` → `skills-lock.json`, `.agents/skills/`, `.cursor/skills/`, `.claude/skills/`
 - Adapted `/handoff` to write `.handoffs/handoff-*.md` (not OS `/tmp`)
 - Added `/read-handoff` to load newest handoff then delete it
+
+## [2026-09-04] schema | skills cleanup (Option B) & autonomous wiki rules
+
+- Relocated wiki automation scripts to `docs/wiki/scripts/` (`wiki_retrieve.py`, `wiki_doctor.py`, `sync_graph.py`, `apply_frontmatter_and_sync_graph.py`)
+- Removed redundant root `skills/` directory entirely
+- Canonical wiki skills now live natively in `.cursor/skills/` (and `.claude/skills/`)
+- Updated `skills-lock.json` paths to reference `.cursor/skills/`
+- Enhanced `.cursor/rules/trell-core.mdc` with explicit autonomous triggers and mapping table for when & which wiki skills to use
+- Updated `.cursor/rules/trell-wiki.mdc` with autonomous skill execution checklist
+- Doctor check score: 100.0/100
+

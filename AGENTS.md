@@ -1,7 +1,7 @@
 # AGENTS.md — Trell Project Brief
 
 > Always-on instructions for **Cursor, Claude Code, Codex, and other coding agents**.  
-> Keep this file short. Deep wiki procedures live in `docs/wiki/OPERATOR.md` and `skills/wiki/`.
+> Keep this file short. Deep wiki procedures live in `docs/wiki/OPERATOR.md` and `.cursor/skills/`.
 
 ---
 
@@ -27,9 +27,10 @@ Do **not** dilute this thesis. Abandoned LangChain-workflow sketches in `docs/re
 | `examples/*.trell` | Executable language examples |
 | `tests/` | Rust tests |
 | `docs/wiki/` | Compounding knowledge brain (semantic + episodic + temporal) |
-| `skills/wiki/` | Wiki playbooks + scripts (canonical procedures) |
-| `.cursor/rules/` | Cursor rules (file-scoped conventions) |
-| `.cursor/skills/` | Cursor-discoverable skill entrypoints |
+| `docs/wiki/scripts/` | Wiki automation scripts (`wiki_retrieve.py`, `wiki_doctor.py`, `sync_graph.py`) |
+| `.cursor/rules/` | Cursor rules (file-scoped conventions and triggers) |
+| `.cursor/skills/` | Cursor-discoverable skills and playbooks |
+| `.claude/skills/` | Claude Code skill entrypoints |
 | `THESIS.md` | Immutable language thesis (raw layer) |
 
 ---
@@ -43,21 +44,20 @@ Do **not** dilute this thesis. Abandoned LangChain-workflow sketches in `docs/re
 
 ```bash
 # File RAG over the wiki brain
-python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 ```
 
 ---
 
 ## Skills (how to invoke)
 
-**Canonical playbooks:** `skills/wiki/*/SKILL.md`  
-**Cursor auto-discovery:** `.cursor/skills/*/SKILL.md` (thin launchers → same playbooks)
+**Skills directory:** `.cursor/skills/*/SKILL.md` (Cursor) · `.claude/skills/*/SKILL.md` (Claude)
 
 | Need | Skill |
 |------|--------|
 | Answer from wiki | `wiki-retrieve` / `wiki-query` |
 | Add notes / research | inbox → `wiki-triage` → `wiki-ingest` |
-| Health | `wiki-doctor` → `wiki-heal` |
+| Health | `wiki-doctor` → `wiki-heal` (or shortcut `wiki-lint`) |
 | Code ↔ wiki sync | `wiki-maintain` |
 | Rust verify | `cargo-verify` |
 | Session handoff | `/handoff` → `.handoffs/` → next chat `/read-handoff` |

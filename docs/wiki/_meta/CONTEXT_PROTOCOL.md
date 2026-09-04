@@ -58,7 +58,7 @@ Turns the wiki into an efficient **file RAG + multi-lane memory** system — wit
 | **Semantic** | Stable concepts & claims | `core/`, `theory/`, `applications/`, `market/`, `roadmap/` | `wiki_retrieve` + graph hop |
 | **Episodic** | What happened / decided / failed | `docs/wiki/episodic/` | recency + task/tag match |
 | **Temporal** | When facts held; supersession; as-of | `temporal/TIMELINE.md` + `temporal:` frontmatter | `--as-of`, validity filter, timeline scan |
-| **Procedural** | How to operate | `AGENTS.md`, `skills/wiki/*/SKILL.md` | by skill / intent |
+| **Procedural** | How to operate | `AGENTS.md`, `.cursor/skills/wiki-*` | by skill / intent |
 | **Raw / provenance** | Immutable sources | `raw/`, `THESIS.md`, examples | via `sources` / `related` |
 | **Working** | Current-task scratch | `episodic/session-current.md` (capped) | discard/consolidate after commit |
 
@@ -150,5 +150,5 @@ Embeddings optional when page count ≫ 200. Stay git-native until then.
 
 - `docs/wiki/ROUTER.md`
 - `docs/wiki/_meta/brain-gap-analysis-2026-09-04.md`
-- `skills/wiki/retrieve/SKILL.md`
+- `.cursor/skills/wiki-retrieve/SKILL.md`
 - `docs/wiki/episodic/` · `docs/wiki/temporal/`

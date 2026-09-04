@@ -1,16 +1,32 @@
 ---
 name: wiki-navigate
-description: Trell wiki navigate playbook. Use for docs/wiki navigate workflows; follows skills/wiki/navigate/SKILL.md.
+description: Navigate the Trell epistemic wiki brain via INDEX, GRAPH.yaml, and frontmatter. Use when finding pages, traversing graph edges, or deciding which docs an agent should read first.
 ---
 
-# wiki-navigate
+# Skill: Wiki Navigate
 
-Follow the canonical playbook:
+## When to use
+- User asks "where is X documented?"
+- Agent needs epistemic/types/applications/market/roadmap context
+- Starting any Trell research session
 
-```text
-skills/wiki/navigate/SKILL.md
-```
+## Procedure
+1. Read `AGENTS.md` (if not already in context).
+2. Read `docs/wiki/INDEX.md` — pick candidate pages by section.
+3. Optionally load `docs/wiki/_meta/GRAPH.yaml` and walk:
+   - Outbound edges from a node (`from == id`)
+   - Inbound edges (`to == id`) for hub detection
+4. Open only the pages whose `agent.read_when` matches the task.
+5. Prefer `agent.priority: critical|high` pages first.
 
-Parent index: `skills/wiki/SKILL.md`  
+## Graph traversal tips
+- Hub concepts: `belief-type`, `certain-type`, `speculative-execution`, `natural-trell-syntax`
+- Application entry: `three-beat-safety-pattern`
+- Market entry: `comp-langchain`, `reg-eu-ai-act`
+- Future: `phase-4-iso-silicon`
+
+## Output
+Return wikilinks + one-line `summary` from frontmatter. Do not dump entire pages unless asked.
+
 Operator manual: `docs/wiki/OPERATOR.md`  
 Router: `docs/wiki/ROUTER.md`

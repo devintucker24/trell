@@ -24,7 +24,7 @@ Full always-on brief: **`AGENTS.md`**. Deep wiki ops: **`docs/wiki/OPERATOR.md`*
 3. Knowledge / memory → `docs/wiki/ROUTER.md` → retrieve:
 
 ```bash
-python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 ```
 
 4. New material → `docs/wiki/inbox/` → triage → ingest (never invent taxonomy without `SCHEMA.md`).
@@ -34,7 +34,7 @@ python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 
 ## Skills
 
-Claude Code can load project skills from `.claude/skills/` (wrappers) or follow `skills/wiki/*/SKILL.md` directly.
+Claude Code can load project skills from `.claude/skills/` (and `.cursor/skills/`).
 
 | Slash / name | Purpose |
 |--------------|---------|
@@ -46,7 +46,7 @@ Claude Code can load project skills from `.claude/skills/` (wrappers) or follow 
 | `wiki-doctor` / `wiki-heal` | Brain health |
 | `cargo-verify` | `fmt` / `clippy` / `test` |
 
-Full Matt Pocock set is under `.claude/skills/` / `skills/` (`skills-lock.json`).
+Full Matt Pocock set is under `.claude/skills/` · `.cursor/skills/` (`skills-lock.json`).
 
 ---
 

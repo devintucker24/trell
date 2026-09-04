@@ -72,7 +72,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 | vision / 10-year / phases / roadmap | `roadmap/ten-year-vision.md`, `roadmap/phases-and-milestones.md` |
 | wiki / memory / RAG / retrieval / context | `_meta/brain-gap-analysis-2026-09-04.md`, `_meta/CONTEXT_PROTOCOL.md` |
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
-| health / orphans / doctor / heal | run `skills/wiki/doctor` (then `heal` if score < 95) |
+| health / orphans / doctor / heal | run `.cursor/skills/wiki-doctor` (then `wiki-heal` if score < 95) |
 | session / decisions / what happened / episodic | `episodic/INDEX.md` + latest episode |
 | timeline / when / as-of / what changed / temporal | `temporal/TIMELINE.md` + retrieve with `--as-of` |
 
@@ -81,12 +81,12 @@ After seeding, expand **one hop** via frontmatter `edges` or `GRAPH.yaml` — no
 ## Tier 2 — Retrieve + rerank (+ temporal)
 
 ```bash
-python3 skills/wiki/scripts/wiki_retrieve.py "<query>" --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --budget-tokens 3500
 # time-aware:
-python3 skills/wiki/scripts/wiki_retrieve.py "<query>" --as-of 2026-09-04 --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_retrieve.py "<query>" --as-of 2026-09-04 --budget-tokens 3500
 ```
 
-See `skills/wiki/retrieve/SKILL.md`. Open **only** top hits that fit budget.
+See `.cursor/skills/wiki-retrieve/SKILL.md`. Open **only** top hits that fit budget.
 
 ## Tier 3 — Deep read (cite + update)
 
@@ -99,7 +99,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 | Stable “what is true” | Semantic | `core/`, `theory/`, `applications/`, … |
 | “What we did / decided / failed” | Episodic | `episodic/` |
 | “When / as-of / what superseded what” | Temporal | `temporal/TIMELINE.md` + page `temporal:` fields |
-| “How to operate” | Procedural | `AGENTS.md`, `skills/wiki/*` |
+| “How to operate” | Procedural | `AGENTS.md`, `.cursor/skills/wiki-*` |
 
 ## Hard budget defaults
 

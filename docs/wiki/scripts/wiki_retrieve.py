@@ -2,9 +2,9 @@
 """Wiki retrieve — file-native hybrid lexical + graph + temporal rerank.
 
 Usage:
-  python3 skills/wiki/scripts/wiki_retrieve.py "maritime colregs belief" 
-  python3 skills/wiki/scripts/wiki_retrieve.py "what did we decide about memory" --lane episodic
-  python3 skills/wiki/scripts/wiki_retrieve.py "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
+  python3 docs/wiki/scripts/wiki_retrieve.py "maritime colregs belief" 
+  python3 docs/wiki/scripts/wiki_retrieve.py "what did we decide about memory" --lane episodic
+  python3 docs/wiki/scripts/wiki_retrieve.py "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
 """
 
 from __future__ import annotations
