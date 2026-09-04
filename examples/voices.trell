@@ -1,0 +1,37 @@
+// The same facts, walked to two destinations. Trell does not "rewrite
+// in a different style." It moves a grain through a space you named.
+
+axes {
+  warmth:    "ice, blotter, report, instruments" <-> "darling, held, grief, hands"
+  certainty: "perhaps, seems, wonder"            <-> "must, swear, always"
+  scale:     "one kitchen, a single night"       <-> "a nation, everyone, a century"
+}
+
+offer at warmth=0.10, certainty=0.88, scale=0.20:
+  "Incident logged at 03:10. Lights extinguished. No next of kin on record."
+
+offer at warmth=0.18, certainty=0.74, scale=0.82:
+  "A statement will be released. Figures from hospitals across the region."
+
+offer at warmth=0.88, certainty=0.30, scale=0.14:
+  "I sat in that kitchen and thought of your hands. I still don't know."
+
+offer at warmth=0.84, certainty=0.78, scale=0.22:
+  "We loved you. We were there. We did not leave the room."
+
+grain incident = feel "a nurse turning off the lights in an empty ward, no family waiting"
+
+grain blotter = incident
+  along warmth toward 0.12
+  along certainty toward 0.86
+  keeping scale
+
+grain eulogy = incident
+  along warmth toward 0.86
+  along certainty toward 0.72
+  keeping scale
+
+speak blotter
+speak eulogy
+echo blotter
+echo eulogy

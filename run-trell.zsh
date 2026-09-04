@@ -1,16 +1,9 @@
-#!/usr/bin/env zsh
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-source ./env.zsh
+if [ "${1-}" = "" ]; then
+  echo "Usage: ./run-trell.zsh <file.trell>" >&2
+  exit 1
+fi
 
-cargo run -- "$1"
-
-llc \
-  -mtriple=arm64-apple-macosx15.2 \
-  -filetype=obj \
-  out.ll \
-  -o trell-program.o
-
-xcrun clang trell-program.o -o trell-program
-
-./trell-program
+cargo run --quiet -- "$1"

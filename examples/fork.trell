@@ -1,0 +1,28 @@
+// Control flow is geometric. Branch on a named axis, or on whether a
+// grain resonates with a phrase.
+
+axes {
+  warmth: "ice, sterile, chart" <-> "ember, darling, held"
+  scale:  "one bed, one night"  <-> "a nation, everyone"
+}
+
+offer at warmth=0.12, scale=0.15:
+  "The chart says the bed is empty. Night shift only."
+
+offer at warmth=0.85, scale=0.18:
+  "I kept the light on for you as long as I could."
+
+offer at warmth=0.20, scale=0.80:
+  "Empty wards were reported across the region."
+
+grain scene = feel "an empty sterile ward at night, one bed, the chart closed"
+
+when scene.scale < 0.45 {
+  speak scene along warmth toward 0.85 keeping scale
+} else {
+  speak scene along warmth toward 0.2
+}
+
+when scene ~ "empty neglected ward night" {
+  echo scene
+}

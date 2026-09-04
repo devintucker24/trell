@@ -1,0 +1,32 @@
+// One night in a ward. The program names the space, pins voices in it,
+// then walks the same scene toward a letter — and speaks what that walk
+// discarded.
+
+axes {
+  warmth:    "ice, chart, fluorescent, instruments" <-> "ember, hands, held, darling"
+  certainty: "perhaps, i wonder, seems"             <-> "always, i swear, must"
+  scale:     "one bed, a single night"              <-> "a nation, a century, everyone"
+}
+
+offer at warmth=0.12, certainty=0.84, scale=0.16:
+  "The ward was closed at 03:10. Lights out. No next of kin present."
+
+offer at warmth=0.22, certainty=0.70, scale=0.78:
+  "Hospitals across the region reported empty corridors. The figures will be released."
+
+offer at warmth=0.90, certainty=0.24, scale=0.12:
+  "I keep thinking of you in that room. I don't know if you were cold."
+
+offer at warmth=0.86, certainty=0.80, scale=0.14:
+  "I was there. I turned the last light off. I did not leave you."
+
+grain scene = feel "a nurse turning off the fluorescent lights in an empty ward at 3am, charts and instruments left out"
+
+grain letter = scene
+  along warmth toward 0.88
+  along certainty toward 0.28
+  keeping scale
+
+speak letter
+speak shadow of letter
+echo letter

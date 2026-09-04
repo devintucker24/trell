@@ -1,0 +1,26 @@
+// `without` is subtraction of meaning. The shadow is what got winnowed.
+
+axes {
+  warmth: "ice, sterile, fluorescent, machine" <-> "ember, tender, held, home"
+  public: "secret, inside, whisper, hidden"    <-> "report, press, everyone, released"
+}
+
+offer at warmth=0.15, public=0.15:
+  "Keep this in the room. Don't write it down."
+
+offer at warmth=0.20, public=0.85:
+  "The statement for the press is ready. Names withheld."
+
+offer at warmth=0.88, public=0.18:
+  "I held that night close. It was ours."
+
+offer at warmth=0.80, public=0.80:
+  "We can say we cared. We can say the lights went out."
+
+grain raw = feel "a tender secret in a fluorescent hospital corridor, names of the family"
+
+grain public_voice = raw without feel "secret whisper hidden names family"
+
+speak public_voice
+speak shadow of public_voice
+echo public_voice

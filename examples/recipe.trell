@@ -1,0 +1,32 @@
+// A path is a walk you can apply more than once. Same recipe, two grains.
+
+axes {
+  warmth:    "ice, sterile, distant" <-> "ember, close, held"
+  certainty: "perhaps, wonder"       <-> "swear, always, must"
+}
+
+offer at warmth=0.12, certainty=0.80:
+  "The instruments are laid out. The room does not care who you are."
+
+offer at warmth=0.88, certainty=0.25:
+  "I keep thinking of your hands in that room. I don't know if I should."
+
+offer at warmth=0.84, certainty=0.78:
+  "I was there. I swear I did not leave."
+
+path intimate {
+  along warmth toward 0.90 by 0.85
+  along certainty toward 0.22 by 0.70
+}
+
+grain night = feel "a sterile room, instruments, a distant night shift"
+grain morning = feel "the same room in daylight, charts closed, someone waiting"
+
+grain night_letter = night via intimate
+grain morning_letter = morning via intimate
+
+speak night_letter
+speak morning_letter
+speak shadow of night_letter
+echo night_letter
+echo morning_letter
