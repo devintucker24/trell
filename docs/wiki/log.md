@@ -85,6 +85,5 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 ## [2026-09-04] handoff | Matt Pocock-style /handoff skill
 
-- Canonical playbook: `skills/handoff/SKILL.md`
-- Discoverable via `.cursor/skills/handoff` and `.claude/skills/handoff`
-- Writes disposable temp handoff docs for fresh agent sessions
+- Upstream skill from https://github.com/mattpocock/skills (`skills/productivity/handoff`)
+- Installed at `skills/handoff/`, `.cursor/skills/handoff/`, `.claude/skills/handoff/`
