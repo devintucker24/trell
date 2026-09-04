@@ -1,0 +1,18 @@
+// Example 1: Fact Superseding and Auditability
+// Demonstrates how temporal updates shadow older beliefs without destroying them.
+
+assert user.residence = "Lisbon" @ authority(User), source("chat_session_03"), at("2026-03-01T10:00:00Z");
+assert user.residence = "Berlin" @ authority(User), source("chat_session_08"), at("2026-08-15T14:30:00Z");
+
+print "--- Current Belief ---";
+let current_city = recall user.residence;
+print current_city;
+assert_eq current_city, "Berlin";
+
+print "--- Time-Travel (as of April 2026) ---";
+let past_city = recall as_of("2026-04-01T00:00:00Z") user.residence;
+print past_city;
+assert_eq past_city, "Lisbon";
+
+print "--- Full Epistemic Audit Trail ---";
+print history user.residence;

@@ -1,0 +1,25 @@
+// Example 4: Lifetimes, Staleness, and Expiry
+// Demonstrates that stale facts report their staleness rather than
+// masquerading as current truth.
+
+set_time "2026-09-04T12:00:00Z";
+
+assert infra.gateway.ip = "10.0.0.1" @ authority(Policy), source("dhcp_lease"), ttl(300s);
+
+print "--- At t=0s: Memory is Fresh ---";
+let fresh_ip = recall fresh infra.gateway.ip;
+print fresh_ip;
+assert_eq fresh_ip, "10.0.0.1";
+
+print "--- Advancing Time by 10 Minutes (600s) ---";
+advance_time 600s;
+
+print "--- Standard Recall Reports Stale Wrapper ---";
+let stale_ip = recall infra.gateway.ip;
+print stale_ip;
+assert_eq stale_ip.is_stale, true;
+assert_eq stale_ip.value, "10.0.0.1";
+assert_eq stale_ip.age, 600;
+
+print "--- Audit Trail Showing Expiry ---";
+print audit infra.gateway.ip;

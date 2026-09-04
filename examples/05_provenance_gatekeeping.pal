@@ -1,0 +1,11 @@
+// Example 5: Epistemic Provenance Gatekeeping
+// Demonstrates that a query requiring verified provenance refuses to resolve
+// unsourced or unverified beliefs by language evaluation semantics.
+
+assert secrets.auth_token = "tok_untrusted_999" @ authority(Unverified), source("anonymous_paste"), unverified;
+
+print "--- Audit Trail (Shows Inscription is Unverified) ---";
+print audit secrets.auth_token;
+
+print "--- Attempting Verified Recall (Language Halts with Epistemic Refusal) ---";
+let safe_token = recall verified secrets.auth_token;

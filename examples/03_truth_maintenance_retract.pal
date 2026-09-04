@@ -1,0 +1,25 @@
+// Example 3: Truth Maintenance (Retraction Cascade & Fallback)
+// Demonstrates that retracting a source removes all beliefs derived from it
+// and deterministically restores prior valid state.
+
+// Legitimate assignment
+assert user.alice.role = "member" @ authority(Policy), source("corporate_ldap"), at("2026-01-10T00:00:00Z");
+
+// Fraudulent or compromised update
+assert user.alice.role = "admin" @ authority(Policy), source("phishing_email_88"), at("2026-09-03T09:00:00Z");
+
+print "--- Prior to Retraction (compromised) ---";
+let compromised = recall user.alice.role;
+print compromised;
+assert_eq compromised, "admin";
+
+print "--- Retracting Compromised Source ---";
+retract source "phishing_email_88";
+
+print "--- After Retraction (TMS restored prior state) ---";
+let restored = recall user.alice.role;
+print restored;
+assert_eq restored, "member";
+
+print "--- Audit Trail ---";
+print audit user.alice.role;

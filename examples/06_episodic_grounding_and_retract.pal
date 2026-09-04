@@ -1,0 +1,31 @@
+// Example 6: Episodic Grounding & Multi-Hop Resolution
+// Demonstrates how episodic memory coexists with semantic facts,
+// allowing semantic beliefs to be grounded in episodes and unraveled upon retraction.
+
+// 1. Record an episodic event
+episode db_outage_01 {
+    at: "2026-09-04T08:15:00Z",
+    actors: ["deploy_bot", "alice"],
+    context: { service: "billing-db", pool_limit: 100 },
+    summary: "Migration aborted: connection pool exhausted during schema update"
+}
+
+// 2. Semantic facts grounded in the episode
+scope enterprise.acme {
+    assert infra.db.status = "degraded" @ authority(Compliance), grounded_in("db_outage_01");
+    assert infra.db.fallback_host = "replica-02" @ authority(Policy);
+}
+
+print "--- Recalled Semantic State Grounded in Episode ---";
+let status = recall enterprise.acme.infra.db.status;
+print status;
+assert_eq status, "degraded";
+
+print "--- Active Episodes in Memory ---";
+print episodes;
+
+print "--- Retracting Incident Episode (Root Cause Resolved) ---";
+retract episode db_outage_01;
+
+print "--- Audit Trail Confirms Invalidation of Grounded Fact ---";
+print audit enterprise.acme.infra.db.status;
