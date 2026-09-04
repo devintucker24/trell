@@ -1,0 +1,19 @@
+{
+  "responses": {
+    "assess_medical": {
+      "value": "BacterialInfection",
+      "confidence": 0.94,
+      "justification": "Biomarker analysis indicates acute bacterial proliferation with high leukocyte count."
+    },
+    "evaluate_risk": {
+      "value": "ApproveTransfer",
+      "confidence": 0.89,
+      "justification": "Transaction velocity and counterparty identity match verified enterprise baseline."
+    },
+    "audit_code": {
+      "value": "ApprovedPatch",
+      "confidence": 0.96,
+      "justification": "Patch AST is strictly memory safe and contains no unauthorized external syscalls."
+    }
+  }
+}

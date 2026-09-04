@@ -1,0 +1,19 @@
+{
+  "responses": {
+    "assess_medical": {
+      "value": "ViralSyndrome",
+      "confidence": 0.88,
+      "justification": "Serology is negative for bacterial cultures; viral etiology suspected."
+    },
+    "evaluate_risk": {
+      "value": "EscrowHold",
+      "confidence": 0.82,
+      "justification": "Unusual IP geolocation mismatch flags transfer for compliance escrow review."
+    },
+    "audit_code": {
+      "value": "Quarantine",
+      "confidence": 0.94,
+      "justification": "Found unescaped shell invocation in auxiliary subprocess wrapper."
+    }
+  }
+}

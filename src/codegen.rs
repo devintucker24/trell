@@ -1,47 +1,27 @@
-use anyhow::{anyhow, Result};
-use inkwell::builder::Builder;
-use inkwell::context::Context;
-use inkwell::values::IntValue;
+use std::fs;
+use std::path::Path;
+use anyhow::Result;
+use serde::{Deserialize, Serialize};
 
-use crate::ast::{BinaryOperator, Expr};
+use crate::ast::*;
 
-pub fn codegen_expr<'ctx>(
-    context: &'ctx Context,
-    builder: &Builder<'ctx>,
-    expression: &Expr,
-) -> Result<IntValue<'ctx>> {
-    let i64_type = context.i64_type();
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CompiledUnit {
+    pub language: String,
+    pub version: String,
+    pub source_path: String,
+    pub program: Program,
+}
 
-    match expression {
-        Expr::Integer(value) => Ok(i64_type.const_int(*value, false)),
+pub fn compile_trell_package(program: &Program, source_path: &Path, output_path: &Path) -> Result<()> {
+    let unit = CompiledUnit {
+        language: "Trell".to_string(),
+        version: "0.2.0".to_string(),
+        source_path: source_path.display().to_string(),
+        program: program.clone(),
+    };
 
-        Expr::Binary {
-            left,
-            operator,
-            right,
-        } => {
-            let left_value = codegen_expr(context, builder, left)?;
-            let right_value = codegen_expr(context, builder, right)?;
-
-            let value = match operator {
-                BinaryOperator::Add => builder
-                    .build_int_add(left_value, right_value, "addtmp")
-                    .map_err(|error| anyhow!("Could not generate addition: {error:?}"))?,
-
-                BinaryOperator::Subtract => builder
-                    .build_int_sub(left_value, right_value, "subtmp")
-                    .map_err(|error| anyhow!("Could not generate subtraction: {error:?}"))?,
-
-                BinaryOperator::Multiply => builder
-                    .build_int_mul(left_value, right_value, "multmp")
-                    .map_err(|error| anyhow!("Could not generate multiplication: {error:?}"))?,
-
-                BinaryOperator::Divide => builder
-                    .build_int_unsigned_div(left_value, right_value, "divtmp")
-                    .map_err(|error| anyhow!("Could not generate division: {error:?}"))?,
-            };
-
-            Ok(value)
-        }
-    }
+    let serialized = serde_json::to_string_pretty(&unit)?;
+    fs::write(output_path, serialized)?;
+    Ok(())
 }

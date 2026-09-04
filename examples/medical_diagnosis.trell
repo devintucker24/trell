@@ -1,0 +1,53 @@
+// Medical Diagnosis with Epistemic Verification and Speculative Forks
+// Demonstrates dual-track Certain vs Belief, model contract invariants,
+// deterministic guard verification, and speculative branch collapse.
+
+contract DiagnosticOracle {
+    model: reasoning;
+    temperature: 0.1;
+    budget: 2000;
+    invariant: confidence >= 0.85;
+}
+
+guard ValidBiomarker(marker: string) {
+    marker == "BacterialInfection" || marker == "ViralSyndrome" || marker == "AutoimmuneFlare"
+}
+
+fn main() {
+    print("Initiating patient diagnostic assessment...");
+
+    // Model deliberation returns a belief carrying confidence and justification
+    let diagnosis: belief<string> = oracle<DiagnosticOracle>.assess_medical("Patient exhibits leukocytosis, fever, and acute inflammation");
+    
+    print("Primary belief acquired:");
+    print(diagnosis);
+
+    let conf: certain float = confidence(diagnosis);
+    print("Extracted epistemic confidence:");
+    print(conf);
+
+    // Epistemic reduction: A belief CANNOT drive high-stakes treatment without verification!
+    // verify tests the deterministic guard invariant; on success, promotes belief<string> to certain string.
+    let verified_pathology: certain string = verify diagnosis with ValidBiomarker fallback "UnidentifiedPathology";
+    print("Verified pathology:");
+    print(verified_pathology);
+
+    // Speculative semantic execution across diagnosis hypotheses:
+    // Trell evaluates the matching branch while tracking rolled back speculative states.
+    fork diagnosis {
+        case BacterialInfection => {
+            print("Action: Administer targeted intravenous antibiotic therapy.");
+        }
+        case ViralSyndrome => {
+            print("Action: Prescribe supportive hydration and antiviral monitoring.");
+        }
+        case AutoimmuneFlare => {
+            print("Action: Initiate high-dose corticosteroid protocol.");
+        }
+        fallback => {
+            print("Action: Escalate to emergency multi-specialist medical board.");
+        }
+    } collapse;
+
+    print("Diagnostic cycle completed with formal epistemic guarantees.");
+}

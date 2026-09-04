@@ -1,0 +1,61 @@
+// High-Speed Institutional Wire Settlement in Natural Trell
+// Demonstrates:
+// 1. Quorum consensus voting across independent model evaluations
+// 2. Struct declaration with colon + indent + end
+// 3. Epistemic verification guard ('require with' / 'else')
+// 4. Branch dispatch with 'when' / 'is' / 'case' / 'else'
+
+struct WireRequest:
+    account_id: string
+    amount_usd: int
+    routing_code: string
+end
+
+model FraudOracle:
+    budget: 800
+    require: confidence >= 0.80
+end
+
+guard ApprovedSettlement(verdict: string):
+    verdict == "ClearWire" or verdict == "EscrowHold"
+end
+
+action main:
+    print "=== Treasury Settlement Gateway: Instantaneous Clearing Engine ==="
+
+    let wire = WireRequest(
+        account_id: "corp_treasury_9018",
+        amount_usd: 1250000,
+        routing_code: "FEDWIRE_PRIORITY"
+    )
+
+    print "Processing settlement for account:"
+    print wire.account_id
+
+    // Statistical Quorum: Deliberates across 3 independent samples requiring 70% consensus
+    let consensus_verdict: belief<string> = quorum(3, 0.70):
+        ask FraudOracle("High-speed interbank wire $1,250,000 to offshore clearing agency")
+    end
+
+    print "Quorum consensus verdict:"
+    print consensus_verdict
+
+    let rationale: string = justification consensus_verdict
+    print "Consensus rationale:"
+    print rationale
+
+    // Epistemic verification: Promotes belief into grounded certainty or routes to safe fallback
+    let verified_decision: certain string = require consensus_verdict with ApprovedSettlement else "EscrowHold"
+
+    print "Verified release decision:"
+    print verified_decision
+
+    when verified_decision is:
+        case ClearWire:
+            print "Dispatch: SWIFT MT103 authenticated and transmitted to Federal Reserve RTGS."
+        else:
+            print "Compliance: Diverting transfer to 24-hour multi-signature compliance escrow."
+    end
+
+    print "Treasury settlement finalized under epistemic proof."
+end
