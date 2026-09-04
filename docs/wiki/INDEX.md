@@ -49,12 +49,12 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 2. [`CLAUDE.md`](../../CLAUDE.md) — Claude Code twin brief
 3. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
 4. [`OPERATOR.md`](OPERATOR.md) — detailed wiki operator manual
-5. Retrieve: `python3 skills/wiki/scripts/wiki_retrieve.py "<q>"` — [`skills/wiki/retrieve`](../../skills/wiki/retrieve/SKILL.md) · Cursor: `.cursor/skills/wiki-retrieve`
+5. Retrieve: `python3 docs/wiki/scripts/wiki_retrieve.py "<q>"` — [`.cursor/skills/wiki-retrieve`](../../.cursor/skills/wiki-retrieve/SKILL.md)
 6. This INDEX — catalog when browsing structure
 7. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
 8. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
 9. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
-10. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
+10. Skills: [`.cursor/skills/trell-wiki`](../../.cursor/skills/trell-wiki/SKILL.md)
 
 **Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + skills).
 **Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
@@ -134,17 +134,17 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 
 ---
 
-## 7. Agent Skills (`skills/wiki/`)
+## 7. Agent Skills (`.cursor/skills/`)
 | Skill | Path | Job |
 |-------|------|-----|
-| Parent | `skills/wiki/SKILL.md` | Entry point |
-| **Retrieve** | `skills/wiki/retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
-| Navigate | `skills/wiki/navigate/SKILL.md` | INDEX + graph traversal |
-| Triage | `skills/wiki/triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
-| Ingest | `skills/wiki/ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
-| Doctor | `skills/wiki/doctor/SKILL.md` | Diagnose only (no edits) |
-| Heal | `skills/wiki/heal/SKILL.md` | Apply safe fixes from doctor report |
-| Lint | `skills/wiki/lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
-| Query | `skills/wiki/query/SKILL.md` | Answer + file synthesis |
-| Label | `skills/wiki/label/SKILL.md` | Normalize frontmatter |
-| Maintain | `skills/wiki/maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |
+| Parent | `.cursor/skills/trell-wiki/SKILL.md` | Entry point |
+| **Retrieve** | `.cursor/skills/wiki-retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
+| Navigate | `.cursor/skills/wiki-navigate/SKILL.md` | INDEX + graph traversal |
+| Triage | `.cursor/skills/wiki-triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
+| Ingest | `.cursor/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
+| Doctor | `.cursor/skills/wiki-doctor/SKILL.md` | Diagnose only (no edits) |
+| Heal | `.cursor/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
+| Lint | `.cursor/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
+| Query | `.cursor/skills/wiki-query/SKILL.md` | Answer + file synthesis |
+| Label | `.cursor/skills/wiki-label/SKILL.md` | Normalize frontmatter |
+| Maintain | `.cursor/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki ↔ GRAPH |

@@ -145,7 +145,7 @@ edges:
     page: core/epistemic-foundations
 ```
 
-After editing any page frontmatter nodes/edges, regenerate or surgically update GRAPH.yaml (skill: `skills/wiki/maintain`).
+After editing any page frontmatter nodes/edges, regenerate or surgically update GRAPH.yaml (skill: `.cursor/skills/wiki-maintain`).
 
 ---
 
@@ -164,10 +164,10 @@ Agents can filter pages by:
 ```
 docs/wiki/inbox/   type: inbox-item   triage_status: pending
         │
-        ▼  skills/wiki/triage
+        ▼  .cursor/skills/wiki-triage
    classified / routed / needs-human / rejected
         │
-        ▼  skills/wiki/ingest
+        ▼  .cursor/skills/wiki-ingest
    wiki page (domain folder)  +  optional raw/ pointer  +  GRAPH.yaml  +  log.md
         │
         ▼

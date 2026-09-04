@@ -33,7 +33,7 @@ Machine-readable graph: [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml)
 
 Regenerate:
 ```bash
-python3 skills/wiki/scripts/sync_graph.py
+python3 docs/wiki/scripts/sync_graph.py
 ```
 
 ## Hub Nodes (high connectivity)

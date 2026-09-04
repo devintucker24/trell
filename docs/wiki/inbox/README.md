@@ -62,6 +62,6 @@ Or say in chat:
 The agent creates `docs/wiki/inbox/YYYY-MM-DD-<slug>.md`, then runs **triage** → **ingest**.
 
 ## Skills
-- Triage: `skills/wiki/triage/SKILL.md`
-- Ingest: `skills/wiki/ingest/SKILL.md`
+- Triage: `.cursor/skills/wiki-triage/SKILL.md`
+- Ingest: `.cursor/skills/wiki-ingest/SKILL.md`
 - Schema / taxonomy rules: `docs/wiki/SCHEMA.md` §6–§8
