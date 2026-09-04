@@ -68,5 +68,6 @@ trell-program.o
 
 # Wiki-brain local telemetry (dashboard markdown may be committed)
 docs/wiki/_meta/usage/events.jsonl
+docs/wiki/scripts/__pycache__/
 
 

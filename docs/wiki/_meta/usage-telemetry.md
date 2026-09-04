@@ -16,6 +16,9 @@ edges:
   - from: wiki-usage-telemetry
     to: wiki-router
     rel: related_to
+  - from: wiki-usage-telemetry
+    to: wiki-brain-pack
+    rel: depends_on
 related:
   - "[[FRAMEWORK]]"
   - "[[ROUTER]]"

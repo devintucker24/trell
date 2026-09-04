@@ -12,6 +12,9 @@ nodes:
   - id: wiki-brain-pack
     kind: concept
     label: Wiki-brain pack
+  - id: wiki-brain
+    kind: concept
+    label: Wiki-brain
 edges:
   - from: wiki-brain-pack
     to: wiki-schema
@@ -22,6 +25,9 @@ edges:
   - from: wiki-brain-pack
     to: wiki-usage-telemetry
     rel: related_to
+  - from: wiki-brain
+    to: wiki-brain-pack
+    rel: implements
 related:
   - "[[SCHEMA]]"
   - "[[OPERATOR]]"

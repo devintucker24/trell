@@ -31,6 +31,8 @@ related:
 - '[[roadmap/ten-year-vision]]'
 - '[[episodic/INDEX]]'
 - '[[temporal/TIMELINE]]'
+- '[[FRAMEWORK]]'
+- '[[_meta/usage-telemetry]]'
 agent:
   priority: critical
   read_when:
@@ -111,7 +113,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | **Market Niches** | [[applications/overview-and-safety-patterns]] | [[market/competitive-analysis]], [[market/regulatory-and-insurance-drivers]] |
 | **Future Roadmap** | [[roadmap/ten-year-vision]] | [[roadmap/phases-and-milestones]], [[theory/bayesian-and-distributional-types]] |
 | **Knowledge Graph** | [[_meta/GRAPH]] | [[SCHEMA]], `AGENTS.md` |
-| **Context Router** | [[ROUTER]] | [[_meta/CONTEXT_PROTOCOL]], [[_meta/brain-gap-analysis-2026-09-04]] |
+| **Context Router** | [[ROUTER]] | [[_meta/CONTEXT_PROTOCOL]], [[FRAMEWORK]] |
 | **Episodic memory** | [[episodic/INDEX]] | [[episodic/session-current]], [[temporal/TIMELINE]] |
 | **Temporal memory** | [[temporal/TIMELINE]] | [[_meta/CONTEXT_PROTOCOL]], retrieve `--as-of` |
 
@@ -130,6 +132,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 * [[raw/thesis]]: Pointer to immutable THESIS.md
 * [[raw/examples]]: Pointers to executable `.trell` examples
 * [[raw/market-research-2026-09-03]]: Historical market note (reconcile carefully)
+* [[log]]: Append-only operations log for agents
 * [[FRAMEWORK]]: Portable wiki-brain pack — skills-in-wiki, export, adapters
 * [[_meta/usage-telemetry]]: Usage metric catalog + agent logging protocol
 * [[host/router-seeds]]: Trell-specific ROUTER Tier-1 seeds (`HOST.yaml`)
