@@ -82,3 +82,10 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Added `.cursor/rules/*.mdc` (core, rust, wiki)
 - Added `.cursor/skills/` + `.claude/skills/` launchers → `skills/wiki/` + `cargo-verify`
 - Doctor now requires CLAUDE.md, OPERATOR.md, .cursor skill entrypoints
+
+## [2026-09-04] handoff | Matt Pocock-style /handoff skill
+
+- Canonical playbook: `skills/handoff/SKILL.md`
+- Discoverable via `.cursor/skills/handoff` and `.claude/skills/handoff`
+- Writes disposable temp handoff docs; optional Trell episodic persist
+- Wired into AGENTS.md / CLAUDE.md / ROUTER.md / OPERATOR.md
