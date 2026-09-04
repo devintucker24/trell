@@ -1,0 +1,24 @@
+// Arithmetic and Deterministic Grounding in Trell
+// Demonstrates that deterministic arithmetic and certainty are preserved
+// alongside epistemic structures.
+
+fn compute_risk_score(base_rate: int, multiplier: int, penalty: int) -> int {
+    base_rate * multiplier - penalty
+}
+
+fn main() {
+    print("Testing Trell deterministic arithmetic engine...");
+
+    let a: int = 42;
+    let b: int = 18;
+    let sum: int = a + b;
+    let score: int = compute_risk_score(sum, 3, 10);
+
+    print("Computed base sum:");
+    print(sum);
+    print("Computed risk score:");
+    print(score);
+
+    assert score == 170, "Deterministic arithmetic calculation error";
+    print("Deterministic calculation verified!");
+}

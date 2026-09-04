@@ -1,0 +1,62 @@
+// Autonomous Financial Settlement with Multi-Sample Consensus & Risk Invariants
+// Demonstrates semantic consensus voting, affine token budgets, and assertion of epistemic limits.
+
+contract RiskOracle {
+    model: fast;
+    temperature: 0.3;
+    budget: 800;
+    invariant: confidence >= 0.80;
+}
+
+struct SettlementRequest {
+    sender_id: string,
+    amount_usd: int,
+    clearing_route: string
+}
+
+guard AllowableSettlement(decision: string) {
+    decision == "ApproveTransfer" || decision == "EscrowHold"
+}
+
+fn main() {
+    print("Initiating high-value corporate treasury settlement...");
+
+    let request = SettlementRequest {
+        sender_id: "acct_849201",
+        amount_usd: 750000,
+        clearing_route: "fedwire_rtgs"
+    };
+
+    print("Analyzing transaction for account:");
+    print(request.sender_id);
+
+    // Multi-sample consensus deliberation:
+    // Requires at least 70% semantic agreement across 3 independent model samples.
+    let risk_verdict: belief<string> = consensus(3, 0.70) {
+        oracle<RiskOracle>.evaluate_risk("Evaluate settlement velocity for $750,000 via RTGS")
+    };
+
+    print("Semantic consensus verdict:");
+    print(risk_verdict);
+
+    let rationale: certain string = justification(risk_verdict);
+    print("Consensus rationale trace:");
+    print(rationale);
+
+    // Epistemic verification guard
+    let safe_decision: certain string = verify risk_verdict with AllowableSettlement fallback "EscrowHold";
+
+    fork safe_decision {
+        case ApproveTransfer => {
+            print("Action: Dispatching cryptographically signed wire release instruction.");
+        }
+        case EscrowHold => {
+            print("Action: Placing funds in multi-sig 24-hour compliance escrow.");
+        }
+        fallback => {
+            print("Action: Rejecting transfer and flagging anomalous velocity pattern.");
+        }
+    } collapse;
+
+    print("Settlement workflow resolved safely.");
+}
