@@ -1,4 +1,4 @@
-// Palimpsest Abstract Syntax Tree (AST)
+// Palimpsest Abstract Syntax Tree
 
 use crate::types::Value;
 
@@ -9,107 +9,118 @@ pub struct Program {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Stmt {
-    /// authority Legal > Compliance > Policy > User > Unverified;
-    AuthorityDecl(Vec<String>),
+    /// `trust legal above policy above user above rumor`
+    Trust(Vec<String>),
 
-    /// scope user.alice { ... }
-    Scope {
-        prefix: Vec<String>,
-        body: Vec<Stmt>,
-    },
+    /// `about acme.alice:` followed by an indented block
+    About { prefix: Vec<String>, body: Vec<Stmt> },
 
-    /// assert user.location = "Berlin" @ authority(User), source("chat_08");
-    Assert {
+    /// `alice.city is "Berlin" from relocation_ticket on 2026-08-15`
+    Fact {
         path: Vec<String>,
         value: Expr,
-        modifiers: AssertModifiers,
+        facets: Facets,
+        line: usize,
     },
 
-    /// episode db_failure { at: "...", actors: [...], context: { ... }, summary: "..." }
+    /// `when db_outage:` followed by an indented block
     Episode {
         id: String,
-        at: Expr,
-        actors: Vec<Expr>,
-        context: Vec<(String, Expr)>,
-        summary: Expr,
+        happened: Option<Expr>,
+        involved: Vec<Expr>,
+        details: Vec<(String, Expr)>,
+        summary: Option<Expr>,
     },
 
-    /// retract source "phishing_email";
-    RetractSource(Expr),
+    /// `forget everything from phishing_email`
+    ForgetSource(Expr),
+    /// `forget when db_outage`
+    ForgetEpisode(String),
+    /// `forget alice.city`
+    ForgetPath(Vec<String>),
 
-    /// retract belief user.location;
-    RetractBelief(Vec<String>),
+    /// `let x = what is alice.city`
+    Let { name: String, expr: Expr },
 
-    /// retract episode db_failure;
-    RetractEpisode(String),
+    /// A bare expression at statement position prints its own value.
+    Show(Expr),
 
-    /// let x = recall user.location;
-    Let {
-        name: String,
-        expr: Expr,
-    },
+    /// `expect what is alice.city is "Berlin"`
+    Expect { left: Expr, right: Expr, line: usize },
 
-    /// print expr;
-    Print(Expr),
-
-    /// assert_eq left, right;
-    AssertEq {
-        left: Expr,
-        right: Expr,
-    },
-
-    /// set_time "2026-09-04T12:00:00Z";
-    SetTime(Expr),
-
-    /// advance_time 48h;
-    AdvanceTime(Expr),
-
-    /// Expression statement
-    Expr(Expr),
+    /// `now is 2026-09-04`
+    NowIs(Expr),
+    /// `later by 30 days`
+    LaterBy(Expr),
 }
 
+/// The trailing prepositional phrases that qualify a fact.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub struct AssertModifiers {
+pub struct Facets {
+    /// `as policy`
     pub authority: Option<String>,
+    /// `from hr_handbook`
     pub source: Option<Expr>,
+    /// `unverified` / `verified`
     pub verified: Option<bool>,
-    pub at: Option<Expr>,
+    /// `on 2026-08-15` / `since 2026-08-15`
+    pub asserted_at: Option<Expr>,
+    /// `for 90 days`
     pub ttl: Option<Expr>,
-    pub valid_until: Option<Expr>,
-    pub grounded_in: Option<String>,
+    /// `until 2027-01-01`
+    pub until: Option<Expr>,
+    /// `because db_outage`
+    pub because: Option<String>,
+}
+
+/// Conditions a query places on whatever it resolves. A query that cannot meet
+/// them refuses rather than downgrading.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct Demands {
+    /// `verified` — refuse a belief with no trustworthy provenance.
+    pub verified: bool,
+    /// `fresh` — refuse a belief that has outlived its lifetime.
+    pub fresh: bool,
+    /// `trusted <authority>` — refuse anything below that rank.
+    pub min_authority: Option<String>,
+}
+
+impl Demands {
+    pub fn any(&self) -> bool {
+        self.verified || self.fresh || self.min_authority.is_some()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Expr {
     Literal(Value),
     Variable(String),
-    Path(Vec<String>),
-    Recall {
+
+    /// `what is alice.city` / `what was alice.city on 2026-04-01`
+    Ask {
         path: Vec<String>,
         as_of: Option<Box<Expr>>,
-        fresh: bool,
-        verified_only: bool,
-        min_authority: Option<String>,
+        demands: Demands,
     },
-    History(Vec<String>),
-    Audit(Vec<String>),
+
+    /// `why alice.city` — the full layered history of a name.
+    Why(Vec<String>),
+
+    /// `conflicts` — every defeated override recorded so far.
     Conflicts,
+
+    /// `episodes` — the episodic log.
     Episodes,
+
+    /// `check` — a health report over the whole belief store.
+    Check,
+
     List(Vec<Expr>),
     Record(Vec<(String, Expr)>),
-    BinaryOp {
-        op: BinOp,
-        left: Box<Expr>,
-        right: Box<Expr>,
-    },
-    UnaryOp {
-        op: UnOp,
-        expr: Box<Expr>,
-    },
-    FieldAccess {
-        expr: Box<Expr>,
-        field: String,
-    },
+
+    Binary { op: BinOp, left: Box<Expr>, right: Box<Expr> },
+    Unary { op: UnOp, expr: Box<Expr> },
+    Field { expr: Box<Expr>, field: String },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

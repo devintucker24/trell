@@ -1,10 +1,25 @@
 // Palimpsest Parser
+//
+// A recursive-descent parser over a token stream in which every bare word is
+// undifferentiated. Keywords are recognised positionally, which is what lets a
+// belief be named `summary` or `context` without escaping.
 
 use crate::ast::*;
 use crate::error::PalimpsestError;
-use crate::lexer::{Token, TokenKind};
-use crate::time::Duration;
+use crate::lexer::{duration_unit_secs, Token, TokenKind};
+use crate::time::{Duration, Timestamp};
 use crate::types::Value;
+
+/// Words that introduce a statement or query and therefore cannot begin a
+/// belief path.
+const RESERVED: &[&str] = &[
+    "trust", "about", "when", "forget", "let", "now", "later", "show", "expect", "what", "why",
+    "check", "conflicts", "episodes", "true", "false", "not", "nothing", "and", "or",
+];
+
+pub fn is_reserved(word: &str) -> bool {
+    RESERVED.contains(&word)
+}
 
 pub struct Parser {
     tokens: Vec<Token>,
@@ -16,39 +31,37 @@ impl Parser {
         Self { tokens, pos: 0 }
     }
 
+    // ---- token helpers -------------------------------------------------
+
     fn peek(&self) -> &Token {
         &self.tokens[self.pos.min(self.tokens.len() - 1)]
     }
 
-    fn peek_kind(&self) -> &TokenKind {
+    fn kind(&self) -> &TokenKind {
         &self.peek().kind
     }
 
-    #[allow(dead_code)]
-    fn peek_next_kind(&self) -> &TokenKind {
-        if self.pos + 1 < self.tokens.len() {
-            &self.tokens[self.pos + 1].kind
-        } else {
-            &TokenKind::Eof
-        }
+    fn line(&self) -> usize {
+        self.peek().line
     }
 
-    fn is_at_end(&self) -> bool {
-        self.peek_kind() == &TokenKind::Eof
+    fn at_end(&self) -> bool {
+        matches!(self.kind(), TokenKind::Eof)
     }
 
-    fn advance(&mut self) -> &Token {
-        if !self.is_at_end() {
+    fn advance(&mut self) -> Token {
+        let tok = self.tokens[self.pos.min(self.tokens.len() - 1)].clone();
+        if !self.at_end() {
             self.pos += 1;
         }
-        &self.tokens[self.pos - 1]
+        tok
     }
 
     fn check(&self, kind: &TokenKind) -> bool {
-        std::mem::discriminant(self.peek_kind()) == std::mem::discriminant(kind)
+        std::mem::discriminant(self.kind()) == std::mem::discriminant(kind)
     }
 
-    fn match_token(&mut self, kind: &TokenKind) -> bool {
+    fn eat(&mut self, kind: &TokenKind) -> bool {
         if self.check(kind) {
             self.advance();
             true
@@ -57,823 +70,772 @@ impl Parser {
         }
     }
 
-    fn expect(&mut self, kind: &TokenKind, msg: &str) -> Result<Token, PalimpsestError> {
+    fn expect(&mut self, kind: &TokenKind, what: &str) -> Result<Token, PalimpsestError> {
         if self.check(kind) {
-            Ok(self.advance().clone())
+            Ok(self.advance())
         } else {
-            let tok = self.peek();
-            Err(PalimpsestError::ParseError {
-                line: tok.line,
-                column: tok.column,
-                message: format!("{}, found {:?}", msg, tok.kind),
-            })
+            Err(self.error(what))
         }
     }
 
+    fn error(&self, expected: &str) -> PalimpsestError {
+        let tok = self.peek();
+        PalimpsestError::ParseError {
+            line: tok.line,
+            column: tok.column,
+            message: format!("Expected {}, found {}", expected, tok.kind.describe()),
+        }
+    }
+
+    /// Returns the current token's text if it is a word.
+    fn word(&self) -> Option<&str> {
+        match self.kind() {
+            TokenKind::Word(w) => Some(w.as_str()),
+            _ => None,
+        }
+    }
+
+    fn word_is(&self, expected: &str) -> bool {
+        self.word().map(|w| w.eq_ignore_ascii_case(expected)).unwrap_or(false)
+    }
+
+    fn eat_word(&mut self, expected: &str) -> bool {
+        if self.word_is(expected) {
+            self.advance();
+            true
+        } else {
+            false
+        }
+    }
+
+    fn expect_word(&mut self, expected: &str) -> Result<(), PalimpsestError> {
+        if self.eat_word(expected) {
+            Ok(())
+        } else {
+            Err(self.error(&format!("`{}`", expected)))
+        }
+    }
+
+    fn take_word(&mut self, what: &str) -> Result<String, PalimpsestError> {
+        match self.kind().clone() {
+            TokenKind::Word(w) => {
+                self.advance();
+                Ok(w)
+            }
+            _ => Err(self.error(what)),
+        }
+    }
+
+    /// A name that may be written bare or quoted, such as a source identifier.
+    fn take_name(&mut self, what: &str) -> Result<String, PalimpsestError> {
+        match self.kind().clone() {
+            TokenKind::Word(w) => {
+                self.advance();
+                Ok(w)
+            }
+            TokenKind::Str(s) => {
+                self.advance();
+                Ok(s)
+            }
+            _ => Err(self.error(what)),
+        }
+    }
+
+    fn skip_separators(&mut self) {
+        while matches!(self.kind(), TokenKind::Newline | TokenKind::Semi) {
+            self.advance();
+        }
+    }
+
+    /// Consumes the end of a statement, tolerating a trailing `?` or `;`.
+    fn end_statement(&mut self) -> Result<(), PalimpsestError> {
+        self.eat(&TokenKind::Question);
+        if matches!(self.kind(), TokenKind::Newline | TokenKind::Semi) {
+            self.advance();
+            return Ok(());
+        }
+        if matches!(self.kind(), TokenKind::Eof | TokenKind::Dedent | TokenKind::RBrace) {
+            return Ok(());
+        }
+        Err(self.error("the end of the line"))
+    }
+
+    // ---- program -------------------------------------------------------
+
     pub fn parse_program(&mut self) -> Result<Program, PalimpsestError> {
         let mut statements = Vec::new();
-        while !self.is_at_end() {
+        self.skip_separators();
+        while !self.at_end() {
             statements.push(self.parse_statement()?);
+            self.skip_separators();
         }
         Ok(Program { statements })
     }
 
-    pub fn parse_statement(&mut self) -> Result<Stmt, PalimpsestError> {
-        match self.peek_kind() {
-            TokenKind::Authority => self.parse_authority_decl(),
-            TokenKind::Scope => self.parse_scope(),
-            TokenKind::Assert => self.parse_assert(),
-            TokenKind::Episode => self.parse_episode(),
-            TokenKind::Retract => self.parse_retract(),
-            TokenKind::Let => self.parse_let(),
-            TokenKind::Print => self.parse_print(),
-            TokenKind::AssertEq => self.parse_assert_eq(),
-            TokenKind::SetTime => self.parse_set_time(),
-            TokenKind::AdvanceTime => self.parse_advance_time(),
-            _ => {
-                let expr = self.parse_expr()?;
-                self.match_token(&TokenKind::Semicolon);
-                Ok(Stmt::Expr(expr))
-            }
-        }
-    }
-
-    // authority Legal > Compliance > Policy > User > Unverified;
-    fn parse_authority_decl(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'authority'
-        let mut tiers = Vec::new();
-
-        loop {
-            let tok = self.peek().clone();
-            let name = match tok.kind {
-                TokenKind::Ident(s) => {
-                    self.advance();
-                    s
-                }
-                _ => {
-                    return Err(PalimpsestError::ParseError {
-                        line: tok.line,
-                        column: tok.column,
-                        message: "Expected authority identifier".to_string(),
-                    });
-                }
-            };
-            tiers.push(name);
-
-            if self.match_token(&TokenKind::Gt) {
-                continue;
-            } else {
-                break;
-            }
-        }
-
-        self.expect(&TokenKind::Semicolon, "Expected ';' after authority declaration")?;
-        Ok(Stmt::AuthorityDecl(tiers))
-    }
-
-    // scope enterprise.acme { ... }
-    fn parse_scope(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'scope'
-        let prefix = self.parse_path()?;
-        self.expect(&TokenKind::LeftBrace, "Expected '{' to start scope block")?;
-
+    /// Parses either a `:`-introduced indented block or a `{ }` block.
+    fn parse_block(&mut self) -> Result<Vec<Stmt>, PalimpsestError> {
         let mut body = Vec::new();
-        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-            body.push(self.parse_statement()?);
+
+        if self.eat(&TokenKind::Colon) {
+            self.expect(&TokenKind::Newline, "a line break after `:`")?;
+            self.expect(&TokenKind::Indent, "an indented block after `:`")?;
+            self.skip_separators();
+            while !self.check(&TokenKind::Dedent) && !self.at_end() {
+                body.push(self.parse_statement()?);
+                self.skip_separators();
+            }
+            self.expect(&TokenKind::Dedent, "the end of the indented block")?;
+            return Ok(body);
         }
 
-        self.expect(&TokenKind::RightBrace, "Expected '}' to end scope block")?;
-        Ok(Stmt::Scope { prefix, body })
+        if self.eat(&TokenKind::LBrace) {
+            self.skip_separators();
+            while !self.check(&TokenKind::RBrace) && !self.at_end() {
+                body.push(self.parse_statement()?);
+                self.skip_separators();
+            }
+            self.expect(&TokenKind::RBrace, "`}`")?;
+            return Ok(body);
+        }
+
+        Err(self.error("`:` followed by an indented block"))
     }
 
-    // assert user.location = "Berlin" @ authority(User), source("chat");
-    fn parse_assert(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'assert'
-        let path = self.parse_path()?;
+    fn parse_statement(&mut self) -> Result<Stmt, PalimpsestError> {
+        if self.check(&TokenKind::Indent) {
+            let tok = self.peek();
+            return Err(PalimpsestError::ParseError {
+                line: tok.line,
+                column: tok.column,
+                message: "This line is indented but the line above it does not open a block. Blocks are opened by `about <name>:` or `when <name>:`.".into(),
+            });
+        }
 
-        self.expect(&TokenKind::Equals, "Expected '=' in assert statement")?;
-        let value = self.parse_expr()?;
-
-        let mut modifiers = AssertModifiers::default();
-
-        if self.match_token(&TokenKind::AtSign) {
-            loop {
-                let tok = self.peek().clone();
-                match tok.kind {
-                    TokenKind::Authority => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'authority'")?;
-                        let auth_tok = self.peek().clone();
-                        let auth_name = match auth_tok.kind {
-                            TokenKind::Ident(s) => {
-                                self.advance();
-                                s
-                            }
-                            _ => {
-                                return Err(PalimpsestError::ParseError {
-                                    line: auth_tok.line,
-                                    column: auth_tok.column,
-                                    message: "Expected authority identifier in authority(...)".to_string(),
-                                });
-                            }
-                        };
-                        self.expect(&TokenKind::RightParen, "Expected ')' after authority identifier")?;
-                        modifiers.authority = Some(auth_name);
-                    }
-                    TokenKind::Source => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'source'")?;
-                        let src_expr = self.parse_expr()?;
-                        self.expect(&TokenKind::RightParen, "Expected ')' after source expression")?;
-                        modifiers.source = Some(src_expr);
-                    }
-                    TokenKind::Verified => {
-                        self.advance();
-                        modifiers.verified = Some(true);
-                    }
-                    TokenKind::Unverified => {
-                        self.advance();
-                        modifiers.verified = Some(false);
-                    }
-                    TokenKind::At => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'at'")?;
-                        let at_expr = self.parse_expr()?;
-                        self.expect(&TokenKind::RightParen, "Expected ')' after at expression")?;
-                        modifiers.at = Some(at_expr);
-                    }
-                    TokenKind::Ttl => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'ttl'")?;
-                        let ttl_expr = self.parse_expr()?;
-                        self.expect(&TokenKind::RightParen, "Expected ')' after ttl expression")?;
-                        modifiers.ttl = Some(ttl_expr);
-                    }
-                    TokenKind::ValidUntil => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'valid_until'")?;
-                        let vu_expr = self.parse_expr()?;
-                        self.expect(&TokenKind::RightParen, "Expected ')' after valid_until expression")?;
-                        modifiers.valid_until = Some(vu_expr);
-                    }
-                    TokenKind::GroundedIn => {
-                        self.advance();
-                        self.expect(&TokenKind::LeftParen, "Expected '(' after 'grounded_in'")?;
-                        let ep_tok = self.peek().clone();
-                        let ep_id = match ep_tok.kind {
-                            TokenKind::Ident(s) | TokenKind::StringLit(s) => {
-                                self.advance();
-                                s
-                            }
-                            _ => {
-                                return Err(PalimpsestError::ParseError {
-                                    line: ep_tok.line,
-                                    column: ep_tok.column,
-                                    message: "Expected episode ID in grounded_in(...)".to_string(),
-                                });
-                            }
-                        };
-                        self.expect(&TokenKind::RightParen, "Expected ')' after episode ID")?;
-                        modifiers.grounded_in = Some(ep_id);
-                    }
-                    _ => {
-                        return Err(PalimpsestError::ParseError {
-                            line: tok.line,
-                            column: tok.column,
-                            message: format!("Unknown assertion modifier: {:?}", tok.kind),
-                        });
-                    }
-                }
-
-                if self.match_token(&TokenKind::Comma) {
-                    continue;
-                } else {
-                    break;
-                }
+        if let Some(w) = self.word() {
+            let w = w.to_ascii_lowercase();
+            match w.as_str() {
+                "trust" => return self.parse_trust(),
+                "about" => return self.parse_about(),
+                "when" => return self.parse_episode(),
+                "forget" => return self.parse_forget(),
+                "let" => return self.parse_let(),
+                "now" => return self.parse_now(),
+                "later" => return self.parse_later(),
+                "show" => return self.parse_show(),
+                "expect" => return self.parse_expect(),
+                _ => {}
             }
         }
 
-        self.expect(&TokenKind::Semicolon, "Expected ';' after assert statement")?;
-        Ok(Stmt::Assert { path, value, modifiers })
+        // Anything that is not a reserved opener and parses as `path is value`
+        // is a fact; otherwise it is a query printed for its value.
+        if !self.word().map(is_reserved).unwrap_or(true) {
+            let save = self.pos;
+            if let Ok(path) = self.parse_path() {
+                if self.word_is("is") || self.word_is("are") || self.check(&TokenKind::Eq) {
+                    return self.parse_fact(path);
+                }
+            }
+            self.pos = save;
+        }
+
+        let expr = self.parse_expr()?;
+        self.end_statement()?;
+        Ok(Stmt::Show(expr))
     }
 
-    // episode ident { at: ..., actors: [...], context: { ... }, summary: ... }
+    // ---- statements ----------------------------------------------------
+
+    /// `trust legal above policy above user above rumor`
+    fn parse_trust(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+        let mut tiers = vec![self.take_word("an authority name")?];
+        while self.eat_word("above") {
+            tiers.push(self.take_word("an authority name")?);
+        }
+        self.end_statement()?;
+        Ok(Stmt::Trust(tiers))
+    }
+
+    /// `about acme.alice:` followed by a block
+    fn parse_about(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+        let prefix = self.parse_path()?;
+        let body = self.parse_block()?;
+        Ok(Stmt::About { prefix, body })
+    }
+
+    /// `when db_outage:` followed by episode fields
     fn parse_episode(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'episode'
-        let id_tok = self.peek().clone();
-        let id = match id_tok.kind {
-            TokenKind::Ident(s) | TokenKind::StringLit(s) => {
-                self.advance();
-                s
-            }
-            _ => {
-                return Err(PalimpsestError::ParseError {
-                    line: id_tok.line,
-                    column: id_tok.column,
-                    message: "Expected episode identifier".to_string(),
-                });
-            }
-        };
+        self.advance();
+        let id = self.take_name("an episode name")?;
 
-        self.expect(&TokenKind::LeftBrace, "Expected '{' to start episode block")?;
+        self.expect(&TokenKind::Colon, "`:` after the episode name")?;
+        self.expect(&TokenKind::Newline, "a line break after `:`")?;
+        self.expect(&TokenKind::Indent, "an indented block of episode details")?;
+        self.skip_separators();
 
-        let mut at_expr = None;
-        let mut actors_vec = Vec::new();
-        let mut context_vec = Vec::new();
-        let mut summary_expr = None;
+        let mut happened = None;
+        let mut involved = Vec::new();
+        let mut details = Vec::new();
+        let mut summary = None;
 
-        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-            let field_tok = self.peek().clone();
-            let field_name = match field_tok.kind {
-                TokenKind::At => {
-                    self.advance();
-                    "at"
+        while !self.check(&TokenKind::Dedent) && !self.at_end() {
+            let field = self.take_word("an episode field")?.to_ascii_lowercase();
+            match field.as_str() {
+                "happened" => {
+                    self.eat_word("on");
+                    happened = Some(self.parse_time_expr()?);
                 }
-                TokenKind::Actors => {
-                    self.advance();
-                    "actors"
-                }
-                TokenKind::Context => {
-                    self.advance();
-                    "context"
-                }
-                TokenKind::Summary => {
-                    self.advance();
-                    "summary"
-                }
-                TokenKind::Ident(ref s) => {
-                    let s_clone = s.as_str();
-                    match s_clone {
-                        "at" | "actors" | "context" | "summary" => {
-                            self.advance();
-                            s_clone
-                        }
-                        _ => {
-                            return Err(PalimpsestError::ParseError {
-                                line: field_tok.line,
-                                column: field_tok.column,
-                                message: format!("Unknown episode field: {}", s),
-                            });
-                        }
+                "involved" => loop {
+                    let who = self.take_name("a participant")?;
+                    involved.push(Expr::Literal(Value::String(who)));
+                    if !self.eat(&TokenKind::Comma) {
+                        break;
                     }
-                }
-                _ => {
-                    return Err(PalimpsestError::ParseError {
-                        line: field_tok.line,
-                        column: field_tok.column,
-                        message: "Expected episode field (at, actors, context, summary)".to_string(),
-                    });
-                }
-            };
-
-            self.expect(&TokenKind::Colon, "Expected ':' after episode field name")?;
-
-            match field_name {
-                "at" => {
-                    at_expr = Some(self.parse_expr()?);
-                }
-                "actors" => {
-                    self.expect(&TokenKind::LeftBracket, "Expected '[' for actors list")?;
-                    while !self.check(&TokenKind::RightBracket) && !self.is_at_end() {
-                        actors_vec.push(self.parse_expr()?);
-                        if !self.match_token(&TokenKind::Comma) {
-                            break;
-                        }
+                },
+                "details" => loop {
+                    let key = self.take_word("a detail name")?;
+                    self.expect_word("is")?;
+                    let val = self.parse_expr()?;
+                    details.push((key, val));
+                    if !self.eat(&TokenKind::Comma) {
+                        break;
                     }
-                    self.expect(&TokenKind::RightBracket, "Expected ']' after actors list")?;
-                }
-                "context" => {
-                    self.expect(&TokenKind::LeftBrace, "Expected '{' for context record")?;
-                    while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-                        let k_tok = self.peek().clone();
-                        let k = match k_tok.kind {
-                            TokenKind::Ident(s) | TokenKind::StringLit(s) => {
-                                self.advance();
-                                s
-                            }
-                            _ => {
-                                return Err(PalimpsestError::ParseError {
-                                    line: k_tok.line,
-                                    column: k_tok.column,
-                                    message: "Expected key in context record".to_string(),
-                                });
-                            }
-                        };
-                        self.expect(&TokenKind::Colon, "Expected ':' after context key")?;
-                        let v = self.parse_expr()?;
-                        context_vec.push((k, v));
-                        if !self.match_token(&TokenKind::Comma) {
-                            break;
-                        }
-                    }
-                    self.expect(&TokenKind::RightBrace, "Expected '}' after context record")?;
-                }
+                },
                 "summary" => {
-                    summary_expr = Some(self.parse_expr()?);
+                    summary = Some(self.parse_expr()?);
                 }
-                _ => unreachable!(),
+                other => {
+                    return Err(PalimpsestError::ParseError {
+                        line: self.line(),
+                        column: 1,
+                        message: format!(
+                            "`{}` is not an episode field; use happened, involved, details or summary",
+                            other
+                        ),
+                    })
+                }
             }
-
-            self.match_token(&TokenKind::Comma);
-            self.match_token(&TokenKind::Semicolon);
+            self.skip_separators();
         }
 
-        self.expect(&TokenKind::RightBrace, "Expected '}' to end episode block")?;
-
-        let at = at_expr.ok_or_else(|| PalimpsestError::ParseError {
-            line: id_tok.line,
-            column: id_tok.column,
-            message: "Episode missing required field 'at'".to_string(),
-        })?;
-
-        let summary = summary_expr.unwrap_or_else(|| Expr::Literal(Value::String("".to_string())));
+        self.expect(&TokenKind::Dedent, "the end of the episode block")?;
 
         Ok(Stmt::Episode {
             id,
-            at,
-            actors: actors_vec,
-            context: context_vec,
+            happened,
+            involved,
+            details,
             summary,
         })
     }
 
-    // retract source "xyz"; / retract belief a.b; / retract episode ident;
-    fn parse_retract(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'retract'
-        let tok = self.peek().clone();
-        match tok.kind {
-            TokenKind::Source => {
-                self.advance();
-                let src_expr = self.parse_expr()?;
-                self.expect(&TokenKind::Semicolon, "Expected ';' after retract source")?;
-                Ok(Stmt::RetractSource(src_expr))
-            }
-            TokenKind::Belief => {
-                self.advance();
-                let path = self.parse_path()?;
-                self.expect(&TokenKind::Semicolon, "Expected ';' after retract belief")?;
-                Ok(Stmt::RetractBelief(path))
-            }
-            TokenKind::Episode => {
-                self.advance();
-                let ep_tok = self.peek().clone();
-                let ep_id = match ep_tok.kind {
-                    TokenKind::Ident(s) | TokenKind::StringLit(s) => {
-                        self.advance();
-                        s
-                    }
-                    _ => {
-                        return Err(PalimpsestError::ParseError {
-                            line: ep_tok.line,
-                            column: ep_tok.column,
-                            message: "Expected episode ID after retract episode".to_string(),
-                        });
-                    }
-                };
-                self.expect(&TokenKind::Semicolon, "Expected ';' after retract episode")?;
-                Ok(Stmt::RetractEpisode(ep_id))
-            }
-            _ => Err(PalimpsestError::ParseError {
-                line: tok.line,
-                column: tok.column,
-                message: "Expected 'source', 'belief', or 'episode' after 'retract'".to_string(),
-            }),
+    /// `forget everything from X` / `forget when X` / `forget a.path`
+    fn parse_forget(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+
+        if self.eat_word("everything") {
+            self.expect_word("from")?;
+            let src = self.take_name("a source name")?;
+            self.end_statement()?;
+            return Ok(Stmt::ForgetSource(Expr::Literal(Value::String(src))));
         }
+
+        if self.eat_word("from") {
+            let src = self.take_name("a source name")?;
+            self.end_statement()?;
+            return Ok(Stmt::ForgetSource(Expr::Literal(Value::String(src))));
+        }
+
+        if self.eat_word("when") {
+            let id = self.take_name("an episode name")?;
+            self.end_statement()?;
+            return Ok(Stmt::ForgetEpisode(id));
+        }
+
+        let path = self.parse_path()?;
+        self.end_statement()?;
+        Ok(Stmt::ForgetPath(path))
     }
 
     fn parse_let(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'let'
-        let id_tok = self.peek().clone();
-        let name = match id_tok.kind {
-            TokenKind::Ident(s) => {
-                self.advance();
-                s
-            }
-            _ => {
-                return Err(PalimpsestError::ParseError {
-                    line: id_tok.line,
-                    column: id_tok.column,
-                    message: "Expected variable name after 'let'".to_string(),
-                });
-            }
-        };
-
-        self.expect(&TokenKind::Equals, "Expected '=' in let binding")?;
+        self.advance();
+        let name = self.take_word("a name to bind")?;
+        if !self.eat(&TokenKind::Eq) && !self.eat_word("is") {
+            return Err(self.error("`=` or `is`"));
+        }
         let expr = self.parse_expr()?;
-        self.expect(&TokenKind::Semicolon, "Expected ';' after let statement")?;
+        self.end_statement()?;
         Ok(Stmt::Let { name, expr })
     }
 
-    fn parse_print(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'print'
-        let expr = self.parse_expr()?;
-        self.expect(&TokenKind::Semicolon, "Expected ';' after print statement")?;
-        Ok(Stmt::Print(expr))
+    fn parse_now(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+        self.expect_word("is")?;
+        let expr = self.parse_time_expr()?;
+        self.end_statement()?;
+        Ok(Stmt::NowIs(expr))
     }
 
-    fn parse_assert_eq(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'assert_eq'
+    fn parse_later(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+        self.expect_word("by")?;
+        let expr = self.parse_duration_expr()?;
+        self.end_statement()?;
+        Ok(Stmt::LaterBy(expr))
+    }
+
+    fn parse_show(&mut self) -> Result<Stmt, PalimpsestError> {
+        self.advance();
+        let expr = self.parse_expr()?;
+        self.end_statement()?;
+        Ok(Stmt::Show(expr))
+    }
+
+    fn parse_expect(&mut self) -> Result<Stmt, PalimpsestError> {
+        let line = self.line();
+        self.advance();
         let left = self.parse_expr()?;
-        self.expect(&TokenKind::Comma, "Expected ',' between assert_eq expressions")?;
+        if !self.eat_word("is") && !self.eat(&TokenKind::EqEq) && !self.eat(&TokenKind::Eq) {
+            return Err(self.error("`is` between the two values being compared"));
+        }
         let right = self.parse_expr()?;
-        self.expect(&TokenKind::Semicolon, "Expected ';' after assert_eq statement")?;
-        Ok(Stmt::AssertEq { left, right })
+        self.end_statement()?;
+        Ok(Stmt::Expect { left, right, line })
     }
 
-    fn parse_set_time(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'set_time'
-        let expr = self.parse_expr()?;
-        self.expect(&TokenKind::Semicolon, "Expected ';' after set_time statement")?;
-        Ok(Stmt::SetTime(expr))
+    /// `alice.city is "Berlin" from relocation_ticket on 2026-08-15`
+    fn parse_fact(&mut self, path: Vec<String>) -> Result<Stmt, PalimpsestError> {
+        let line = self.line();
+        if !self.eat_word("is") && !self.eat_word("are") && !self.eat(&TokenKind::Eq) {
+            return Err(self.error("`is`"));
+        }
+        let value = self.parse_expr()?;
+        let facets = self.parse_facets()?;
+        self.end_statement()?;
+        Ok(Stmt::Fact {
+            path,
+            value,
+            facets,
+            line,
+        })
     }
 
-    fn parse_advance_time(&mut self) -> Result<Stmt, PalimpsestError> {
-        self.advance(); // consume 'advance_time'
-        let expr = self.parse_expr()?;
-        self.expect(&TokenKind::Semicolon, "Expected ';' after advance_time statement")?;
-        Ok(Stmt::AdvanceTime(expr))
-    }
+    /// The trailing prepositional phrases on a fact, in any order.
+    fn parse_facets(&mut self) -> Result<Facets, PalimpsestError> {
+        let mut f = Facets::default();
 
-    // Helper: parses dotted path, e.g. user.alice.location
-    fn parse_path(&mut self) -> Result<Vec<String>, PalimpsestError> {
-        let mut segments = Vec::new();
         loop {
-            let tok = self.peek().clone();
-            let seg = match tok.kind {
-                TokenKind::Ident(s) => {
-                    self.advance();
-                    s
-                }
-                _ => {
-                    return Err(PalimpsestError::ParseError {
-                        line: tok.line,
-                        column: tok.column,
-                        message: "Expected identifier in path".to_string(),
-                    });
-                }
-            };
-            segments.push(seg);
-
-            if self.match_token(&TokenKind::Dot) {
-                continue;
-            } else {
+            let Some(w) = self.word().map(|w| w.to_ascii_lowercase()) else {
                 break;
+            };
+
+            match w.as_str() {
+                "from" => {
+                    self.advance();
+                    let src = self.take_name("a source name")?;
+                    f.source = Some(Expr::Literal(Value::String(src)));
+                }
+                "as" => {
+                    self.advance();
+                    f.authority = Some(self.take_word("an authority name")?);
+                }
+                "on" | "since" | "at" => {
+                    self.advance();
+                    f.asserted_at = Some(self.parse_time_expr()?);
+                }
+                "for" | "lasting" => {
+                    self.advance();
+                    f.ttl = Some(self.parse_duration_expr()?);
+                }
+                "until" => {
+                    self.advance();
+                    f.until = Some(self.parse_time_expr()?);
+                }
+                "because" | "during" => {
+                    self.advance();
+                    f.because = Some(self.take_name("an episode name")?);
+                }
+                "unverified" => {
+                    self.advance();
+                    f.verified = Some(false);
+                }
+                "verified" => {
+                    self.advance();
+                    f.verified = Some(true);
+                }
+                _ => break,
             }
+
+            self.eat(&TokenKind::Comma);
+        }
+
+        Ok(f)
+    }
+
+    // ---- shared fragments ----------------------------------------------
+
+    fn parse_path(&mut self) -> Result<Vec<String>, PalimpsestError> {
+        let mut segments = vec![self.take_word("a belief name")?];
+        while self.check(&TokenKind::Dot) {
+            self.advance();
+            segments.push(self.take_word("a name after `.`")?);
         }
         Ok(segments)
     }
 
-    // Expression parser using precedence climbing
+    fn parse_time_expr(&mut self) -> Result<Expr, PalimpsestError> {
+        match self.kind().clone() {
+            TokenKind::Date(text) => {
+                self.advance();
+                let ts = Timestamp::parse_iso(&text)
+                    .map_err(|e| PalimpsestError::ParseError {
+                        line: self.line(),
+                        column: 1,
+                        message: e,
+                    })?;
+                Ok(Expr::Literal(Value::Timestamp(ts)))
+            }
+            TokenKind::Str(_) | TokenKind::Int(_) => self.parse_expr(),
+            _ => Err(self.error("a date such as 2026-08-15")),
+        }
+    }
+
+    fn parse_duration_expr(&mut self) -> Result<Expr, PalimpsestError> {
+        match self.kind().clone() {
+            TokenKind::Dur(secs) => {
+                self.advance();
+                Ok(Expr::Literal(Value::Duration(Duration::from_secs(secs))))
+            }
+            // A spaced form such as `30 days`.
+            TokenKind::Int(n) => {
+                let save = self.pos;
+                self.advance();
+                if let Some(unit) = self.word().map(|w| w.to_string()) {
+                    if let Some(mult) = duration_unit_secs(&unit) {
+                        self.advance();
+                        let secs = (n.max(0) as u64) * mult;
+                        return Ok(Expr::Literal(Value::Duration(Duration::from_secs(secs))));
+                    }
+                }
+                self.pos = save;
+                Err(self.error("a length of time such as `30 days` or `90d`"))
+            }
+            _ => Err(self.error("a length of time such as `30 days` or `90d`")),
+        }
+    }
+
+    // ---- expressions ----------------------------------------------------
+
     pub fn parse_expr(&mut self) -> Result<Expr, PalimpsestError> {
         self.parse_or()
     }
 
     fn parse_or(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_and()?;
-        while self.match_token(&TokenKind::PipePipe) {
-            let right = self.parse_and()?;
-            expr = Expr::BinaryOp {
-                op: BinOp::Or,
-                left: Box::new(expr),
-                right: Box::new(right),
-            };
+        let mut left = self.parse_and()?;
+        loop {
+            if self.check(&TokenKind::Pipe2) || self.word_is("or") {
+                self.advance();
+                let right = self.parse_and()?;
+                left = Expr::Binary {
+                    op: BinOp::Or,
+                    left: Box::new(left),
+                    right: Box::new(right),
+                };
+            } else {
+                return Ok(left);
+            }
         }
-        Ok(expr)
     }
 
     fn parse_and(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_equality()?;
-        while self.match_token(&TokenKind::AmpAmp) {
-            let right = self.parse_equality()?;
-            expr = Expr::BinaryOp {
-                op: BinOp::And,
-                left: Box::new(expr),
-                right: Box::new(right),
-            };
+        let mut left = self.parse_equality()?;
+        loop {
+            if self.check(&TokenKind::Amp2) || self.word_is("and") {
+                self.advance();
+                let right = self.parse_equality()?;
+                left = Expr::Binary {
+                    op: BinOp::And,
+                    left: Box::new(left),
+                    right: Box::new(right),
+                };
+            } else {
+                return Ok(left);
+            }
         }
-        Ok(expr)
     }
 
     fn parse_equality(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_comparison()?;
-        while let Some(op) = match self.peek_kind() {
-            TokenKind::EqEq => Some(BinOp::Eq),
-            TokenKind::BangEq => Some(BinOp::NotEq),
-            _ => None,
-        } {
+        let mut left = self.parse_comparison()?;
+        loop {
+            let op = match self.kind() {
+                TokenKind::EqEq => BinOp::Eq,
+                TokenKind::BangEq => BinOp::NotEq,
+                _ => return Ok(left),
+            };
             self.advance();
             let right = self.parse_comparison()?;
-            expr = Expr::BinaryOp {
+            left = Expr::Binary {
                 op,
-                left: Box::new(expr),
+                left: Box::new(left),
                 right: Box::new(right),
             };
         }
-        Ok(expr)
     }
 
     fn parse_comparison(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_term()?;
-        while let Some(op) = match self.peek_kind() {
-            TokenKind::Lt => Some(BinOp::Lt),
-            TokenKind::LtEq => Some(BinOp::LtEq),
-            TokenKind::Gt => Some(BinOp::Gt),
-            TokenKind::GtEq => Some(BinOp::GtEq),
-            _ => None,
-        } {
+        let mut left = self.parse_term()?;
+        loop {
+            let op = match self.kind() {
+                TokenKind::Lt => BinOp::Lt,
+                TokenKind::LtEq => BinOp::LtEq,
+                TokenKind::Gt => BinOp::Gt,
+                TokenKind::GtEq => BinOp::GtEq,
+                _ => return Ok(left),
+            };
             self.advance();
             let right = self.parse_term()?;
-            expr = Expr::BinaryOp {
+            left = Expr::Binary {
                 op,
-                left: Box::new(expr),
+                left: Box::new(left),
                 right: Box::new(right),
             };
         }
-        Ok(expr)
     }
 
     fn parse_term(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_factor()?;
-        while let Some(op) = match self.peek_kind() {
-            TokenKind::Plus => Some(BinOp::Add),
-            TokenKind::Minus => Some(BinOp::Sub),
-            _ => None,
-        } {
+        let mut left = self.parse_factor()?;
+        loop {
+            let op = match self.kind() {
+                TokenKind::Plus => BinOp::Add,
+                TokenKind::Minus => BinOp::Sub,
+                _ => return Ok(left),
+            };
             self.advance();
             let right = self.parse_factor()?;
-            expr = Expr::BinaryOp {
+            left = Expr::Binary {
                 op,
-                left: Box::new(expr),
+                left: Box::new(left),
                 right: Box::new(right),
             };
         }
-        Ok(expr)
     }
 
     fn parse_factor(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_unary()?;
-        while let Some(op) = match self.peek_kind() {
-            TokenKind::Star => Some(BinOp::Mul),
-            TokenKind::Slash => Some(BinOp::Div),
-            _ => None,
-        } {
+        let mut left = self.parse_unary()?;
+        loop {
+            let op = match self.kind() {
+                TokenKind::Star => BinOp::Mul,
+                TokenKind::Slash => BinOp::Div,
+                _ => return Ok(left),
+            };
             self.advance();
             let right = self.parse_unary()?;
-            expr = Expr::BinaryOp {
+            left = Expr::Binary {
                 op,
-                left: Box::new(expr),
+                left: Box::new(left),
                 right: Box::new(right),
             };
         }
-        Ok(expr)
     }
 
     fn parse_unary(&mut self) -> Result<Expr, PalimpsestError> {
-        if self.match_token(&TokenKind::Bang) {
+        if self.check(&TokenKind::Bang) || self.word_is("not") {
+            self.advance();
             let expr = self.parse_unary()?;
-            return Ok(Expr::UnaryOp {
+            return Ok(Expr::Unary {
                 op: UnOp::Not,
                 expr: Box::new(expr),
             });
         }
-        if self.match_token(&TokenKind::Minus) {
+        if self.check(&TokenKind::Minus) {
+            self.advance();
             let expr = self.parse_unary()?;
-            return Ok(Expr::UnaryOp {
+            return Ok(Expr::Unary {
                 op: UnOp::Neg,
                 expr: Box::new(expr),
             });
         }
-        self.parse_postfix()
-    }
-
-    fn parse_postfix(&mut self) -> Result<Expr, PalimpsestError> {
-        let mut expr = self.parse_primary()?;
-
-        while self.match_token(&TokenKind::Dot) {
-            let tok = self.peek().clone();
-            let field = match tok.kind {
-                TokenKind::Ident(s) => {
-                    self.advance();
-                    s
-                }
-                _ => {
-                    return Err(PalimpsestError::ParseError {
-                        line: tok.line,
-                        column: tok.column,
-                        message: "Expected field identifier after '.'".to_string(),
-                    });
-                }
-            };
-            expr = Expr::FieldAccess {
-                expr: Box::new(expr),
-                field,
-            };
-        }
-
-        Ok(expr)
+        self.parse_primary()
     }
 
     fn parse_primary(&mut self) -> Result<Expr, PalimpsestError> {
-        let tok = self.peek().clone();
-        match &tok.kind {
-            TokenKind::StringLit(s) => {
-                let val = s.clone();
+        match self.kind().clone() {
+            TokenKind::Str(s) => {
                 self.advance();
-                Ok(Expr::Literal(Value::String(val)))
+                Ok(Expr::Literal(Value::String(s)))
             }
-            TokenKind::IntLit(n) => {
-                let val = *n;
+            TokenKind::Int(n) => {
                 self.advance();
-                Ok(Expr::Literal(Value::Int(val)))
+                // `30 days` in value position is still a duration.
+                if let Some(unit) = self.word().map(|w| w.to_string()) {
+                    if let Some(mult) = duration_unit_secs(&unit) {
+                        self.advance();
+                        let secs = (n.max(0) as u64) * mult;
+                        return Ok(Expr::Literal(Value::Duration(Duration::from_secs(secs))));
+                    }
+                }
+                Ok(Expr::Literal(Value::Int(n)))
             }
-            TokenKind::FloatLit(f) => {
-                let val = *f;
+            TokenKind::Float(f) => {
                 self.advance();
-                Ok(Expr::Literal(Value::Float(val)))
+                Ok(Expr::Literal(Value::Float(f)))
             }
-            TokenKind::DurationLit(d_str) => {
-                let d = Duration::parse_str(d_str).map_err(|e| PalimpsestError::ParseError {
-                    line: tok.line,
-                    column: tok.column,
+            TokenKind::Dur(secs) => {
+                self.advance();
+                Ok(Expr::Literal(Value::Duration(Duration::from_secs(secs))))
+            }
+            TokenKind::Date(text) => {
+                self.advance();
+                let ts = Timestamp::parse_iso(&text).map_err(|e| PalimpsestError::ParseError {
+                    line: self.line(),
+                    column: 1,
                     message: e,
                 })?;
-                self.advance();
-                Ok(Expr::Literal(Value::Duration(d)))
+                Ok(Expr::Literal(Value::Timestamp(ts)))
             }
-            TokenKind::True => {
+            TokenKind::LParen => {
                 self.advance();
-                Ok(Expr::Literal(Value::Bool(true)))
+                let inner = self.parse_expr()?;
+                self.expect(&TokenKind::RParen, "`)`")?;
+                Ok(inner)
             }
-            TokenKind::False => {
-                self.advance();
-                Ok(Expr::Literal(Value::Bool(false)))
-            }
-            TokenKind::Null => {
-                self.advance();
-                Ok(Expr::Literal(Value::Null))
-            }
-            TokenKind::Conflicts => {
-                self.advance();
-                Ok(Expr::Conflicts)
-            }
-            TokenKind::Episodes => {
-                self.advance();
-                Ok(Expr::Episodes)
-            }
-            TokenKind::Recall => self.parse_recall_expr(),
-            TokenKind::History => {
-                self.advance();
-                let path = self.parse_path()?;
-                Ok(Expr::History(path))
-            }
-            TokenKind::Audit => {
-                self.advance();
-                let path = self.parse_path()?;
-                Ok(Expr::Audit(path))
-            }
-            TokenKind::LeftParen => {
-                self.advance();
-                let expr = self.parse_expr()?;
-                self.expect(&TokenKind::RightParen, "Expected ')' after expression")?;
-                Ok(expr)
-            }
-            TokenKind::LeftBracket => {
+            TokenKind::LBracket => {
                 self.advance();
                 let mut items = Vec::new();
-                while !self.check(&TokenKind::RightBracket) && !self.is_at_end() {
+                while !self.check(&TokenKind::RBracket) && !self.at_end() {
                     items.push(self.parse_expr()?);
-                    if !self.match_token(&TokenKind::Comma) {
+                    if !self.eat(&TokenKind::Comma) {
                         break;
                     }
                 }
-                self.expect(&TokenKind::RightBracket, "Expected ']' after list")?;
+                self.expect(&TokenKind::RBracket, "`]`")?;
                 Ok(Expr::List(items))
             }
-            TokenKind::LeftBrace => {
+            TokenKind::LBrace => {
                 self.advance();
-                let mut entries = Vec::new();
-                while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-                    let k_tok = self.peek().clone();
-                    let k = match k_tok.kind {
-                        TokenKind::Ident(s) | TokenKind::StringLit(s) => {
-                            self.advance();
-                            s
-                        }
-                        _ => {
-                            return Err(PalimpsestError::ParseError {
-                                line: k_tok.line,
-                                column: k_tok.column,
-                                message: "Expected key in record literal".to_string(),
-                            });
-                        }
-                    };
-                    self.expect(&TokenKind::Colon, "Expected ':' after record key")?;
-                    let v = self.parse_expr()?;
-                    entries.push((k, v));
-                    if !self.match_token(&TokenKind::Comma) {
+                let mut fields = Vec::new();
+                while !self.check(&TokenKind::RBrace) && !self.at_end() {
+                    let key = self.take_name("a field name")?;
+                    if !self.eat(&TokenKind::Colon) && !self.eat_word("is") {
+                        return Err(self.error("`:` after the field name"));
+                    }
+                    fields.push((key, self.parse_expr()?));
+                    if !self.eat(&TokenKind::Comma) {
                         break;
                     }
                 }
-                self.expect(&TokenKind::RightBrace, "Expected '}' after record literal")?;
-                Ok(Expr::Record(entries))
+                self.expect(&TokenKind::RBrace, "`}`")?;
+                Ok(Expr::Record(fields))
             }
-            TokenKind::Ident(name) => {
-                let first_name = name.clone();
-                self.advance();
-
-                // If followed by dot, it's a dotted path!
-                if self.check(&TokenKind::Dot) {
-                    let mut path = vec![first_name];
-                    while self.match_token(&TokenKind::Dot) {
-                        let next_tok = self.peek().clone();
-                        match next_tok.kind {
-                            TokenKind::Ident(s) => {
-                                self.advance();
-                                path.push(s);
-                            }
-                            _ => {
-                                return Err(PalimpsestError::ParseError {
-                                    line: next_tok.line,
-                                    column: next_tok.column,
-                                    message: "Expected identifier in path after '.'".to_string(),
-                                });
-                            }
+            TokenKind::Word(raw) => {
+                let w = raw.to_ascii_lowercase();
+                match w.as_str() {
+                    "what" => self.parse_ask(),
+                    "why" => {
+                        self.advance();
+                        let path = self.parse_path()?;
+                        Ok(Expr::Why(path))
+                    }
+                    "check" => {
+                        self.advance();
+                        Ok(Expr::Check)
+                    }
+                    "conflicts" => {
+                        self.advance();
+                        Ok(Expr::Conflicts)
+                    }
+                    "episodes" => {
+                        self.advance();
+                        Ok(Expr::Episodes)
+                    }
+                    "true" => {
+                        self.advance();
+                        Ok(Expr::Literal(Value::Bool(true)))
+                    }
+                    "false" => {
+                        self.advance();
+                        Ok(Expr::Literal(Value::Bool(false)))
+                    }
+                    "nothing" | "null" | "none" => {
+                        self.advance();
+                        Ok(Expr::Literal(Value::Null))
+                    }
+                    _ => {
+                        let path = self.parse_path()?;
+                        if path.len() == 1 {
+                            Ok(Expr::Variable(path.into_iter().next().unwrap()))
+                        } else {
+                            Ok(Expr::Ask {
+                                path,
+                                as_of: None,
+                                demands: Demands::default(),
+                            })
                         }
                     }
-                    Ok(Expr::Path(path))
-                } else {
-                    // Single identifier: could be variable or 1-element path
-                    Ok(Expr::Variable(first_name))
                 }
             }
-            _ => Err(PalimpsestError::ParseError {
-                line: tok.line,
-                column: tok.column,
-                message: format!("Unexpected token in expression: {:?}", tok.kind),
-            }),
+            _ => Err(self.error("a value")),
         }
     }
 
-    // recall [as_of(expr)] [fresh] [verified] [min_authority(Ident)] path
-    fn parse_recall_expr(&mut self) -> Result<Expr, PalimpsestError> {
-        self.advance(); // consume 'recall'
+    /// `what is [verified] [fresh] [trusted <tier>] <path>`
+    /// `what was <path> on <date>`
+    fn parse_ask(&mut self) -> Result<Expr, PalimpsestError> {
+        self.advance();
 
-        let mut as_of = None;
-        let mut fresh = false;
-        let mut verified_only = false;
-        let mut min_authority = None;
+        let past_tense = if self.eat_word("was") {
+            true
+        } else if self.eat_word("is") {
+            false
+        } else {
+            return Err(self.error("`is` or `was` after `what`"));
+        };
 
-        // Parse optional recall modifiers
+        let mut demands = Demands::default();
         loop {
-            if self.check(&TokenKind::AsOf) {
-                self.advance();
-                self.expect(&TokenKind::LeftParen, "Expected '(' after as_of")?;
-                let expr = self.parse_expr()?;
-                self.expect(&TokenKind::RightParen, "Expected ')' after as_of expression")?;
-                as_of = Some(Box::new(expr));
+            if self.eat_word("verified") {
+                demands.verified = true;
                 continue;
             }
-            if self.check(&TokenKind::Fresh) {
-                self.advance();
-                fresh = true;
+            if self.eat_word("fresh") {
+                demands.fresh = true;
                 continue;
             }
-            if self.check(&TokenKind::Verified) {
+            if self.word_is("trusted") {
                 self.advance();
-                verified_only = true;
-                continue;
-            }
-            if self.check(&TokenKind::MinAuthority) {
-                self.advance();
-                self.expect(&TokenKind::LeftParen, "Expected '(' after min_authority")?;
-                let auth_tok = self.peek().clone();
-                let auth_name = match auth_tok.kind {
-                    TokenKind::Ident(s) => {
-                        self.advance();
-                        s
-                    }
-                    _ => {
-                        return Err(PalimpsestError::ParseError {
-                            line: auth_tok.line,
-                            column: auth_tok.column,
-                            message: "Expected authority identifier in min_authority(...)".to_string(),
-                        });
-                    }
-                };
-                self.expect(&TokenKind::RightParen, "Expected ')' after authority identifier")?;
-                min_authority = Some(auth_name);
+                demands.min_authority = Some(self.take_word("an authority name")?);
                 continue;
             }
             break;
         }
 
         let path = self.parse_path()?;
-        Ok(Expr::Recall {
+
+        let mut as_of = None;
+        if self.word_is("on") || self.word_is("at") {
+            self.advance();
+            as_of = Some(Box::new(self.parse_time_expr()?));
+        } else if self.word_is("as") {
+            // `as of <date>`
+            let save = self.pos;
+            self.advance();
+            if self.eat_word("of") {
+                as_of = Some(Box::new(self.parse_time_expr()?));
+            } else {
+                self.pos = save;
+            }
+        }
+
+        if past_tense && as_of.is_none() {
+            return Err(self.error("`on <date>` after `what was`"));
+        }
+
+        Ok(Expr::Ask {
             path,
             as_of,
-            fresh,
-            verified_only,
-            min_authority,
+            demands,
         })
     }
 }
