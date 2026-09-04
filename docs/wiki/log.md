@@ -92,3 +92,9 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Upstream from https://github.com/mattpocock/skills (`skills/productivity/grill-me`, `skills/productivity/grilling`)
 - Installed at `skills/{grill-me,grilling}/` + Cursor/Claude discovery paths
+
+## [2026-09-04] schema | install full mattpocock/skills + workspace handoff
+
+- Installed full set via `npx skills add mattpocock/skills` → `skills-lock.json`, `.agents/skills/`, `.cursor/skills/`, `.claude/skills/`
+- Adapted `/handoff` to write `.handoffs/handoff-*.md` (not OS `/tmp`)
+- Added `/read-handoff` to load newest handoff then delete it

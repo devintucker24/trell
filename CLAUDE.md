@@ -38,12 +38,15 @@ Claude Code can load project skills from `.claude/skills/` (wrappers) or follow 
 
 | Slash / name | Purpose |
 |--------------|---------|
-| `handoff` | Compact session → temp handoff doc for a fresh agent |
+| `handoff` | Compact session → `.handoffs/handoff-*.md` |
+| `read-handoff` | Load newest workspace handoff, then delete it |
 | `grill-me` / `grilling` | Relentless interview to stress-test a plan or idea |
 | `wiki-retrieve` | File RAG + temporal/graph rerank |
 | `wiki-triage` / `wiki-ingest` | Inbox pipeline |
 | `wiki-doctor` / `wiki-heal` | Brain health |
 | `cargo-verify` | `fmt` / `clippy` / `test` |
+
+Full Matt Pocock set is under `.claude/skills/` / `skills/` (`skills-lock.json`). Run `/setup-matt-pocock-skills` once if you want his issue-tracker/docs defaults.
 
 ---
 

@@ -195,7 +195,7 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `skills/wiki/triage` → `skills/wiki/ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
 - Graph: [`docs/wiki/_meta/GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml)
-- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (retrieve · navigate · triage · ingest · doctor · heal · lint · label · maintain) · [`skills/handoff/SKILL.md`](skills/handoff/SKILL.md) (`/handoff`) · [`skills/grill-me/SKILL.md`](skills/grill-me/SKILL.md) / [`skills/grilling/SKILL.md`](skills/grilling/SKILL.md)
+- Skills: [`skills/wiki/SKILL.md`](skills/wiki/SKILL.md) (retrieve · navigate · triage · ingest · doctor · heal · lint · label · maintain) · Matt Pocock set via [`skills-lock.json`](skills-lock.json) (`/handoff`, `/read-handoff`, `/grill-me`, …)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 
 * **Core & Syntax**: [Epistemic Foundations](docs/wiki/core/epistemic-foundations.md), [Natural Trell Syntax Specification](docs/wiki/core/natural-syntax-specification.md), [Speculative Execution](docs/wiki/core/speculative-execution-engine.md), [Contracts & Guards](docs/wiki/core/contract-and-guard-system.md)

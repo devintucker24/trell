@@ -60,10 +60,12 @@ python3 skills/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 | Health | `wiki-doctor` → `wiki-heal` |
 | Code ↔ wiki sync | `wiki-maintain` |
 | Rust verify | `cargo-verify` |
-| Session handoff | `/handoff` |
+| Session handoff | `/handoff` → `.handoffs/` → next chat `/read-handoff` |
 | Stress-test a plan | `/grill-me` (uses `/grilling`) |
 
-Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Write an episode”*, *“Handoff…”* / `/handoff`, *“Grill me…”* / `/grill-me`.
+Human phrases that should trigger agents: *“Inbox this…”*, *“Retrieve…”*, *“Wiki doctor”*, *“Write an episode”*, *“Handoff…”* / `/handoff`, *“Read handoff”* / `/read-handoff`, *“Grill me…”* / `/grill-me`.
+
+**Matt Pocock skills:** installed project-wide via `npx skills add mattpocock/skills` (see `skills-lock.json`). Cursor/Claude discovery: `.cursor/skills/` · `.claude/skills/`.
 
 ---
 

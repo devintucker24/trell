@@ -1,0 +1,5 @@
+interface:
+  display_name: "Read Handoff"
+  short_description: "Load and delete the newest workspace handoff"
+policy:
+  allow_implicit_invocation: false

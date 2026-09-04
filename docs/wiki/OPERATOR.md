@@ -250,7 +250,8 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 
 | Skill | Path | Use when |
 |-------|------|----------|
-| Handoff | `skills/handoff/SKILL.md` | Compact this session → temp doc for a fresh agent (`/handoff`) |
+| Handoff | `skills/handoff/SKILL.md` | Compact this session → `.handoffs/handoff-*.md` (`/handoff`) |
+| Read handoff | `skills/read-handoff/SKILL.md` | Fresh chat: load newest handoff, then delete it (`/read-handoff`) |
 | Grill me | `skills/grill-me/SKILL.md` | User-invoked front door → runs `grilling` |
 | Grilling | `skills/grilling/SKILL.md` | Relentless design-tree interview (rounds / frontier) |
 | Retrieve | `skills/wiki/retrieve/SKILL.md` | File RAG: scored top-k with temporal/graph rerank |
