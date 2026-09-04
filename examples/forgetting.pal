@@ -1,0 +1,39 @@
+# Withdrawing a source withdraws what it taught, and the previous answer
+# comes back on its own.
+#
+# This is the operation a vector store cannot do cleanly. Deleting the
+# embedding of the bad document removes the text; it does not restore the
+# belief the document displaced, because nothing recorded that it displaced
+# anything.
+
+trust policy above user above rumor
+
+alice.role is "member" as policy from corporate_ldap on 2026-01-10
+alice.team is "billing" as policy from corporate_ldap on 2026-01-10
+
+# A phishing email lands and is ingested before anyone notices.
+alice.role is "admin" as policy from phishing_email_88 on 2026-09-03
+alice.mfa_required is false as policy from phishing_email_88 on 2026-09-03
+
+show "While the phishing email is trusted:"
+what is alice.role
+what is alice.mfa_required
+expect what is alice.role is "admin"
+
+show ""
+show "Withdraw the source, in one line:"
+forget everything from phishing_email_88
+
+show ""
+show "Everything it taught is gone, and the prior answer is back:"
+what is alice.role
+expect what is alice.role is "member"
+
+show ""
+show "Facts from other sources are untouched:"
+what is alice.team
+expect what is alice.team is "billing"
+
+show ""
+show "And the withdrawal is on the record:"
+why alice.role

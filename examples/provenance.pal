@@ -1,0 +1,21 @@
+# A question can refuse to be answered from hearsay.
+#
+# The refusal is in the evaluation rule, not in a prompt asking the model to
+# be careful. There is no phrasing of the question that gets the value out.
+
+trust policy above user above rumor
+
+# Something an agent picked up from an untrusted page.
+deploy.token is "tok_untrusted_999" as rumor from anonymous_paste unverified
+
+# Something with a real chain of custody.
+deploy.region is "eu-west-1" as policy from infra_runbook
+
+show "An ordinary question will hand over the rumour:"
+what is deploy.token
+
+show ""
+show "A question that requires provenance will not:"
+show "  (the next line stops the program)"
+
+what is verified deploy.token

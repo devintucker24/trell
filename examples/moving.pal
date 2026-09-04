@@ -1,0 +1,23 @@
+# A fact is replaced, and the replaced one is still there.
+#
+# The seed problem: someone says "I live in Lisbon" in March and "I moved to
+# Berlin" in August. A vector index holds both and lets the model choose. Here
+# the choice is made by a stated rule, and the losing layer stays readable.
+
+trust policy above user above rumor
+
+alice.city is "Lisbon" as user from onboarding_form on 2026-03-01
+alice.city is "Berlin" as user from relocation_ticket on 2026-08-15
+
+show "Where does Alice live?"
+what is alice.city
+expect what is alice.city is "Berlin"
+
+show ""
+show "Where did she live in April, before the move?"
+what was alice.city on 2026-04-01
+expect what was alice.city on 2026-04-01 is "Lisbon"
+
+show ""
+show "Both layers, and why Lisbon is no longer the answer:"
+why alice.city

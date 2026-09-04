@@ -1,0 +1,36 @@
+# `check` audits the belief store itself.
+#
+# Every question so far has been about one name. This one is about the whole
+# brain: what is unsourced, what has gone stale, what is contested, and what
+# rests on something that no longer exists.
+#
+# A retrieval system has no equivalent. There is no query you can send a
+# vector index that means "tell me which of your contents contradict each
+# other," because the index has no notion of two chunks being about the same
+# fact, let alone disagreeing about it.
+
+now is 2026-09-04T12:00:00Z
+
+trust legal above compliance above policy above staff above user above rumor
+
+# Healthy: sourced, current, uncontested.
+company.name is "Acme" as legal from certificate_of_incorporation
+
+# Unsourced: nobody can say where this came from.
+company.headcount is 240 as policy
+
+# Stale: the lifetime ran out in January and nothing renewed it.
+company.insurance_policy is "AXA-88213" as compliance from broker_email on 2025-01-01 for 1 year
+
+# Contested: two policy documents, same stated day, different answers.
+company.fiscal_year_end is "12-31" as policy from finance_handbook on 2026-02-01
+company.fiscal_year_end is "03-31" as policy from tax_filing on 2026-02-01
+
+# Refused: an override that never had the standing to land.
+company.name is "Acme Holdings" as user from support_ticket
+
+# Orphaned: this rests on an episode nobody ever wrote down.
+company.status is "under_review" as compliance from regulator_letter because sec_inquiry
+
+show "Health of the brain:"
+check

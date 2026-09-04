@@ -1,0 +1,35 @@
+# A belief past its lifetime reports that it is past its lifetime.
+#
+# The stale value is a different type from the fresh one, so code cannot
+# consume it by accident, and a question that asks for a fresh answer is
+# refused rather than quietly served last year's policy.
+
+now is 2026-09-04T12:00:00Z
+
+trust policy above user above rumor
+
+gateway.ip is "10.0.0.1" as policy from dhcp_lease for 5 minutes
+tax.rate is 19 as policy from finance_bulletin_2025 for 1 year on 2025-01-01
+
+show "Inside its lifetime, the lease answers normally:"
+what is fresh gateway.ip
+expect what is fresh gateway.ip is "10.0.0.1"
+
+show ""
+show "Ten minutes pass."
+later by 10 minutes
+
+show ""
+show "An ordinary question still answers, but the answer says what it is:"
+what is gateway.ip
+
+let lease = what is gateway.ip
+show "  stale?   " + lease.stale
+show "  value:   " + lease.value
+show "  age:     " + lease.age
+expect lease.stale is true
+expect lease.value is "10.0.0.1"
+
+show ""
+show "The tax rate expired months ago and nobody noticed until now:"
+check

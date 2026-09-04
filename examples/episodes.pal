@@ -1,0 +1,48 @@
+# Not everything has a name to resolve.
+#
+# "We tried the migration and it failed on the connection pool" is not a value
+# for a key. It is something that happened. Episodes hold that kind of memory:
+# they are never resolved, never shadowed, and never overwritten.
+#
+# What connects the two halves is `because`. A resolvable fact may rest on an
+# episode, and when the episode is withdrawn the fact goes with it.
+
+trust compliance above policy above staff above user above rumor
+
+when migration_attempt_3:
+    happened on 2026-09-04T08:15
+    involved deploy_bot, alice
+    details service is "billing-db", pool_size is 100, aborted_after is 90s
+    summary "Schema migration aborted: the connection pool was exhausted before the backfill finished"
+
+when pool_resize:
+    happened on 2026-09-04T11:40
+    involved alice
+    details service is "billing-db", pool_size is 400
+    summary "Raised the billing-db pool from 100 to 400 connections"
+
+# Semantic beliefs standing on top of the episodic record.
+about billing:
+    db.status is "degraded" as compliance from pagerduty because migration_attempt_3
+    db.pool_size is 400 as policy from terraform_apply because pool_resize
+
+show "What is the state of the billing database?"
+what is billing.db.status
+expect what is billing.db.status is "degraded"
+
+show ""
+show "What actually happened, in full:"
+episodes
+
+show ""
+show "The incident is resolved, so the episode is withdrawn:"
+forget when migration_attempt_3
+
+show ""
+show "The belief that rested on it went with it:"
+why billing.db.status
+
+show ""
+show "The unrelated belief stands, because it rests on a different episode:"
+what is billing.db.pool_size
+expect what is billing.db.pool_size is 400

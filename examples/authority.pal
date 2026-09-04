@@ -1,0 +1,36 @@
+# Being more recent is not the same as being more authoritative.
+#
+# An employee says their PTO is 25 days. The handbook says 20. The employee's
+# claim is newer and about a narrower subject, and it still loses, because
+# standing is a separate axis from recency and specificity.
+
+trust legal above policy above staff above user above rumor
+
+about acme:
+    # The handbook, filed under policy, back in January.
+    alice.pto is 20 as policy from hr_handbook_2026 on 2026-01-01
+
+    # Alice, in Slack, in September. Newer. More specific. Lower standing.
+    alice.pto is 25 as user from slack_thread_942 on 2026-09-02
+
+show "How many PTO days does Alice have?"
+what is acme.alice.pto
+expect what is acme.alice.pto is 20
+
+show ""
+show "The disagreement is recorded, not discarded:"
+conflicts
+
+show ""
+show "A question that insists on a policy-grade answer still gets one:"
+what is trusted policy acme.alice.pto
+
+show ""
+show "Authority also beats scope depth, which is the unusual part:"
+about acme:
+    region is "eu-west-1" as policy from infra_standard
+    about alice:
+        # Written in the innermost scope, and still outranked.
+        region is "us-east-1" as user from personal_preference
+        what is region
+        expect what is region is "eu-west-1"
