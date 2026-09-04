@@ -75,3 +75,26 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 
 - Recorded gap-analysis → router/episodic/temporal/retrieve implementation episode
 - Appended temporal/TIMELINE.md
+
+## [2026-09-04] schema | AGENTS.md + CLAUDE.md + Cursor skills
+
+- Split thin always-on `AGENTS.md` / `CLAUDE.md` from detailed `docs/wiki/OPERATOR.md`
+- Added `.cursor/rules/*.mdc` (core, rust, wiki)
+- Added `.cursor/skills/` + `.claude/skills/` launchers → `skills/wiki/` + `cargo-verify`
+- Doctor now requires CLAUDE.md, OPERATOR.md, .cursor skill entrypoints
+
+## [2026-09-04] handoff | Matt Pocock-style /handoff skill
+
+- Upstream skill from https://github.com/mattpocock/skills (`skills/productivity/handoff`)
+- Installed at `skills/handoff/`, `.cursor/skills/handoff/`, `.claude/skills/handoff/`
+
+## [2026-09-04] schema | grill-me + grilling skills
+
+- Upstream from https://github.com/mattpocock/skills (`skills/productivity/grill-me`, `skills/productivity/grilling`)
+- Installed at `skills/{grill-me,grilling}/` + Cursor/Claude discovery paths
+
+## [2026-09-04] schema | install full mattpocock/skills + workspace handoff
+
+- Installed full set via `npx skills add mattpocock/skills` → `skills-lock.json`, `.agents/skills/`, `.cursor/skills/`, `.claude/skills/`
+- Adapted `/handoff` to write `.handoffs/handoff-*.md` (not OS `/tmp`)
+- Added `/read-handoff` to load newest handoff then delete it

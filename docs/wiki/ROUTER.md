@@ -47,11 +47,11 @@ Agents must **not** dump the wiki into context. This file is the always-on map; 
 
 Load only:
 
-1. `AGENTS.md` (operating rules) — skim §2 bootstrap if already familiar
+1. `AGENTS.md` (project brief) — Claude Code: also `CLAUDE.md`
 2. This file (`docs/wiki/ROUTER.md`)
 3. Current task intent (user message / issue)
 
-Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, or concept folders.
+Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or concept folders.
 
 ## Tier 1 — Intent → seed pages
 

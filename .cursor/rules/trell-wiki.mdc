@@ -1,0 +1,14 @@
+---
+description: Trell wiki brain — frontmatter, taxonomy, context budgets
+globs: docs/wiki/**/*.md,AGENTS.md,CLAUDE.md,skills/wiki/**/*
+alwaysApply: false
+---
+
+# Wiki brain
+
+- Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/OPERATOR.md`.
+- Context: `docs/wiki/ROUTER.md` — retrieve; do not dump INDEX/SCHEMA/GRAPH.
+- New material → `docs/wiki/inbox/` only; triage before ingest.
+- No new folders/types/domains/rels without `docs/wiki/SCHEMA.md`.
+- Episodes and TIMELINE are not semantic truth until consolidated.
+- After structural edits: sync GRAPH (`skills/wiki/scripts/sync_graph.py`) and prefer doctor/heal.

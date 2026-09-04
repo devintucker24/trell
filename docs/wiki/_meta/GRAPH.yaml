@@ -8,8 +8,8 @@ nodes:
   label: affine-cognitive-budget
 - id: agents-md
   kind: concept
-  page: null
-  label: agents-md
+  page: OPERATOR
+  label: AGENTS.md
 - id: app-aml-sar
   kind: application
   page: applications/security-cloud-and-governance
@@ -366,6 +366,10 @@ nodes:
   kind: concept
   page: INDEX
   label: Wiki Index
+- id: wiki-operator
+  kind: concept
+  page: OPERATOR
+  label: Wiki Operator Manual
 - id: wiki-router
   kind: concept
   page: ROUTER
@@ -388,6 +392,10 @@ edges:
   rel: related_to
   page: theory/affine-cognitive-economics
   note: 'heal: link hard orphan'
+- from: agents-md
+  to: wiki-operator
+  rel: related_to
+  page: OPERATOR
 - from: app-icu-sepsis
   to: reg-fda-samd
   rel: regulated_by
@@ -828,6 +836,14 @@ edges:
   to: three-beat-safety-pattern
   rel: related_to
   page: INDEX
+- from: wiki-operator
+  to: wiki-router
+  rel: depends_on
+  page: OPERATOR
+- from: wiki-operator
+  to: wiki-schema
+  rel: depends_on
+  page: OPERATOR
 - from: wiki-router
   to: context-protocol
   rel: depends_on

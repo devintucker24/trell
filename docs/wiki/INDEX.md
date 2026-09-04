@@ -45,16 +45,18 @@ agent:
 Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's networked hyperlinked wiki system (LLM Wiki). This repository is a **compounding brain**: agents compile knowledge into interlinked markdown with YAML graph metadata; they do not re-derive everything from raw sources on every query.
 
 ### Agent bootstrap (read first)
-1. [`AGENTS.md`](../../AGENTS.md) — schema / operating rules
-2. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
-3. Retrieve: `python3 skills/wiki/scripts/wiki_retrieve.py "<q>"` — [`skills/wiki/retrieve`](../../skills/wiki/retrieve/SKILL.md)
-4. This INDEX — catalog when browsing structure
-5. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
-6. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
-7. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
-8. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
+1. [`AGENTS.md`](../../AGENTS.md) — thin project brief (always-on)
+2. [`CLAUDE.md`](../../CLAUDE.md) — Claude Code twin brief
+3. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
+4. [`OPERATOR.md`](OPERATOR.md) — detailed wiki operator manual
+5. Retrieve: `python3 skills/wiki/scripts/wiki_retrieve.py "<q>"` — [`skills/wiki/retrieve`](../../skills/wiki/retrieve/SKILL.md) · Cursor: `.cursor/skills/wiki-retrieve`
+6. This INDEX — catalog when browsing structure
+7. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
+8. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
+9. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) · [`log.md`](log.md)
+10. Skills: [`skills/wiki/SKILL.md`](../../skills/wiki/SKILL.md)
 
-**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + skills).
+**Layers:** raw (`raw/`, `THESIS.md`, `examples/`, `src/`) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + skills).
 **Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
 
 ---
@@ -117,6 +119,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 
 ## 6. Brain Ops (Schema, Graph, Memory, Raw, Inbox, Log)
 * [[ROUTER]]: Progressive-disclosure router + token budgets (always-on for agents)
+* [[OPERATOR]]: Detailed wiki operator manual (after thin root `AGENTS.md` / `CLAUDE.md`)
 * [[_meta/CONTEXT_PROTOCOL]]: Semantic / episodic / temporal assembly rules
 * [[_meta/brain-gap-analysis-2026-09-04]]: Memory/RAG gap analysis vs 2026 research
 * [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relations, **temporal fields**, taxonomy evolution
