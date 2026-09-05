@@ -5,6 +5,9 @@ description: Navigate RepoBrain claim pages and the Graphify code graph. Use whe
 
 # Skill: RepoBrain Navigate
 
+This is the **`/repobrain-navigate` skill**. There is no `./repobrain navigate`
+CLI command. Corpus lookup is `./repobrain retrieve`.
+
 ## When to use
 - User asks "where is X documented?" vs "where is X in the code?"
 - Agent needs epistemic/types/applications/market/roadmap context

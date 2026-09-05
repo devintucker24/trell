@@ -116,19 +116,19 @@ Harness launchers (`.cursor/skills/`, `.claude/skills/`) only point here.
 
 | Skill | Kind | Does | Related command |
 |---|---|---|---|
-| `repobrain-retrieve` | wraps CLI | Ranked wiki RAG (lexical + claim graph + temporal) | `./repobrain retrieve` |
-| `repobrain-query` | playbook only | After retrieve: answer with `[[cites]]`, optionally file a synthesis page | skill `/repobrain-query`; lookup is `./repobrain retrieve` |
-| `repobrain-navigate` | playbook only | After retrieve: return wikilinks + one-line summaries; for code, Graphify paths | skill `/repobrain-navigate`; code uses `graph query` |
-| `repobrain-triage` | playbook only | Classify inbox; do not ingest yet | — |
-| `repobrain-ingest` | playbook only | Promote reviewed inbox into compiled pages | — |
-| `repobrain-doctor` | wraps CLI | Corpus health audit | `./repobrain doctor` |
-| `repobrain-heal` | playbook only | Repair doctor findings | — |
-| `repobrain-lint` | playbook only | Doctor → heal → doctor | `./repobrain doctor` |
-| `repobrain-label` | playbook only | Normalize frontmatter to SCHEMA | — |
-| `repobrain-maintain` | playbook only | Sync compiled claims and graphs after code/wiki change | `./repobrain graph sync` |
-| `repobrain-usage` | wraps CLI | Retrieval cost / usefulness telemetry | `./repobrain usage report` |
-| `repobrain-setup` | wraps CLI | Install or refresh the engine in a repo | `./repobrain setup` |
-| `repobrain-brain` | playbook only | Parent operator skill | `./repobrain --help` |
+| `/repobrain-retrieve` | wraps CLI | Ranked wiki RAG (lexical + claim graph + temporal) | `./repobrain retrieve` |
+| `/repobrain-query` | playbook only | After retrieve: answer with `[[cites]]`, optionally file a synthesis page | skill exists; lookup is `./repobrain retrieve` |
+| `/repobrain-navigate` | playbook only | After retrieve: return wikilinks + one-line summaries; for code, Graphify paths | skill exists; code uses `graph query` |
+| `/repobrain-triage` | playbook only | Classify inbox; do not ingest yet | — |
+| `/repobrain-ingest` | playbook only | Promote reviewed inbox into compiled pages | — |
+| `/repobrain-doctor` | wraps CLI | Corpus health audit | `./repobrain doctor` |
+| `/repobrain-heal` | playbook only | Repair doctor findings | — |
+| `/repobrain-lint` | playbook only | Doctor → heal → doctor | `./repobrain doctor` |
+| `/repobrain-label` | playbook only | Normalize frontmatter to SCHEMA | — |
+| `/repobrain-maintain` | playbook only | Sync compiled claims and graphs after code/wiki change | `./repobrain graph sync` |
+| `/repobrain-usage` | wraps CLI | Retrieval cost / usefulness telemetry | `./repobrain usage report` |
+| `/repobrain-setup` | wraps CLI | Install or refresh the engine in a repo | `./repobrain setup` |
+| `/repobrain-brain` | playbook only | Parent operator skill | `./repobrain --help` |
 
 Retrieve is the lookup **engine**. Query and navigate are **what the agent does
 with those hits** (essay vs map). They are not extra search backends.
@@ -148,12 +148,19 @@ with those hits** (essay vs map). They are not extra search backends.
 | Usage | Generate the usage report and tell me if retrieve is expensive or weakly hitting. |
 | Dashboard | Run `./repobrain dashboard html --serve` and click the printed `http://127.0.0.1` URL. |
 
-**Skill tasks** (paste when you want a playbook, not a fake CLI):
+**Skill tasks** (paste `/repobrain-*` playbooks; these are not extra CLI verbs):
 
 | Skill | Prompt |
 |---|---|
-| Query | Follow `/repobrain-query`. Retrieve with `./repobrain retrieve` (no `./repobrain query` command). Answer from cited hits; do not invent compiled claims. File a synthesis page if the answer should persist. |
-| Navigate | Follow `/repobrain-navigate`. Retrieve, then return wikilinks and one-line summaries. For code wiring use `./repobrain graph query`. |
+| `/repobrain-query` | Follow `/repobrain-query`. Retrieve with `./repobrain retrieve` (no `./repobrain query` command). Answer from cited hits; do not invent compiled claims. |
+| `/repobrain-navigate` | Follow `/repobrain-navigate`. Retrieve, then return wikilinks and one-line summaries. For code wiring use `./repobrain graph query`. |
+| `/repobrain-triage` | Follow `/repobrain-triage`. Classify inbox; do not ingest yet. |
+| `/repobrain-ingest` | Follow `/repobrain-ingest`. Promote reviewed inbox without inventing taxonomy. |
+| `/repobrain-heal` | Follow `/repobrain-heal`. Repair doctor findings. |
+| `/repobrain-lint` | Follow `/repobrain-lint`. Doctor → heal → doctor. |
+| `/repobrain-label` | Follow `/repobrain-label`. Normalize frontmatter to SCHEMA. |
+| `/repobrain-maintain` | Follow `/repobrain-maintain`. Sync claims and graphs after code/wiki change. |
+| `/repobrain-brain` | Follow `/repobrain-brain`. Parent operator skill. |
 
 ## Health signals
 

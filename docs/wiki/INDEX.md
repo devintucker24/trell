@@ -153,7 +153,7 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | Doctor | `_system/skills/repobrain-doctor/SKILL.md` | Structural diagnosis |
 | Heal | `_system/skills/repobrain-heal/SKILL.md` | Doctor-driven repair |
 | Lint | `_system/skills/repobrain-lint/SKILL.md` | Doctor → heal → doctor |
-| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers |
+| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers (`/repobrain-query`; not a CLI verb) |
 | Label | `_system/skills/repobrain-label/SKILL.md` | Frontmatter normalization |
 | Maintain | `_system/skills/repobrain-maintain/SKILL.md` | Synchronization |
 | Usage | `_system/skills/repobrain-usage/SKILL.md` | Context telemetry |

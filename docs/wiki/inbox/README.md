@@ -4,7 +4,7 @@ title: Wiki Inbox — Drop Zone for Unprocessed Knowledge
 type: meta
 status: active
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-05
 tags: [inbox, triage, ingest]
 domain: meta
 summary: "Human/agent drop zone. Nothing here is wiki truth until triaged and ingested."
@@ -62,6 +62,6 @@ Or say in chat:
 The agent creates `docs/wiki/inbox/YYYY-MM-DD-<slug>.md`, then runs **triage** → **ingest**.
 
 ## Skills
-- Triage: `docs/wiki/_system/skills/wiki-triage/SKILL.md`
-- Ingest: `docs/wiki/_system/skills/wiki-ingest/SKILL.md`
+- Triage: `docs/wiki/_system/skills/repobrain-triage/SKILL.md` (`/repobrain-triage`)
+- Ingest: `docs/wiki/_system/skills/repobrain-ingest/SKILL.md` (`/repobrain-ingest`)
 - Schema: `docs/wiki/_system/docs/SCHEMA.md` §6–§8

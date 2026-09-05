@@ -14,128 +14,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from repobrain_catalog import (
+    CLI_COMMANDS,
+    PLAYBOOK_ONLY,
+    SKILL_CLI,
+    SKILL_PROMPTS,
+    SKILL_SUFFIXES,
+)
 from repobrain_paths import PATHS, ROOT, is_wiki_content_page, load_host
-
-
-SKILL_SUFFIXES = (
-    "brain",
-    "retrieve",
-    "query",
-    "navigate",
-    "triage",
-    "ingest",
-    "doctor",
-    "heal",
-    "lint",
-    "label",
-    "maintain",
-    "usage",
-    "setup",
-)
-
-PLAYBOOK_ONLY = frozenset(
-    {
-        "brain",
-        "query",
-        "navigate",
-        "triage",
-        "ingest",
-        "heal",
-        "lint",
-        "label",
-        "maintain",
-    }
-)
-
-SKILL_CLI = {
-    "retrieve": './repobrain retrieve "<question>" --budget-tokens 3500',
-    "doctor": "./repobrain doctor",
-    "usage": "./repobrain usage report",
-    "setup": "./repobrain setup",
-}
-
-SKILL_PROMPTS = {
-    "brain": "Operate RepoBrain with the public CLI. Do not dump the wiki.",
-    "retrieve": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
-    "query": (
-        "Follow the /repobrain-query skill. Lookup with ./repobrain retrieve "
-        "(there is no ./repobrain query CLI command). Answer from cited hits; "
-        "do not invent compiled claims."
-    ),
-    "navigate": (
-        "Follow the /repobrain-navigate skill. Lookup with ./repobrain retrieve "
-        "(there is no ./repobrain navigate CLI command). Return wikilinks and "
-        "one-line summaries. For code wiring use ./repobrain graph query."
-    ),
-    "triage": "Classify inbox material. Do not ingest until a human or skill says to.",
-    "ingest": "Promote reviewed inbox pages into the compiled corpus without inventing taxonomy.",
-    "doctor": "Run RepoBrain doctor and remediate critical/high findings.",
-    "heal": "Repair the latest doctor findings without rewriting authority rules.",
-    "lint": "Run doctor, heal if needed, then doctor again.",
-    "label": "Normalize page frontmatter to SCHEMA.md.",
-    "maintain": "Synchronize code and RepoBrain knowledge after semantic changes.",
-    "usage": "Report retrieval usefulness and token cost from local telemetry.",
-    "setup": "Install or refresh RepoBrain in this repository with ./repobrain setup.",
-}
-
-CLI_COMMANDS = (
-    {
-        "id": "cli-setup",
-        "name": "setup",
-        "description": "Initialize or refresh RepoBrain in this repository.",
-        "command": "./repobrain setup",
-        "prompt": "Install or refresh RepoBrain with ./repobrain setup. Do not dump the wiki.",
-    },
-    {
-        "id": "cli-retrieve",
-        "name": "retrieve",
-        "description": "Rank compiled wiki evidence. This is the only corpus lookup verb.",
-        "command": './repobrain retrieve "<question>" --budget-tokens 3500',
-        "prompt": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
-    },
-    {
-        "id": "cli-doctor",
-        "name": "doctor",
-        "description": "Audit corpus structure and knowledge health.",
-        "command": "./repobrain doctor",
-        "prompt": "Run RepoBrain doctor and remediate critical/high findings.",
-    },
-    {
-        "id": "cli-usage",
-        "name": "usage",
-        "description": "Report retrieval usefulness and token cost.",
-        "command": "./repobrain usage report",
-        "prompt": "Generate the usage report and say if retrieve is expensive or weakly hitting.",
-    },
-    {
-        "id": "graph",
-        "name": "graph",
-        "description": "Sync and query the Graphify code graph (not wiki claims).",
-        "command": "./repobrain graph query \"<symbol>\"",
-        "prompt": "Query Graphify for how … is wired. Do not treat graph HTML as compiled claims.",
-    },
-    {
-        "id": "source",
-        "name": "Sources",
-        "description": "Scan Git-tracked sources and convert configured local formats.",
-        "command": "./repobrain source convert",
-        "prompt": "Scan and convert local sources. Keep derived Markdown non-authoritative.",
-    },
-    {
-        "id": "eval",
-        "name": "Evaluation",
-        "description": "Run the end-to-end RepoBrain baseline.",
-        "command": "./repobrain eval",
-        "prompt": "Run ./repobrain eval and explain any failed category.",
-    },
-    {
-        "id": "dashboard",
-        "name": "Dashboard",
-        "description": "Generate the local read-only HTML dashboard.",
-        "command": "./repobrain dashboard html --serve",
-        "prompt": "Serve the local HTML dashboard and open the printed http://127.0.0.1 URL in the browser.",
-    },
-)
 
 
 def _escape(value: Any) -> str:
