@@ -4,7 +4,7 @@ version: 2
 updated: 2026-09-05
 budgets:
   top_k: 8
-  minimum_score_class: relevant
+  minimum_score_class: strong
   tier0_tokens: 2000
   retrieved_tokens: 3500
   total_context_tokens: 9500
@@ -18,7 +18,7 @@ graphify:
 queries:
   - id: maritime-safety
     q: "How does Trell keep autonomous ships safe under COLREGs?"
-    minimum_score_class: relevant
+    minimum_score_class: strong
     expect_sources:
       - path: applications/autonomous-physical-systems.md
         max_rank: 3

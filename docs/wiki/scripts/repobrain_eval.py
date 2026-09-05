@@ -19,10 +19,11 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from wiki_paths import ROOT, WIKI, load_host
+from wiki_usage import STRONG_HIT, WEAK_HIT
 
 DEFAULT_CONFIG = WIKI / "_meta" / "eval-queries.yaml"
 DEFAULT_OUTPUT = WIKI / "_meta" / "eval"
-SCORE_FLOORS = {"weak": 0.08, "relevant": 0.45, "strong": 0.70}
+SCORE_FLOORS = {"weak": 0.08, "relevant": WEAK_HIT, "strong": STRONG_HIT}
 
 
 @dataclass
