@@ -90,6 +90,9 @@ parse or merge code graphs itself.
 ./repobrain graph export-html
 ```
 
+Missing `graphify-out/graph.json` means run `./repobrain graph sync`, then
+`./repobrain graph query`. It is not a reason to skip Graphify.
+
 Status distinguishes CLI compatibility, missing or malformed artifacts,
 `edges` versus NetworkX `links` shapes, committed/staged/dirty/untracked source
 freshness under configured roots, confidence classes, and visualization

@@ -21,7 +21,7 @@ Every wiki/memory/research task:
 | New material | inbox → `repobrain-triage` → `repobrain-ingest` |
 | Health | `repobrain-doctor` → `repobrain-heal` |
 | Context cost | `repobrain-usage` |
-| Code wiring | `./repobrain graph query` |
+| Code wiring | `./repobrain graph query` (sync first if `graphify-out/graph.json` is missing) |
 | Export this engine | `_system/docs/FRAMEWORK.md` + `repobrain-setup` |
 
 New checkout: `./repobrain setup`

@@ -21,7 +21,9 @@ Full always-on brief: **`AGENTS.md`**. Deep RepoBrain ops:
 ## Default workflow
 
 1. Read `AGENTS.md` (and this file if you are Claude Code).
-2. Code changes → `src/`, `examples/`, `tests/` → run `cargo test`.
+2. Code **edits** → `src/`, `examples/`, `tests/` → run `cargo test`.
+   Code **questions** (lexer/parser/who-calls) → `./repobrain graph query`.
+   If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query.
 3. Knowledge / memory → `docs/wiki/_system/docs/ROUTER.md` → retrieve:
 
 ```bash
@@ -78,3 +80,5 @@ Single-context: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
 - Cite inbox or unconsolidated episodes as product truth
 - Treat `docs/research/` abandoned sketches as current Trell
 - Skip `cargo test` after compiler/runtime edits
+- Skip `./repobrain graph query` when `graphify-out/graph.json` is missing
+  (sync, then query; open named `source_file`s)

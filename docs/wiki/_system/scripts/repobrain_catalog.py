@@ -148,8 +148,9 @@ CLI_COMMANDS = (
         "description": "Sync and query the Graphify code graph (not wiki claims).",
         "command": './repobrain graph query "<symbol>"',
         "prompt": (
-            "Query Graphify for how … is wired. Do not treat graph HTML as "
-            "compiled claims. This is ./repobrain graph query, not /repobrain-query."
+            "Query Graphify for how … is wired with ./repobrain graph query. "
+            "If graphify-out/graph.json is missing, ./repobrain graph sync then query. "
+            "Open named source_file hits. This is ./repobrain graph query, not /repobrain-query."
         ),
     },
     {

@@ -38,6 +38,9 @@ Do not dump `GRAPH.yaml` or `graph.json` into context. Query them.
 ./repobrain graph god-nodes
 ```
 
+If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query.
+Open named `source_file`s; Graphify is the index into `src/`.
+
 5. Open only pages whose `agent.read_when` matches, plus the `source_file` Graphify names.
 6. Prefer `agent.priority: critical|high` doctrine pages. Graphify wiki export (`graphify export wiki`) is structural, not Trell thesis.
 

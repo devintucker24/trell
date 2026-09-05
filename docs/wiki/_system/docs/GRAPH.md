@@ -4,7 +4,7 @@ title: Machine graph protocol (Graphify + claim index)
 type: meta
 status: active
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-05
 tags: [graph, meta, navigation, graphify]
 domain: meta
 summary: "Agent/machine protocol: Graphify owns the code graph; GRAPH.yaml is a compiled claim index. Not a human map."
@@ -42,7 +42,9 @@ These files are for **agents and scripts**. Do not render them as a human produc
 
 ## Code graph (pull from Graphify)
 
-Path: `graphify-out/graph.json` (gitignored).
+Path: `graphify-out/graph.json` (gitignored). Missing artifact →
+`./repobrain graph sync`, then `./repobrain graph query`. That is the
+compiler-question path; do not skip Graphify and open all of `src/`.
 
 ```bash
 ./repobrain graph sync

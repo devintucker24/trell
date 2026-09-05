@@ -4,7 +4,7 @@ title: Host router seeds (Trell)
 type: meta
 status: active
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-05
 tags: [router, host]
 domain: meta
 summary: "Trell-specific ROUTER Tier-1 intent → seed pages. Replace this table when packing the wiki into another project."
@@ -25,7 +25,7 @@ agent:
     - "after ROUTER.md Tier 0, before retrieve"
     - "matching user intent to wiki pages"
   maintain:
-    - "keep intent keywords aligned with actual page paths"
+    - "keep compiler/lexer/parser seeds on graph query, not dumping src/"
 ---
 
 # Host router seeds (Trell)
@@ -37,8 +37,8 @@ Generic intents live in [[_system/docs/ROUTER]]. Project intents live here.
 | epistemic / certainty / belief / verify / guard | `core/epistemic-foundations.md`, `core/contract-and-guard-system.md`, `theory/epistemic-type-calculus.md` |
 | speculative / when / fork / rollback | `core/speculative-execution-engine.md`, `applications/overview-and-safety-patterns.md` |
 | models / contracts / quorum / consensus | `core/contract-and-guard-system.md` |
-| Natural Trell / colon-indent / syntax | `core/natural-syntax-specification.md` |
-| compiler / lexer / parser / typecheck / src | `core/epistemic-foundations.md` + `src/` (code is ground truth) |
+| Natural Trell / colon-indent / syntax | wiki: `core/natural-syntax-specification.md`. Compiler implementation (lexer/parser): `./repobrain graph query "<symbol>"` then open named `source_file`s. Missing `graphify-out/graph.json` → `./repobrain graph sync` then query. |
+| compiler / lexer / parser / typecheck / src | wiki: `core/epistemic-foundations.md`. Code: `./repobrain graph query "<symbol>"` then open only named `source_file`s. `src/` is ground truth; Graphify is how you find the file. If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query — do not skip Graphify. |
 | ship / fleet / maritime / COLREGs / drone | `applications/autonomous-physical-systems.md`, `applications/overview-and-safety-patterns.md` |
 | finance / bank / Fedwire / insurance | `applications/financial-treasury-and-markets.md` |
 | healthcare / ICU / pharma | `applications/healthcare-and-life-sciences.md` |

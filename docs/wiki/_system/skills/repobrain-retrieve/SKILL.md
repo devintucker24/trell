@@ -38,6 +38,10 @@ Useful flags:
 ./repobrain graph explain TypeChecker
 ```
 
+If `graphify-out/graph.json` is missing, run `./repobrain graph sync` and
+query again. Do not skip Graphify and dump `src/*.rs`. Open only named
+`source_file`s. `src/` remains ground truth; Graphify is the index.
+
 6. Answer with citations `[[folder/page]]`. Prefer filing durable answers back (query skill).
 7. Log: `## [YYYY-MM-DD] retrieve | <slug>`
 
