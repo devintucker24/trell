@@ -183,6 +183,28 @@ trell inspect examples/medical_diagnosis.trell
 trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 ```
 
+### Native LLVM Compilation (certain-integer core)
+Trell can lower its **fully-grounded, deterministic integer core** (`certain int`
+literals, arithmetic, `let`/assignment, function calls, and `return`) straight to
+LLVM IR and a native executable. Epistemic constructs (`oracle`, `verify`,
+`consensus`, `fork`, `confidence`, `justification`) are deliberately **rejected**
+by this backend rather than silently lowered — a `belief` is not a certainty, so
+it stays in the interpreted `trell run` pipeline.
+
+The entry point must be `fn main() -> int`; its result becomes the process exit code.
+
+```bash
+# Emit LLVM IR
+trell emit-llvm examples/native_arithmetic.trell -o native_arithmetic.ll
+
+# Compile to a native executable via LLVM + the system C toolchain
+trell build examples/native_arithmetic.trell -o /tmp/native_arithmetic
+/tmp/native_arithmetic ; echo $?      # -> 42
+```
+
+Requires LLVM 18 (`llvm-sys`/`inkwell`); see the toolchain notes in
+`.cursor/environment.json` and `.cargo/config.toml`.
+
 ---
 
 ## 6. Comprehensive Knowledge Base & Technical Wiki
@@ -219,6 +241,7 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 - `src/typecheck.rs`: Dual-track epistemic type checker preventing unverified belief assignment.
 - `src/interpreter.rs`: Runtime execution engine with speculative fork tracking and rollback.
 - `src/oracle.rs`: Configurable model oracle interface with scenario support.
+- `src/llvm_backend.rs`: Native LLVM backend for the certain-integer core (`inkwell`/`llvm-sys` 18).
 - `src/codegen.rs`: Package compiler emitting verified execution units.
 - `examples/`:
   - `autonomous_ship.trell`: Maritime obstacle collision avoidance in Natural Trell syntax (colon + indent + end).
