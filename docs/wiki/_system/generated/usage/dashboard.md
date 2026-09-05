@@ -33,46 +33,56 @@ agent:
 Generated `2026-09-05` from local `docs/wiki/_system/generated/usage/events.jsonl` (last **30** days).
 Raw events are gitignored; this page is the shareable snapshot.
 
-**Usefulness index:** 60.0/100
+**Usefulness index:** 53.5/100
 
 (heuristic: retrieval hit quality + last doctor score + activity − INDEX-dump admissions)
 
 | Metric | Value |
 |--------|------:|
-| Events | 5 |
-| Retrieves | 4 |
-| Est. retrieve tokens (sum) | 4661 |
-| Est. tokens / event with tokens | 1165.2 |
-| Budget utilization | 36.7% |
-| Mean top hit score | 0.437 |
+| Events | 7 |
+| Retrieves | 6 |
+| Est. retrieve tokens (sum) | 7031 |
+| Est. tokens / event with tokens | 1171.8 |
+| Budget utilization | 35.8% |
+| Mean top hit score | 0.417 |
 | Weak-hit rate (top < 0.25) | 0.0 |
-| Strong-hit rate (top ≥ 0.45) | 0.5 |
+| Strong-hit rate (top ≥ 0.45) | 0.333 |
 | Last doctor score | 100.0 |
 | Repeat-query groups (≥3) | 0 |
 | Dump admissions | 0 |
-| Mean latency (ms) | 120.5 |
+| Mean latency (ms) | 146.3 |
 | Pages opened / cited | 0 / 0 |
 | Citation overlap (cited ∩ opened / opened) | — |
+
+## Graphify adapter
+
+| Signal | Value |
+|---|---|
+| CLI | 0.9.54 |
+| Artifact | ready |
+| Nodes / edges | 151 / 486 |
+| Source freshness | fresh |
+| Visualization | fresh |
 
 ## Ops mix
 
 | op | count |
 |----|------:|
 | `doctor` | 1 |
-| `retrieve` | 4 |
+| `retrieve` | 6 |
 
 ## Hottest retrieve pages
 
 | path | hits |
 |------|-----:|
+| `core/epistemic-foundations.md` | 5 |
+| `episodic/2026-09-04-graphify-machine-graph.md` | 4 |
+| `INDEX.md` | 4 |
+| `core/contract-and-guard-system.md` | 4 |
 | `FRAMEWORK.md` | 3 |
-| `core/contract-and-guard-system.md` | 3 |
-| `core/epistemic-foundations.md` | 3 |
 | `applications/autonomous-physical-systems.md` | 3 |
-| `episodic/2026-09-04-graphify-machine-graph.md` | 2 |
-| `INDEX.md` | 2 |
-| `ROUTER.md` | 2 |
-| `_meta/brain-gap-analysis-2026-09-04.md` | 2 |
+| `applications/security-cloud-and-governance.md` | 3 |
+| `core/natural-syntax-specification.md` | 3 |
 
 ## How to read this
 
