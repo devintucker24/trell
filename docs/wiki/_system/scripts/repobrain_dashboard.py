@@ -5,6 +5,7 @@ from __future__ import annotations
 import html
 import json
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -639,12 +640,15 @@ def dashboard_file_uri(path: Path) -> str:
 
 
 def print_dashboard_location(path: Path) -> None:
-    print(path)
-    print(dashboard_file_uri(path))
+    uri = dashboard_file_uri(path)
+    print(uri, flush=True)
+    print(f"path: {path}", file=sys.stderr, flush=True)
     print(
         "Open the file:// URL in the system browser (Finder, Chrome, or Safari). "
         "Cursor Simple Browser rewrites /Users/... to https://users/... and fails "
-        "with ERR_NAME_NOT_RESOLVED."
+        "with ERR_NAME_NOT_RESOLVED.",
+        file=sys.stderr,
+        flush=True,
     )
 
 

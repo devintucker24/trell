@@ -97,9 +97,10 @@ These are the public `./repobrain` verbs. There is no `./repobrain query` or
 ./repobrain dashboard html
 ```
 
-`dashboard html` prints the filesystem path and a `file://` URL. Open that URL
-in Chrome, Safari, or Finder. Do not paste the path into Cursor Simple Browser
-(`https://users/...` → `ERR_NAME_NOT_RESOLVED`).
+`dashboard html` prints a `file://` URL on stdout. Open that in Chrome, Safari,
+or Finder. The filesystem path and Simple Browser warning go to stderr. Do not
+paste a `/Users/...` path into Cursor Simple Browser (`https://users/...` →
+`ERR_NAME_NOT_RESOLVED`).
 
 The HTML dashboard has Overview, Sources, Code graph (Graphify embed + full-page
 fallback), and Cheat sheet tabs.
