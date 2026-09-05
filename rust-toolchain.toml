@@ -1,0 +1,6 @@
+[toolchain]
+# The LLVM backend depends on `inkwell` (llvm-sys 18), whose build graph pulls
+# `inkwell_internals`, which requires the edition2024 Cargo feature stabilized in
+# Rust 1.85. Pin the toolchain so the compiler builds reproducibly everywhere.
+channel = "1.85.0"
+components = ["rustfmt", "clippy"]
