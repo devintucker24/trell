@@ -1,39 +1,112 @@
-# eval queries for wiki retrieve (golden set)
-# Run mentally or: python3 docs/wiki/scripts/wiki_retrieve.py "<q>" and check expect_paths
-version: 1
-updated: 2026-09-04
+# RepoBrain baseline contract. The evaluator checks public retrieval behavior,
+# bounded answer evidence, Graphify lookup, and documented context budgets.
+version: 2
+updated: 2026-09-05
+budgets:
+  top_k: 8
+  minimum_score_class: relevant
+  tier0_tokens: 2000
+  retrieved_tokens: 3500
+  total_context_tokens: 9500
+tier0:
+  paths:
+    - AGENTS.md
+    - docs/wiki/ROUTER.md
+graphify:
+  symbol: Parser
+  source_file: parser.rs
 queries:
   - id: maritime-safety
     q: "How does Trell keep autonomous ships safe under COLREGs?"
-    expect_paths:
-      - applications/autonomous-physical-systems.md
-      - applications/overview-and-safety-patterns.md
-      - core/epistemic-foundations.md
+    minimum_score_class: relevant
+    expect_sources:
+      - path: applications/autonomous-physical-systems.md
+        max_rank: 3
+        provenance: compiled
+      - path: applications/overview-and-safety-patterns.md
+        max_rank: 8
+        provenance: compiled
+      - path: core/epistemic-foundations.md
+        max_rank: 8
+        provenance: compiled
   - id: belief-certain
     q: "What is belief vs certain and how does verify work?"
-    expect_paths:
-      - core/epistemic-foundations.md
-      - core/contract-and-guard-system.md
+    expect_sources:
+      - path: core/epistemic-foundations.md
+        max_rank: 3
+        provenance: compiled
+      - path: core/contract-and-guard-system.md
+        max_rank: 5
+        provenance: compiled
   - id: natural-syntax
     q: "Natural Trell colon indent end syntax"
-    expect_paths:
-      - core/natural-syntax-specification.md
+    minimum_score_class: strong
+    expect_sources:
+      - path: core/natural-syntax-specification.md
+        max_rank: 3
+        provenance: compiled
   - id: competitors
     q: "Why not LangChain or BAML for epistemic safety?"
-    expect_paths:
-      - market/competitive-analysis.md
+    minimum_score_class: strong
+    expect_sources:
+      - path: market/competitive-analysis.md
+        max_rank: 3
+        provenance: compiled
   - id: ten-year
     q: "What is the ten year vision for Trell?"
-    expect_paths:
-      - roadmap/ten-year-vision.md
+    minimum_score_class: strong
+    expect_sources:
+      - path: roadmap/ten-year-vision.md
+        max_rank: 3
+        provenance: compiled
   - id: episodic-memory-decision
     q: "What did we decide about wiki memory and RAG?"
     lane: episodic
-    expect_paths:
-      - episodic/2026-09-04-brain-memory-upgrade.md
-      - _meta/brain-gap-analysis-2026-09-04.md
+    expect_sources:
+      - path: episodic/2026-09-04-brain-memory-upgrade.md
+        max_rank: 3
+        provenance: episodic
+      - path: _meta/brain-gap-analysis-2026-09-04.md
+        max_rank: 8
+        provenance: meta
   - id: temporal-timeline
     q: "What changed in the wiki brain timeline?"
     lane: temporal
-    expect_paths:
-      - temporal/TIMELINE.md
+    expect_sources:
+      - path: temporal/TIMELINE.md
+        max_rank: 3
+        provenance: temporal
+
+answer_fidelity:
+  - id: belief-reduction
+    query_id: belief-certain
+    allow_provenance: [compiled]
+    forbid_paths: [INDEX.md, SCHEMA.md]
+    required_terms:
+      - belief
+      - certain
+      - [guard, predicate]
+      - [verify, require]
+    required_citations:
+      - core/epistemic-foundations.md
+      - core/contract-and-guard-system.md
+  - id: natural-syntax-shape
+    query_id: natural-syntax
+    allow_provenance: [compiled]
+    forbid_paths: [INDEX.md, SCHEMA.md]
+    required_terms:
+      - Natural Trell
+      - "end"
+      - "syntax"
+    required_citations:
+      - core/natural-syntax-specification.md
+  - id: maritime-safety-mechanism
+    query_id: maritime-safety
+    allow_provenance: [compiled]
+    forbid_paths: [INDEX.md, SCHEMA.md]
+    required_terms:
+      - [COLREGs, maritime]
+      - [guard, ClearWaterway]
+      - [belief, unverified]
+    required_citations:
+      - applications/autonomous-physical-systems.md
