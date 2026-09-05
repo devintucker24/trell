@@ -95,12 +95,14 @@ These are the public `./repobrain` verbs. There is no `./repobrain query` or
 ./repobrain eval
 ./repobrain usage report
 ./repobrain dashboard html
+./repobrain dashboard html --serve
 ```
 
-`dashboard html` prints a `file://` URL on stdout. Open that in Chrome, Safari,
-or Finder. The filesystem path and Simple Browser warning go to stderr. Do not
-paste a `/Users/...` path into Cursor Simple Browser (`https://users/...` →
-`ERR_NAME_NOT_RESOLVED`).
+`dashboard html` writes the file and prints a `file://` URL (not clickable in Cursor).
+
+`dashboard html --serve` binds `127.0.0.1` and prints `http://127.0.0.1:<port>/docs/wiki/_system/generated/dashboard/index.html`. Click that in the terminal — Cursor Simple Browser can open localhost HTTP. Leave the process running until you close the preview (`Ctrl+C`). `--open` also asks the OS to open the URL.
+
+Do not paste a `/Users/...` path into Simple Browser (`https://users/...` → `ERR_NAME_NOT_RESOLVED`).
 
 The HTML dashboard has Overview, Sources, Code graph (Graphify embed + full-page
 fallback), and Cheat sheet tabs.
@@ -142,7 +144,7 @@ with those hits** (essay vs map). They are not extra search backends.
 | Doctor | Run RepoBrain doctor and remediate critical/high findings without inventing taxonomy. |
 | Eval | Run `./repobrain eval` and explain any failed category from the latest report. |
 | Usage | Generate the usage report and tell me if retrieve is expensive or weakly hitting. |
-| Dashboard | Generate the local HTML health overview and open the printed `file://` URL in the system browser, not Cursor Simple Browser. |
+| Dashboard | Run `./repobrain dashboard html --serve` and click the printed `http://127.0.0.1` URL. |
 
 **Skill tasks** (paste when you want a playbook, not a fake CLI):
 
@@ -169,8 +171,7 @@ with those hits** (essay vs map). They are not extra search backends.
 - Raw vs compiled disagreement → inbox candidate; compiled stays authoritative.
 - Conversion `pending` → install the narrow MarkItDown extra for that format.
 - Conversion `blocked` → `allow_external` is required before URL/plugin/OCR flags.
-- Dashboard `https://users/...` / `ERR_NAME_NOT_RESOLVED` → the POSIX path was
-  opened as HTTPS. Run `./repobrain dashboard html` and open the printed
-  `file://` URL in the system browser (`open <path>` on macOS).
+- Dashboard not clickable / `https://users/...` / `ERR_NAME_NOT_RESOLVED` → run
+  `./repobrain dashboard html --serve` and click the `http://127.0.0.1:...` URL.
 - Stale Graphify → `./repobrain graph sync`.
 - Deep operator detail → `OPERATOR.md`, not this page.

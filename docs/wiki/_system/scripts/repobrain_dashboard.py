@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import argparse
 import html
+import http.server
 import json
 import os
 import sys
+import threading
+import webbrowser
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -126,8 +130,8 @@ CLI_COMMANDS = (
         "id": "dashboard",
         "name": "Dashboard",
         "description": "Generate the local read-only HTML dashboard.",
-        "command": "./repobrain dashboard html",
-        "prompt": "Generate the local HTML dashboard, then open the printed file:// URL in the system browser.",
+        "command": "./repobrain dashboard html --serve",
+        "prompt": "Serve the local HTML dashboard and open the printed http://127.0.0.1 URL in the browser.",
     },
 )
 
@@ -533,7 +537,7 @@ def render_html(data: dict[str, Any]) -> str:
     </div>
     <h1>Health and exploration</h1>
     <p class="meta">Generated {_escape(data.get("generated_at"))}. No mutation API, queue, credentials, or command server.</p>
-    <p class="meta">Open via file:// in Chrome, Safari, or Finder. Cursor Simple Browser turns /Users/... into https://users/... and fails with ERR_NAME_NOT_RESOLVED.</p>
+    <p class="meta">Clickable preview: ./repobrain dashboard html --serve then open the printed http://127.0.0.1 URL. Cursor Simple Browser cannot open file:// (/Users/... becomes https://users/... → ERR_NAME_NOT_RESOLVED).</p>
     <p class="meta">Cheat sheet: docs/wiki/_system/docs/CHEATSHEET.md</p>
   </header>
   <nav aria-label="Dashboard views">
@@ -639,14 +643,54 @@ def dashboard_file_uri(path: Path) -> str:
     return path.resolve().as_uri()
 
 
-def print_dashboard_location(path: Path) -> None:
+def dashboard_http_url(path: Path, port: int, host: str = "127.0.0.1") -> str:
+    """Return a clickable localhost URL (Cursor Simple Browser can open http)."""
+    relative = path.resolve().relative_to(ROOT.resolve()).as_posix()
+    return f"http://{host}:{port}/{relative}"
+
+
+class _DashboardHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def log_message(self, format: str, *args: object) -> None:
+        del format, args
+
+
+def bind_dashboard_server(
+    port: int = 0,
+) -> tuple[http.server.ThreadingHTTPServer, int]:
+    httpd = http.server.ThreadingHTTPServer(("127.0.0.1", port), _DashboardHandler)
+    return httpd, int(httpd.server_address[1])
+
+
+def start_dashboard_server(
+    port: int = 0,
+) -> tuple[http.server.ThreadingHTTPServer, int]:
+    httpd, bound = bind_dashboard_server(port=port)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    return httpd, bound
+
+
+def print_dashboard_location(path: Path, http_url: str | None = None) -> None:
+    if http_url:
+        print(http_url, flush=True)
+        print(f"path: {path}", file=sys.stderr, flush=True)
+        print(
+            "Click the http:// URL — Cursor can open localhost. "
+            "Leave this process running until you close the preview.",
+            file=sys.stderr,
+            flush=True,
+        )
+        return
     uri = dashboard_file_uri(path)
     print(uri, flush=True)
     print(f"path: {path}", file=sys.stderr, flush=True)
     print(
-        "Open the file:// URL in the system browser (Finder, Chrome, or Safari). "
-        "Cursor Simple Browser rewrites /Users/... to https://users/... and fails "
-        "with ERR_NAME_NOT_RESOLVED.",
+        "file:// is not clickable in Cursor Simple Browser (it becomes "
+        "https://users/... and ERR_NAME_NOT_RESOLVED). "
+        "For a clickable preview run: ./repobrain dashboard html --serve",
         file=sys.stderr,
         flush=True,
     )
@@ -661,7 +705,33 @@ def write_dashboard(data: dict[str, Any] | None = None) -> Path:
 
 
 def cmd_html(argv: list[str] | None = None) -> int:
-    del argv
+    parser = argparse.ArgumentParser(prog="repobrain dashboard html")
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        help="serve over http://127.0.0.1 so the printed URL is clickable in Cursor",
+    )
+    parser.add_argument("--port", type=int, default=0, help="bind port (0 = ephemeral)")
+    parser.add_argument(
+        "--open",
+        action="store_true",
+        help="open the preview URL with the system webbrowser module",
+    )
+    args = parser.parse_args([] if argv is None else argv)
     path = write_dashboard()
-    print_dashboard_location(path)
+    if not args.serve and not args.open:
+        print_dashboard_location(path)
+        return 0
+    httpd, port = bind_dashboard_server(port=args.port)
+    url = dashboard_http_url(path, port)
+    print_dashboard_location(path, http_url=url)
+    if args.open:
+        webbrowser.open(url)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        return 0
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
     return 0

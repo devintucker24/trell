@@ -104,7 +104,18 @@ def _dashboard(argv: list[str]) -> int:
     usage = commands.add_parser("usage", help="generate the Markdown usage dashboard")
     usage.add_argument("--days", type=int, default=30)
     commands.add_parser("status", help="show dashboard artifact locations")
-    commands.add_parser("html", help="generate the local HTML health overview")
+    html_cmd = commands.add_parser("html", help="generate the local HTML health overview")
+    html_cmd.add_argument(
+        "--serve",
+        action="store_true",
+        help="serve over http://127.0.0.1 so the printed URL is clickable in Cursor",
+    )
+    html_cmd.add_argument("--port", type=int, default=0, help="bind port (0 = ephemeral)")
+    html_cmd.add_argument(
+        "--open",
+        action="store_true",
+        help="open the preview URL with the system webbrowser module",
+    )
     commands.add_parser("graph", help="generate Graphify's code-graph HTML")
     args = parser.parse_args(argv)
 
@@ -124,11 +135,16 @@ def _dashboard(argv: list[str]) -> int:
         print(f"RepoBrain HTML dashboard: {html_path} ({html_state})")
         return 0
     if args.dashboard_command == "html":
-        from repobrain_dashboard import print_dashboard_location, write_dashboard
+        from repobrain_dashboard import cmd_html
 
-        path = write_dashboard()
-        print_dashboard_location(path)
-        return 0
+        flags: list[str] = []
+        if args.serve:
+            flags.append("--serve")
+        if args.port:
+            flags.extend(["--port", str(args.port)])
+        if args.open:
+            flags.append("--open")
+        return cmd_html(flags)
     return _delegate("graph", ["export-html"])
 
 
