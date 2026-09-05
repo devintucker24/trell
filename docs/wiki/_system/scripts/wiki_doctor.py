@@ -352,9 +352,24 @@ def main() -> None:
         f"Heal recommended: **{'yes' if report['heal_recommended'] else 'no'}** "
         f"(use `repobrain-heal`)",
         "",
-        "## Findings",
-        "",
     ]
+    if graphify_status:
+        artifact = graphify_status["artifact"]
+        freshness = graphify_status["freshness"]
+        html = graphify_status["html"]
+        lines.extend(
+            [
+                "## Graphify adapter",
+                "",
+                f"- CLI: `{graphify_status['cli']['version'] or 'unavailable'}`",
+                f"- Artifact: `{artifact['state']}` "
+                f"({artifact['nodes'] or 0} nodes / {artifact['edges'] or 0} edges)",
+                f"- Source freshness: `{freshness['source']}`",
+                f"- Visualization: `{'fresh' if html['fresh'] else 'stale' if html['available'] else 'missing'}`",
+                "",
+            ]
+        )
+    lines.extend(["## Findings", ""])
     if not findings:
         lines.append("_No findings. RepoBrain corpus looks healthy._")
     else:
