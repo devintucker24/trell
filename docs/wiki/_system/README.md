@@ -10,7 +10,7 @@
 | `skills/wiki-*` | compatibility | Deprecated aliases |
 | `scripts/` | engine | Deterministic operators and path resolver |
 | `templates/` | engine | Export/setup templates |
-| `docs/` | engine | Schema, operator, context, and graph protocols |
+| `docs/` | engine | Schema, operator, cheat sheet, context, and graph protocols |
 | `logs/` | engine | Append-only operator history |
 | `generated/` | engine | Claim graph, doctor/eval/usage machine artifacts |
 

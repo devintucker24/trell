@@ -70,14 +70,14 @@ def _source(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         prog="repobrain source",
         description=(
-            "Scan Git-tracked repository sources, convert the local CSV tracer, "
-            "and inspect the committed source manifest."
+            "Scan Git-tracked repository sources, convert configured local "
+            "document formats, and inspect the committed source manifest."
         ),
     )
     commands = parser.add_subparsers(dest="source_command", metavar="COMMAND")
     commands.add_parser("status", help="show the source inventory status", add_help=False)
     commands.add_parser("scan", help="scan Git-tracked sources", add_help=False)
-    commands.add_parser("convert", help="convert the local CSV tracer", add_help=False)
+    commands.add_parser("convert", help="convert configured local document formats", add_help=False)
     args = parser.parse_known_args(argv)
 
     command = args[0].source_command
@@ -96,15 +96,16 @@ def _dashboard(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         prog="repobrain dashboard",
         description=(
-            "Generate the current usage dashboard or inspect reserved "
-            "RepoBrain dashboard locations."
+            "Generate the local read-only health overview, the Markdown usage "
+            "dashboard, or inspect dashboard artifact locations."
         ),
     )
     commands = parser.add_subparsers(dest="dashboard_command", metavar="COMMAND")
     usage = commands.add_parser("usage", help="generate the Markdown usage dashboard")
     usage.add_argument("--days", type=int, default=30)
     commands.add_parser("status", help="show dashboard artifact locations")
-    commands.add_parser("html", help="generate Graphify's code-graph HTML")
+    commands.add_parser("html", help="generate the local HTML health overview")
+    commands.add_parser("graph", help="generate Graphify's code-graph HTML")
     args = parser.parse_args(argv)
 
     if args.dashboard_command is None:
@@ -116,10 +117,17 @@ def _dashboard(argv: list[str]) -> int:
         usage_state = "present" if PATHS.usage_dashboard.exists() else "not generated"
         graph_html = PATHS.graphify / "graph.html"
         graph_state = "present" if graph_html.exists() else "not generated"
-        html_state = "present" if PATHS.dashboard_dir.exists() else "not generated"
+        html_path = PATHS.dashboard_dir / "index.html"
+        html_state = "present" if html_path.exists() else "not generated"
         print(f"Usage dashboard: {PATHS.usage_dashboard} ({usage_state})")
         print(f"Code graph HTML: {graph_html} ({graph_state})")
-        print(f"RepoBrain HTML dashboard: {PATHS.dashboard_dir} ({html_state})")
+        print(f"RepoBrain HTML dashboard: {html_path} ({html_state})")
+        return 0
+    if args.dashboard_command == "html":
+        from repobrain_dashboard import write_dashboard
+
+        path = write_dashboard()
+        print(path)
         return 0
     return _delegate("graph", ["export-html"])
 

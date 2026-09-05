@@ -66,14 +66,42 @@ MEDIA_BINARY_EXTENSIONS = {
     ".pdf", ".png", ".ppt", ".pptx", ".svg", ".tar", ".tif", ".tiff", ".ttf",
     ".wav", ".webm", ".webp", ".woff", ".woff2", ".xls", ".xlsx", ".zip",
 }
+SAFE_LOCAL_FORMATS = ("csv", "html", "epub", "pdf", "docx", "pptx", "xlsx")
+FORMAT_EXTENSIONS = {
+    "csv": {".csv"},
+    "html": {".html", ".htm"},
+    "epub": {".epub"},
+    "pdf": {".pdf"},
+    "docx": {".docx"},
+    "pptx": {".pptx"},
+    "xlsx": {".xlsx"},
+}
+FORMAT_EXTRAS = {
+    "pdf": "pdf",
+    "docx": "docx",
+    "pptx": "pptx",
+    "xlsx": "xlsx",
+}
+FORMAT_EXTRA_MODULES = {
+    "pdf": "pdfminer",
+    "docx": "mammoth",
+    "pptx": "pptx",
+    "xlsx": "openpyxl",
+}
 CONVERTIBLE_EXTENSIONS = {
-    ".csv",
-    ".doc", ".docx", ".odp", ".ods", ".odt", ".pdf", ".ppt", ".pptx",
-    ".xls", ".xlsx",
+    suffix for suffixes in FORMAT_EXTENSIONS.values() for suffix in suffixes
 }
 TRACER_FORMAT = "csv"
 MARKITDOWN_REQUIREMENT = "markitdown==0.1.7"
 MARKITDOWN_LICENSE = "MIT"
+EXTERNAL_CONVERSION_FLAGS = (
+    "allow_plugins",
+    "allow_urls",
+    "allow_ocr",
+    "allow_media",
+    "allow_cloud",
+    "enable_plugins",
+)
 NATIVE_SEARCH_CLASSES = {"adr", "config", "data", "docs"}
 SECRET_NAMES = {
     ".env", ".envrc", "authorized_keys", "credentials", "credentials.json",
@@ -201,18 +229,92 @@ def _markitdown_local_file(source: Path) -> str:
     from markitdown import MarkItDown, StreamInfo
 
     source = Path(source)
-    payload = source.read_bytes()
-    try:
-        payload.decode("utf-8")
-    except UnicodeDecodeError as exc:
-        raise SourcePipelineError(
-            f"CSV tracer requires UTF-8 input: {source.name}"
-        ) from exc
+    suffix = source.suffix.lower()
+    if suffix in {".csv", ".html", ".htm"}:
+        try:
+            source.read_bytes().decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise SourcePipelineError(
+                f"{suffix.lstrip('.')} conversion requires UTF-8 input: {source.name}"
+            ) from exc
+        stream_info = StreamInfo(extension=suffix, charset="utf-8")
+    else:
+        stream_info = StreamInfo(extension=suffix)
     result = MarkItDown(enable_plugins=False).convert_local(
         source,
-        stream_info=StreamInfo(extension=source.suffix, charset="utf-8"),
+        stream_info=stream_info,
     )
     return result.markdown
+
+
+def enabled_formats(conversion: Mapping[str, Any] | None) -> tuple[str, ...]:
+    conversion = conversion or {}
+    raw = conversion.get("formats")
+    if raw is None and conversion.get("format"):
+        raw = [conversion.get("format")]
+    if raw is None:
+        if "formats" not in conversion and "format" not in conversion:
+            return SAFE_LOCAL_FORMATS if conversion.get("enabled", True) else ()
+        return (TRACER_FORMAT,)
+    if isinstance(raw, str):
+        raw = [raw]
+    formats = tuple(
+        dict.fromkeys(str(item).lower().lstrip(".") for item in raw if str(item).strip())
+    )
+    return formats or (TRACER_FORMAT,)
+
+
+def format_for_suffix(suffix: str) -> str | None:
+    suffix = suffix.lower()
+    for name, extensions in FORMAT_EXTENSIONS.items():
+        if suffix in extensions:
+            return name
+    return None
+
+
+def extra_install_command(formats: tuple[str, ...] | None = None) -> str:
+    extras = [
+        FORMAT_EXTRAS[name]
+        for name in (formats or ())
+        if name in FORMAT_EXTRAS
+    ]
+    extras = list(dict.fromkeys(extras))
+    if not extras:
+        return f"python3 -m pip install --user '{MARKITDOWN_REQUIREMENT}'"
+    joined = ",".join(extras)
+    return (
+        f"python3 -m pip install --user 'markitdown[{joined}]==0.1.7'"
+    )
+
+
+def format_extra_missing(fmt: str | None) -> str | None:
+    if not fmt:
+        return None
+    module = FORMAT_EXTRA_MODULES.get(fmt)
+    if not module:
+        return None
+    try:
+        __import__(module)
+    except ImportError:
+        extra = FORMAT_EXTRAS[fmt]
+        return (
+            f"MarkItDown extra `{extra}` is not installed. "
+            + extra_install_command((fmt,))
+        )
+    return None
+
+
+def external_conversion_blocked(conversion: Mapping[str, Any] | None) -> str | None:
+    conversion = conversion or {}
+    if conversion.get("allow_external"):
+        return None
+    enabled = [flag for flag in EXTERNAL_CONVERSION_FLAGS if conversion.get(flag)]
+    if not enabled:
+        return None
+    return (
+        "External conversion flags require sources.conversion.allow_external: "
+        + ", ".join(enabled)
+    )
 
 
 def load_source_config(
@@ -446,55 +548,81 @@ class SourceInventory:
                 "state": "graphify-delegate",
                 "retryable": False,
             }
-        requested_format = str(
-            (self.config.conversion or {}).get("format") or ""
-        ).lower()
         suffix = source.suffix.lower()
-        tracer_match = (
-            requested_format == TRACER_FORMAT and suffix == f".{TRACER_FORMAT}"
-        )
-        convertible = suffix in CONVERTIBLE_EXTENSIONS
-        if requested_format and not tracer_match:
+        fmt = format_for_suffix(suffix)
+        enabled = enabled_formats(self.config.conversion)
+        conversion_on = bool((self.config.conversion or {}).get("enabled", True))
+        should_convert = bool(conversion_on and fmt and fmt in enabled)
+        if not should_convert:
+            if fmt and conversion_on:
+                return {
+                    "state": "skipped",
+                    "retryable": False,
+                    "format": fmt,
+                    "diagnostic": f"format {fmt} is not enabled",
+                }
             if classification == "media-binary":
                 return {"state": "unsupported", "retryable": False}
             return {"state": "native", "retryable": False}
-        if tracer_match or (not requested_format and convertible):
-            converter = self.converter or live_converter()
-            if converter is None:
+        blocked = external_conversion_blocked(self.config.conversion)
+        if blocked:
+            return {
+                "state": "blocked",
+                "retryable": False,
+                "format": fmt,
+                "diagnostic": blocked,
+            }
+        if self.converter is None:
+            missing = format_extra_missing(fmt)
+            if missing:
                 return {
                     "state": "pending",
                     "retryable": True,
-                    "format": requested_format or suffix.lstrip("."),
+                    "format": fmt,
+                    "diagnostic": missing,
                 }
-            if self.converter is None:
-                cached = conversion_cache_state(
-                    source,
-                    source_path=relative,
-                    source_hash=digest,
-                    repo_root=self.repo_root,
-                    cache_root=self.cache_root,
-                    converter=converter,
-                    config=self.config.conversion or {},
-                )
-                if cached["state"] == "cached":
-                    return cached
-                return {
-                    **cached,
-                    "state": "pending",
-                    "retryable": True,
-                }
-            return convert_with_cache(
+        converter = self.converter or live_converter()
+        if converter is None:
+            return {
+                "state": "pending",
+                "retryable": True,
+                "format": fmt,
+            }
+        if self.converter is None:
+            cached = conversion_cache_state(
                 source,
                 source_path=relative,
                 source_hash=digest,
                 repo_root=self.repo_root,
                 cache_root=self.cache_root,
-                converter=self.converter,
+                converter=converter,
                 config=self.config.conversion or {},
             )
-        if classification == "media-binary":
-            return {"state": "unsupported", "retryable": False}
-        return {"state": "native", "retryable": False}
+            if cached["state"] == "cached":
+                return cached
+            return {
+                **cached,
+                "state": "pending",
+                "retryable": True,
+            }
+        result = convert_with_cache(
+            source,
+            source_path=relative,
+            source_hash=digest,
+            repo_root=self.repo_root,
+            cache_root=self.cache_root,
+            converter=self.converter,
+            config=self.config.conversion or {},
+        )
+        if result.get("state") in {"cached", "converted"}:
+            _maybe_commit_derived(
+                result,
+                relative=relative,
+                classification=classification,
+                conversion=self.config.conversion or {},
+                repo_root=self.repo_root,
+            )
+        return result
 
 
 def scan_sources(
@@ -712,10 +840,40 @@ def conversion_cache_state(
         "cache_key": cache_key,
         "derived_path": relative_destination,
         "source_path": source_path,
+        "format": format_for_suffix(source.suffix),
     }
     if destination.is_file():
         return {**base, "state": "cached", "retryable": False}
     return {**base, "state": "pending", "retryable": True}
+
+
+def _maybe_commit_derived(
+    result: Mapping[str, Any],
+    *,
+    relative: str,
+    classification: str,
+    conversion: Mapping[str, Any],
+    repo_root: Path,
+) -> None:
+    groups = conversion.get("commit_groups") or []
+    if not groups:
+        return
+    wanted = {str(item).lower() for item in groups}
+    if classification.lower() not in wanted and "all" not in wanted:
+        return
+    derived = result.get("derived_path")
+    if not isinstance(derived, str):
+        return
+    source = ensure_under(repo_root / derived, repo_root, "cache")
+    if not source.is_file():
+        return
+    destination = ensure_under(
+        repo_root / "docs/wiki/_system/generated/sources/committed" / f"{relative}.md",
+        repo_root,
+        "committed conversion",
+    )
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
 
 def convert_with_cache(
@@ -1083,7 +1241,7 @@ def _utc_now() -> str:
 def markitdown_info() -> dict[str, Any]:
     """Report the optional local converter without importing plugins."""
 
-    install = f"python3 -m pip install --user '{MARKITDOWN_REQUIREMENT}'"
+    install = extra_install_command()
     try:
         from importlib.metadata import version
 
@@ -1279,8 +1437,6 @@ def status_data(
 
 def cmd_status(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="repobrain source status")
-
-    parser = argparse.ArgumentParser(prog="repobrain source status")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv or [])
     data = status_data()
@@ -1311,6 +1467,8 @@ def cmd_scan(argv: list[str] | None = None) -> int:
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args(argv or [])
     host = load_host()
+    conversion = (host.get("sources") or {}).get("conversion") or {}
+    args.strict = args.strict or bool(conversion.get("strict"))
     converter = live_converter() if args.convert else None
     manifest = scan_sources(
         PATHS.repository,
@@ -1349,7 +1507,7 @@ def cmd_scan(argv: list[str] | None = None) -> int:
     failed = [
         entry["path"]
         for entry in manifest["entries"]
-        if (entry.get("conversion") or {}).get("state") == "failed"
+        if (entry.get("conversion") or {}).get("state") in {"failed", "blocked"}
     ]
     if failed:
         print("Conversion failures: " + ", ".join(failed))
@@ -1364,6 +1522,11 @@ def cmd_convert(argv: list[str] | None = None) -> int:
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args(argv or [])
+    from repobrain_paths import PATHS, load_host
+
+    host = load_host()
+    conversion = (host.get("sources") or {}).get("conversion") or {}
+    args.strict = args.strict or bool(conversion.get("strict"))
     converter = live_converter()
     if converter is None:
         info = markitdown_info()
@@ -1371,9 +1534,6 @@ def cmd_convert(argv: list[str] | None = None) -> int:
         print(info["install_command"], file=sys.stderr)
         return 2
 
-    from repobrain_paths import PATHS, load_host
-
-    host = load_host()
     if args.force and PATHS.source_cache_dir.exists():
         for cached in PATHS.source_cache_dir.glob("*.md"):
             cached.unlink()
@@ -1395,7 +1555,7 @@ def cmd_convert(argv: list[str] | None = None) -> int:
     failures = [
         entry["path"]
         for entry in manifest["entries"]
-        if (entry.get("conversion") or {}).get("state") == "failed"
+        if (entry.get("conversion") or {}).get("state") in {"failed", "blocked"}
         and (args.path is None or entry["path"] == args.path)
     ]
     print(f"Converted or cached: {len(converted)}")

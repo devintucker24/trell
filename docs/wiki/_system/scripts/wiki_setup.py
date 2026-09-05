@@ -78,7 +78,19 @@ sources:
   conversion:
     enabled: true
     requirement: markitdown==0.1.7
-    format: csv
+    formats: [csv, html, epub, pdf, docx, pptx, xlsx]
+    extras:
+      pdf: markitdown[pdf]
+      docx: markitdown[docx]
+      pptx: markitdown[pptx]
+      xlsx: markitdown[xlsx]
+    commit_groups: []
+    allow_external: false
+    allow_plugins: false
+    allow_urls: false
+    allow_ocr: false
+    allow_media: false
+    allow_cloud: false
     strict: false
 """
 
@@ -101,6 +113,7 @@ related:
   - "[[SCHEMA]]"
   - "[[_system/docs/ROUTER]]"
   - "[[_system/docs/FRAMEWORK]]"
+  - "[[_system/docs/CHEATSHEET]]"
 agent:
   priority: critical
   read_when:
@@ -113,6 +126,7 @@ agent:
 # {name} wiki index
 
 Agent bootstrap: `AGENTS.md` → `docs/wiki/_system/docs/ROUTER.md` → retrieve.
+Human operators: `docs/wiki/_system/docs/CHEATSHEET.md` (not Tier-0).
 Do not dump this INDEX.
 
 ```bash
@@ -446,6 +460,23 @@ def gitignore_source_cache(dry: bool) -> str:
     return "gitignore source cache"
 
 
+def gitignore_html_dashboard(dry: bool) -> str:
+    gi = ROOT / ".gitignore"
+    marker = "docs/wiki/_system/generated/dashboard/"
+    if gi.exists() and marker in gi.read_text(encoding="utf-8"):
+        return "gitignore already has HTML dashboard"
+    if not dry:
+        prev = gi.read_text(encoding="utf-8") if gi.exists() else ""
+        gi.write_text(
+            prev.rstrip()
+            + "\n\n# RepoBrain local HTML health dashboard\n"
+            + marker
+            + "\n",
+            encoding="utf-8",
+        )
+    return "gitignore HTML dashboard"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Set up RepoBrain in this repository")
     ap.add_argument("--dry-run", action="store_true")
@@ -481,6 +512,7 @@ def main() -> None:
         print("stubs: " + ", ".join(stubs))
     print("gitignore: " + gitignore_graphify(dry))
     print("gitignore: " + gitignore_source_cache(dry))
+    print("gitignore: " + gitignore_html_dashboard(dry))
     print("AGENTS.md: " + maybe_patch_agents(dry))
     if not dry:
         install_launchers(dry)

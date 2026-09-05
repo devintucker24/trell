@@ -60,5 +60,24 @@ sources:
   conversion:
     enabled: true
     requirement: markitdown==0.1.7
-    format: csv
+    formats:
+      - csv
+      - html
+      - epub
+      - pdf
+      - docx
+      - pptx
+      - xlsx
+    extras:
+      pdf: markitdown[pdf]
+      docx: markitdown[docx]
+      pptx: markitdown[pptx]
+      xlsx: markitdown[xlsx]
+    commit_groups: []
+    allow_external: false
+    allow_plugins: false
+    allow_urls: false
+    allow_ocr: false
+    allow_media: false
+    allow_cloud: false
     strict: false

@@ -19,6 +19,7 @@ edges:
 related:
   - "[[OPERATOR]]"
   - "[[_system/docs/GRAPHIFY]]"
+  - "[[_system/docs/CHEATSHEET]]"
 agent:
   priority: high
   read_when:
@@ -41,6 +42,7 @@ idempotent inbox candidate for human review instead of changing either source.
 ./repobrain source scan
 ./repobrain source status --json
 ./repobrain source convert
+./repobrain source convert --strict
 ./repobrain retrieve "architecture decision" --include-sources
 ```
 
@@ -54,10 +56,15 @@ continues to delegate to Graphify.
 
 Generated conversion text lives under
 `docs/wiki/_system/generated/sources/cache/` and is ignored by default.
+`sources.conversion.commit_groups` may copy selected classifications into
+`docs/wiki/_system/generated/sources/committed/` without changing the global
+gitignore default.
 
-## MarkItDown tracer
+## MarkItDown local formats
 
-The first conversion tracer supports local UTF-8 CSV only:
+RepoBrain converts only configured **local** files via
+`MarkItDown(enable_plugins=False).convert_local(...)`. It never calls the
+permissive URI `convert()` API.
 
 | Property | Value |
 |---|---|
@@ -65,21 +72,40 @@ The first conversion tracer supports local UTF-8 CSV only:
 | Supported version | `0.1.7` |
 | Python | `>=3.10` |
 | License | [MIT](https://github.com/microsoft/markitdown/blob/v0.1.7/LICENSE) |
-| Install | `python3 -m pip install --user 'markitdown==0.1.7'` |
+| Default install | `python3 -m pip install --user 'markitdown==0.1.7'` |
 
-CSV support is in the base package; no document-format extra is required.
-RepoBrain calls `MarkItDown(enable_plugins=False).convert_local(path)` only
-after resolving the path beneath a configured repository root. It never calls
-the permissive URI API. Remote URLs, plugins, OCR, cloud services, model-backed
-extraction, and media transcription are outside this tracer and disabled.
-The base package still brings Magika and its native NumPy/ONNX Runtime
-dependencies; “no extra” does not mean a pure-Python dependency tree.
+Configure an allowlist in `HOST.yaml` `sources.conversion.formats`. Safe local
+formats:
 
-Cache identity includes source SHA-256, converter version, relevant source
-configuration, and format. Derived Markdown includes original-path attribution.
-An unchanged source reuses its cache; a changed source gets a new identity.
-Conversion failures stay visible and retryable in the manifest. Non-strict
-setup continues after a failure.
+| Format | Extra | Notes |
+|---|---|---|
+| `csv` | base package | UTF-8 required |
+| `html` | base package | UTF-8 required |
+| `epub` | base package | local file only |
+| `pdf` | `markitdown[pdf]` | install only if enabled |
+| `docx` | `markitdown[docx]` | install only if enabled |
+| `pptx` | `markitdown[pptx]` | install only if enabled |
+| `xlsx` | `markitdown[xlsx]` | install only if enabled |
+
+Never install `markitdown[all]` by default. Example for PDF + Word:
+
+```bash
+python3 -m pip install --user 'markitdown[pdf,docx]==0.1.7'
+```
+
+Remote URLs, plugins, OCR, cloud document intelligence, model-backed
+extraction, and media transcription stay off unless the host sets
+`allow_external: true` **and** the matching `allow_*` flag. Even then RepoBrain
+still converts only local paths.
+
+Unsupported or oversized binaries remain inventoried (`unsupported`) when they
+are not on the allowlist. Non-strict mode records retryable `failed`/`pending`
+states and continues. `--strict` (or `conversion.strict: true`) exits nonzero
+when configured conversions fail or are blocked.
+
+Cache identity includes source SHA-256, converter version, and conversion
+config. Derived Markdown includes original-path attribution. An unchanged
+source reuses its cache; a changed source gets a new identity.
 
 Primary API and security guidance:
 [MarkItDown README](https://github.com/microsoft/markitdown/blob/v0.1.7/README.md)

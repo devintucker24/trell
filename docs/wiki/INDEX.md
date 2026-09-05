@@ -4,7 +4,7 @@ title: Trell Epistemic Language Knowledge Base Index
 type: index
 status: active
 created: '2026-09-04'
-updated: '2026-09-04'
+updated: '2026-09-05'
 tags:
 - index
 - navigation
@@ -32,6 +32,7 @@ related:
 - '[[episodic/INDEX]]'
 - '[[temporal/TIMELINE]]'
 - '[[FRAMEWORK]]'
+- '[[_system/docs/CHEATSHEET]]'
 - '[[_meta/GRAPH]]'
 - '[[_meta/usage-telemetry]]'
 agent:
@@ -51,14 +52,15 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 1. [`AGENTS.md`](../../AGENTS.md) — thin project brief (always-on)
 2. [`CLAUDE.md`](../../CLAUDE.md) — Claude Code twin brief
 3. [`_system/docs/ROUTER.md`](_system/docs/ROUTER.md) — context map + budgets
-4. [`_system/docs/OPERATOR.md`](_system/docs/OPERATOR.md) — operator manual
-5. Retrieve: `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>"`
-6. Code graph: `python3 docs/wiki/_system/scripts/wiki_graphify.py query "<q>"`
-7. This INDEX — catalog when browsing structure
-8. [`_system/docs/SCHEMA.md`](_system/docs/SCHEMA.md) — corpus schema
-9. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
-10. [`_system/generated/claim-graph.yaml`](_system/generated/claim-graph.yaml)
-11. Engine: [`_system/`](_system/README.md)
+4. [`_system/docs/CHEATSHEET.md`](_system/docs/CHEATSHEET.md) — human operator guide (not Tier-0)
+5. [`_system/docs/OPERATOR.md`](_system/docs/OPERATOR.md) — operator manual
+6. Retrieve: `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>"`
+7. Code graph: `python3 docs/wiki/_system/scripts/wiki_graphify.py query "<q>"`
+8. This INDEX — catalog when browsing structure
+9. [`_system/docs/SCHEMA.md`](_system/docs/SCHEMA.md) — corpus schema
+10. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
+11. [`_system/generated/claim-graph.yaml`](_system/generated/claim-graph.yaml)
+12. Engine: [`_system/`](_system/README.md)
 
 **Layers:** raw sources → reviewed host corpus → portable `_system/` engine.
 **Context rule:** use the Router and retrieval instead of loading this index.

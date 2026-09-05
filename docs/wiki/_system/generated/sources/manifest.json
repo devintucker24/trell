@@ -2,12 +2,36 @@
   "changes": {
     "added": [],
     "deleted": [],
-    "modified": []
+    "modified": [
+      "examples/repobrain-sources/sample.csv",
+      "examples/repobrain-sources/sample.html"
+    ]
   },
   "config": {
     "conversion": {
+      "allow_cloud": false,
+      "allow_external": false,
+      "allow_media": false,
+      "allow_ocr": false,
+      "allow_plugins": false,
+      "allow_urls": false,
+      "commit_groups": [],
       "enabled": true,
-      "format": "csv",
+      "extras": {
+        "docx": "markitdown[docx]",
+        "pdf": "markitdown[pdf]",
+        "pptx": "markitdown[pptx]",
+        "xlsx": "markitdown[xlsx]"
+      },
+      "formats": [
+        "csv",
+        "html",
+        "epub",
+        "pdf",
+        "docx",
+        "pptx",
+        "xlsx"
+      ],
       "requirement": "markitdown==0.1.7",
       "strict": false
     },
@@ -4323,8 +4347,8 @@
       },
       "freshness": "unchanged",
       "path": ".gitignore",
-      "sha256": "32190ae4b57a7eccb8e0189fcb6bbe63a12b0f034c5669385984435a862facba",
-      "size": 1247
+      "sha256": "b2b21450fcaeb17833d956029ec265f6d90e0b27bfc0f8a438c14a7665ef0a78",
+      "size": 1366
     },
     {
       "classification": "config",
@@ -4400,8 +4424,8 @@
       },
       "freshness": "unchanged",
       "path": "README.md",
-      "sha256": "82588c71a89093be6a5e243d5c7715ca4082f6b41cd7bf4552ed6ec2105efda9",
-      "size": 11634
+      "sha256": "03993bbb8639354be7ce49ee2719af1fa1c0469e5d740a4952213c3165822a9d",
+      "size": 11766
     },
     {
       "classification": "docs",
@@ -4457,6 +4481,17 @@
       "path": "docs/research/2026-09-03-agent-language-market.md",
       "sha256": "dbb7e551f2604cc14d95537932f65721c4c3928dbcf95d198e1cff5450f08014",
       "size": 21808
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "docs/research/markitdown-local-conversion-2026-09-05.md",
+      "sha256": "f9d1c388aa9fc9ad8b0ae3ebad88bd62ea050f8ea34192175b958a5ca2f831a4",
+      "size": 17688
     },
     {
       "classification": "docs",
@@ -4589,6 +4624,44 @@
       "path": "examples/precedence.trell",
       "sha256": "5ab617a748aafdbdd85111c7a39ef989fb9c5223cca24141333c0fb371785660",
       "size": 12
+    },
+    {
+      "classification": "data",
+      "conversion": {
+        "cache_key": "53f9c2d5bd99c14b010f4c1f043980a721598831460a0fd4090a3007188a63a2",
+        "converter": {
+          "name": "markitdown",
+          "version": "0.1.7"
+        },
+        "derived_path": "docs/wiki/_system/generated/sources/cache/53f9c2d5bd99c14b010f4c1f043980a721598831460a0fd4090a3007188a63a2.md",
+        "format": "csv",
+        "retryable": false,
+        "source_path": "examples/repobrain-sources/sample.csv",
+        "state": "converted"
+      },
+      "freshness": "modified",
+      "path": "examples/repobrain-sources/sample.csv",
+      "sha256": "0b0a8d526f5bba9628783a9dfece3ea5ab7f7c90e18621394ab1d7627d5482c1",
+      "size": 164
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "cache_key": "0e2a5f114a5bcf7abea8f8c45d35c06e5b658d8a30ed16d62bf3a3391911f42a",
+        "converter": {
+          "name": "markitdown",
+          "version": "0.1.7"
+        },
+        "derived_path": "docs/wiki/_system/generated/sources/cache/0e2a5f114a5bcf7abea8f8c45d35c06e5b658d8a30ed16d62bf3a3391911f42a.md",
+        "format": "html",
+        "retryable": false,
+        "source_path": "examples/repobrain-sources/sample.html",
+        "state": "converted"
+      },
+      "freshness": "modified",
+      "path": "examples/repobrain-sources/sample.html",
+      "sha256": "85baa297837a31a5dd09b8aa6e30eb894f71b36bfcacdbef08da12e1aedd45d4",
+      "size": 295
     },
     {
       "classification": "config",
@@ -4800,7 +4873,7 @@
       "size": 8823
     }
   ],
-  "generated_at": "2026-09-05T13:29:45Z",
+  "generated_at": "2026-09-05T14:28:46Z",
   "schema_version": 1,
   "structures": {
     "adr": [],

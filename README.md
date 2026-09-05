@@ -190,6 +190,7 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
 
 **RepoBrain repository knowledge engine (for agents):**
+- **Human cheat sheet:** [`CHEATSHEET`](docs/wiki/_system/docs/CHEATSHEET.md) — layers, authority, CLI, health (not agent Tier-0)
 - Engine docs: [`OPERATOR`](docs/wiki/_system/docs/OPERATOR.md) · [`SCHEMA`](docs/wiki/_system/docs/SCHEMA.md) · [`ROUTER`](docs/wiki/_system/docs/ROUTER.md) · [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md)
 - **Canonical skills:** [`docs/wiki/_system/skills/`](docs/wiki/_system/skills/repobrain-brain/SKILL.md)
 - **Compatibility adapters:** deprecated [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md)
