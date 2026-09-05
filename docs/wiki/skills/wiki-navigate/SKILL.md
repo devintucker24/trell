@@ -1,3 +1,5 @@
 # Deprecated path: wiki-navigate
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-navigate/SKILL.md`.
+`wiki-navigate` is a historical compatibility alias. Use `repobrain-navigate`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-navigate/SKILL.md`.

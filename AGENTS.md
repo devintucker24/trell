@@ -55,12 +55,14 @@ python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
 | Need | Read/run |
 |---|---|
 | Operator/schema | `docs/wiki/_system/docs/OPERATOR.md`, `SCHEMA.md` |
-| Setup/export | `docs/wiki/_system/docs/FRAMEWORK.md`, `wiki-setup` |
-| Retrieve/query | `wiki-retrieve`, `wiki-query` |
-| Inbox promotion | `wiki-triage` then `wiki-ingest` |
-| Health | `wiki-doctor` then `wiki-heal` |
-| Code ↔ knowledge sync | `wiki-maintain` |
+| Setup/export | `docs/wiki/_system/docs/FRAMEWORK.md`, `repobrain-setup` |
+| Retrieve/query | `repobrain-retrieve`, `repobrain-query` |
+| Inbox promotion | `repobrain-triage` then `repobrain-ingest` |
+| Health | `repobrain-doctor` then `repobrain-heal` |
+| Code ↔ knowledge sync | `repobrain-maintain` |
 | Session transfer | `/handoff`, then `/read-handoff` |
 
 Cursor Cloud: Python scripts require Python 3 and PyYAML. Verify Rust with
 `cargo test`.
+
+`wiki-*` skill names remain deprecated compatibility aliases during migration.

@@ -1,3 +1,5 @@
 # Deprecated path: wiki-maintain
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-maintain/SKILL.md`.
+`wiki-maintain` is a historical compatibility alias. Use `repobrain-maintain`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-maintain/SKILL.md`.

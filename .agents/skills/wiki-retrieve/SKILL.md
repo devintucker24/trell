@@ -1,19 +1,14 @@
 ---
 name: wiki-retrieve
-description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-retrieve/SKILL.md
+description: Deprecated alias for repobrain-retrieve; use the canonical RepoBrain skill.
 ---
 
 # wiki-retrieve
 
-Deprecated `wiki-*` compatibility launcher.
+Deprecated compatibility alias. Use `repobrain-retrieve`.
 
 Canonical playbook:
 
 ```text
-docs/wiki/_system/skills/wiki-retrieve/SKILL.md
+docs/wiki/_system/skills/repobrain-retrieve/SKILL.md
 ```
-
-Scripts: `docs/wiki/_system/scripts/`
-Operator: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
-Host overlay: `docs/wiki/_system/config/HOST.yaml`

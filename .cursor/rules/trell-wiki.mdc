@@ -1,5 +1,5 @@
 ---
-description: Trell wiki brain — frontmatter, taxonomy, context budgets
+description: Trell RepoBrain — frontmatter, taxonomy, context budgets
 globs: docs/wiki/**/*.md,AGENTS.md,CLAUDE.md
 alwaysApply: false
 ---
@@ -11,13 +11,13 @@ alwaysApply: false
 - New material → `docs/wiki/inbox/` only; triage before ingest.
 - No new folders/types/domains/rels without `docs/wiki/_system/docs/SCHEMA.md`.
 - Episodes and TIMELINE are not semantic truth until consolidated.
-- After structural edits: sync claim graph (`python3 docs/wiki/_system/scripts/sync_graph.py`). After `src/` edits: run the canonical Graphify wrapper. Prefer doctor/heal.
+- After structural edits: sync the claim graph. After `src/` edits: run `./repobrain graph sync`. Prefer doctor/heal.
 
 ## Autonomous Skill Execution Checklist
 
-1. **Retrieval**: Run `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`. Use Graphify for code wiring.
+1. **Retrieval**: Run `./repobrain retrieve "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`. Use Graphify for code wiring.
 2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → run the canonical triage and ingest skills.
-3. **Health & Linting**: Run `python3 docs/wiki/_system/scripts/wiki_doctor.py`; use the canonical heal skill if needed.
+3. **Health & Linting**: Run `./repobrain doctor`; use `repobrain-heal` if needed.
 4. **Claim graph**: After frontmatter node/edge changes, run `python3 docs/wiki/_system/scripts/sync_graph.py`.
-5. **New repo / empty host**: use `docs/wiki/_system/skills/wiki-setup/SKILL.md`.
-6. **Canonical skills** live in `docs/wiki/_system/skills/`; harness `wiki-*` paths are deprecated launchers.
+5. **New repo / empty host**: use `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.
+6. **Canonical `repobrain-*` skills** live in `docs/wiki/_system/skills/`; harness `wiki-*` paths are deprecated aliases.

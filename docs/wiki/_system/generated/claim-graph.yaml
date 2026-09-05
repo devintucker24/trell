@@ -1,6 +1,6 @@
 version: 1
 updated: '2026-09-05'
-description: Wiki-brain knowledge graph — regenerated from page frontmatter
+description: RepoBrain claim graph — regenerated from corpus frontmatter
 nodes:
 - id: affine-cognitive-budget
   kind: concept

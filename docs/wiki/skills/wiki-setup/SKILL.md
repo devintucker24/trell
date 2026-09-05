@@ -1,3 +1,5 @@
 # Deprecated path: wiki-setup
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-setup/SKILL.md`.
+`wiki-setup` is a historical compatibility alias. Use `repobrain-setup`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.

@@ -1,54 +1,10 @@
 ---
 name: wiki-doctor
-description: Diagnose wiki-brain health without changing files — frontmatter, graph orphans, broken links, stale inbox, schema drift. Use when user asks for wiki doctor, audit, diagnosis, or before heal.
+description: Deprecated RepoBrain compatibility alias for historical wiki-doctor invocations. Use repobrain-doctor and follow docs/wiki/_system/skills/repobrain-doctor/SKILL.md.
 ---
 
-# Skill: Wiki Doctor (diagnose only)
+# Deprecated: wiki-doctor
 
-## When to use
-- User says **"wiki doctor"**, "audit the wiki", "what's wrong with the brain?"
-- Before running **wiki heal**
-- After large ingest / before release
+`wiki-doctor` is a historical compatibility alias. Use `repobrain-doctor`.
 
-## Golden rule
-**Doctor does not edit corpus pages.** It writes under `_system/generated/doctor/`.
-
----
-
-## Procedure
-
-### 1. Run the automated scanner
-```bash
-python3 docs/wiki/_system/scripts/wiki_doctor.py
-```
-This writes:
-- `_system/generated/doctor/doctor-YYYY-MM-DD.md`
-- `_system/generated/doctor/latest.json`
-
-### 2. Manual deep checks (optional, if scanner flags issues)
-| Check | How |
-|-------|-----|
-| Thesis dilution | Spot-check that core pages still assert dual-track non-coercion |
-| Code drift | Compare Natural Trell claims to `src/parser.rs` / examples |
-| Contradictions | Follow any `rel: contradicts` edges in GRAPH.yaml |
-| Inbox SLA | `docs/wiki/inbox/*.md` still `triage_status: pending` too long? |
-
-### 3. Severity rubric
-| Severity | Meaning | Heal allowed? |
-|----------|---------|---------------|
-| `critical` | Broken schema / invalid YAML / broken graph endpoints | Yes, immediate |
-| `high` | Missing frontmatter, broken wikilinks, stale inbox | Yes |
-| `medium` | Hard orphan nodes, weak inbound links | Yes (edge/link adds) |
-| `low` | Style, tag suggestions, optional denser linking | Optional |
-| `blocker` | Would require new folder/type/rel | **No** — triage `needs-human` / SCHEMA change |
-
-### 4. Log
-```markdown
-## [YYYY-MM-DD] doctor | diagnosis
-- Report: `docs/wiki/_system/generated/doctor/doctor-YYYY-MM-DD.md`
-- Critical: N  High: N  Medium: N  Low: N
-- Next: heal | none
-```
-
-Operator manual: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
+Canonical playbook: `docs/wiki/_system/skills/repobrain-doctor/SKILL.md`.

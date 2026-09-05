@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Wiki-brain usage telemetry — append JSONL events and score a dashboard.
+"""RepoBrain usage telemetry — append JSONL events and score a dashboard.
 
 Events are local (gitignored JSONL). The dashboard markdown is a wiki page
 agents and humans can read in git.
 
 Usage:
-  python3 docs/wiki/_system/scripts/wiki_usage.py log --op retrieve --query "..." --tokens-est 1200 --hits 8
-  python3 docs/wiki/_system/scripts/wiki_usage.py report --days 30
-  python3 docs/wiki/_system/scripts/wiki_usage.py score --days 30
+  ./repobrain usage log --op retrieve --query "..." --tokens-est 1200 --hits 8
+  ./repobrain usage report --days 30
+  ./repobrain usage score --days 30
 """
 
 from __future__ import annotations
@@ -151,7 +151,7 @@ def write_dashboard(stats: dict, days: int) -> Path:
     hot_rows = "\n".join(f"| `{p}` | {n} |" for p, n in hot) or "| _(none)_ | 0 |"
     body = f"""---
 id: wiki-usage-dashboard
-title: Wiki-brain usage dashboard
+title: RepoBrain usage dashboard
 type: meta
 status: active
 created: 2026-09-04
@@ -162,7 +162,7 @@ summary: "Generated usage snapshot — retrieve tokens, hit quality, doctor scor
 nodes:
   - id: wiki-usage-dashboard
     kind: concept
-    label: Wiki usage dashboard
+    label: RepoBrain usage dashboard
 edges:
   - from: wiki-usage-dashboard
     to: wiki-usage-telemetry
@@ -173,13 +173,13 @@ related:
 agent:
   priority: medium
   read_when:
-    - "checking whether the wiki brain is earning its context cost"
+    - "checking whether RepoBrain is earning its context cost"
     - "tuning retrieve budgets"
   maintain:
-    - "regenerate via python3 docs/wiki/_system/scripts/wiki_usage.py report"
+    - "regenerate via ./repobrain usage report"
 ---
 
-# Wiki-brain usage dashboard
+# RepoBrain usage dashboard
 
 Generated `{today}` from local `docs/wiki/_system/generated/usage/events.jsonl` (last **{days}** days).
 Raw events are gitignored; this page is the shareable snapshot.
@@ -270,7 +270,7 @@ def cmd_report(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Wiki-brain usage telemetry")
+    ap = argparse.ArgumentParser(description="RepoBrain usage telemetry")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     lg = sub.add_parser("log", help="append one event")

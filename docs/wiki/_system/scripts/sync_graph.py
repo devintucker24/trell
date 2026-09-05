@@ -68,7 +68,7 @@ def main() -> None:
     graph = {
         "version": 1,
         "updated": date.today().isoformat(),
-        "description": "Wiki-brain knowledge graph — regenerated from page frontmatter",
+        "description": "RepoBrain claim graph — regenerated from corpus frontmatter",
         "nodes": sorted(nodes.values(), key=lambda x: x["id"]),
         "edges": sorted(edges, key=lambda x: (x["from"], x["to"], x["rel"])),
     }

@@ -31,7 +31,7 @@ semantic_dirs:
   - roadmap
 types_extra: []
 router_seeds: docs/wiki/_system/config/router-seeds.md
-maintain_skill: docs/wiki/_system/skills/wiki-maintain/SKILL.md
+maintain_skill: docs/wiki/_system/skills/repobrain-maintain/SKILL.md
 graphify:
   enabled: true
   code_only: true

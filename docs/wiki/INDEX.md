@@ -9,7 +9,7 @@ tags:
 - index
 - navigation
 domain: meta
-summary: Master catalog of the Trell wiki brain for agent navigation.
+summary: Master catalog of the Trell RepoBrain corpus for agent navigation.
 nodes:
 - id: wiki-index
   kind: concept
@@ -143,17 +143,17 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 ## 7. Agent Skills (`docs/wiki/_system/skills/`)
 | Skill | Path | Job |
 |-------|------|-----|
-| Parent | `_system/skills/wiki-brain/SKILL.md` | Portable engine entry |
-| **Retrieve** | `_system/skills/wiki-retrieve/SKILL.md` | File RAG |
-| Navigate | `_system/skills/wiki-navigate/SKILL.md` | Corpus + graph traversal |
-| Triage | `_system/skills/wiki-triage/SKILL.md` | Inbox classification |
-| Ingest | `_system/skills/wiki-ingest/SKILL.md` | Reviewed promotion |
-| Doctor | `_system/skills/wiki-doctor/SKILL.md` | Structural diagnosis |
-| Heal | `_system/skills/wiki-heal/SKILL.md` | Doctor-driven repair |
-| Lint | `_system/skills/wiki-lint/SKILL.md` | Doctor → heal → doctor |
-| Query | `_system/skills/wiki-query/SKILL.md` | Cited answers |
-| Label | `_system/skills/wiki-label/SKILL.md` | Frontmatter normalization |
-| Maintain | `_system/skills/wiki-maintain/SKILL.md` | Synchronization |
-| Usage | `_system/skills/wiki-usage/SKILL.md` | Context telemetry |
-| **Setup** | `_system/skills/wiki-setup/SKILL.md` | Portable install |
+| Parent | `_system/skills/repobrain-brain/SKILL.md` | Portable engine entry |
+| **Retrieve** | `_system/skills/repobrain-retrieve/SKILL.md` | File RAG |
+| Navigate | `_system/skills/repobrain-navigate/SKILL.md` | Corpus + graph traversal |
+| Triage | `_system/skills/repobrain-triage/SKILL.md` | Inbox classification |
+| Ingest | `_system/skills/repobrain-ingest/SKILL.md` | Reviewed promotion |
+| Doctor | `_system/skills/repobrain-doctor/SKILL.md` | Structural diagnosis |
+| Heal | `_system/skills/repobrain-heal/SKILL.md` | Doctor-driven repair |
+| Lint | `_system/skills/repobrain-lint/SKILL.md` | Doctor → heal → doctor |
+| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers |
+| Label | `_system/skills/repobrain-label/SKILL.md` | Frontmatter normalization |
+| Maintain | `_system/skills/repobrain-maintain/SKILL.md` | Synchronization |
+| Usage | `_system/skills/repobrain-usage/SKILL.md` | Context telemetry |
+| **Setup** | `_system/skills/repobrain-setup/SKILL.md` | Portable install |
 | Engine | `_system/docs/FRAMEWORK.md` | Export into another project |

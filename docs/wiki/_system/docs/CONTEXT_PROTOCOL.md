@@ -150,5 +150,5 @@ Embeddings optional when page count ≫ 200. Stay git-native until then.
 
 - `docs/wiki/_system/docs/ROUTER.md`
 - `docs/wiki/_system/docs/brain-gap-analysis-2026-09-04.md`
-- `docs/wiki/_system/skills/wiki-retrieve/SKILL.md`
+- `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md`
 - `docs/wiki/episodic/` · `docs/wiki/temporal/`

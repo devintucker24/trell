@@ -1,19 +1,14 @@
 ---
 name: wiki-heal
-description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-heal/SKILL.md
+description: Deprecated alias for repobrain-heal; use the canonical RepoBrain skill.
 ---
 
 # wiki-heal
 
-Deprecated `wiki-*` compatibility launcher.
+Deprecated compatibility alias. Use `repobrain-heal`.
 
 Canonical playbook:
 
 ```text
-docs/wiki/_system/skills/wiki-heal/SKILL.md
+docs/wiki/_system/skills/repobrain-heal/SKILL.md
 ```
-
-Scripts: `docs/wiki/_system/scripts/`
-Operator: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
-Host overlay: `docs/wiki/_system/config/HOST.yaml`

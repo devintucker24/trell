@@ -1,6 +1,6 @@
 ---
 id: wiki-router
-title: Wiki Context Router
+title: RepoBrain Context Router
 type: meta
 status: active
 created: 2026-09-04
@@ -11,7 +11,7 @@ summary: Progressive-disclosure router — tiny always-on map; retrieve semantic
 nodes:
   - id: wiki-router
     kind: concept
-    label: Wiki Context Router
+    label: RepoBrain Context Router
 edges:
   - from: wiki-router
     to: wiki-index
@@ -38,7 +38,7 @@ agent:
     - bump budgets if corpus grows past ~200 pages
 ---
 
-# Wiki Context Router
+# RepoBrain Context Router
 
 Agents must **not** dump the wiki into context. This file is the always-on map; deepen only on demand.
 
@@ -60,7 +60,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 |---|---|
 | wiki / memory / RAG / retrieval / context / pack / export / setup / graphify | `FRAMEWORK.md`, `GRAPH.md`, `CONTEXT_PROTOCOL.md` |
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
-| health / orphans / doctor / heal | run `wiki-doctor` (then `wiki-heal` if score < 95) |
+| health / orphans / doctor / heal | run `repobrain-doctor` (then `repobrain-heal` if score < 95) |
 | usage / tokens / context cost / telemetry | `usage-telemetry.md` + `wiki_usage.py report` |
 | session / decisions / what happened / episodic | `episodic/INDEX.md` + latest episode |
 | timeline / when / as-of / what changed / temporal | `temporal/TIMELINE.md` + retrieve with `--as-of` |
@@ -72,14 +72,14 @@ After seeding, expand **one hop** via frontmatter `edges` (claim graph) — not 
 ## Tier 2 — Retrieve + rerank (+ temporal)
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<query>" --budget-tokens 3500
+./repobrain retrieve "<query>" --budget-tokens 3500
 # time-aware:
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<query>" --as-of 2026-09-04 --budget-tokens 3500
+./repobrain retrieve "<query>" --as-of 2026-09-04 --budget-tokens 3500
 # compiler/structure (Graphify):
-python3 docs/wiki/_system/scripts/wiki_graphify.py query "<query>"
+./repobrain graph query "<query>"
 ```
 
-See `docs/wiki/_system/skills/wiki-retrieve/SKILL.md`.
+See `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md`.
 
 ## Tier 3 — Deep read (cite + update)
 
@@ -118,7 +118,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 
 | Need | Do |
 |---|---|
-| New clone / empty host | `wiki-setup` |
+| New clone / empty host | `repobrain-setup` |
 | Find knowledge | `retrieve` → open top hits |
 | Code wiring | `wiki_graphify.py query` |
 | Add knowledge | `inbox/` → triage → ingest |

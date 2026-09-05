@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wiki Doctor — read-only diagnosis of the Trell wiki brain.
+"""RepoBrain Doctor — read-only diagnosis of repository knowledge health.
 
 Writes under `docs/wiki/_system/generated/doctor/`.
 """
@@ -203,19 +203,19 @@ def main() -> None:
         PATHS.claim_graph,
         PATHS.system / "docs" / "FRAMEWORK.md",
         PATHS.host_config,
-        PATHS.skills / "wiki-brain" / "SKILL.md",
-        PATHS.skills / "wiki-usage" / "SKILL.md",
-        PATHS.skills / "wiki-retrieve" / "SKILL.md",
-        PATHS.skills / "wiki-doctor" / "SKILL.md",
-        PATHS.skills / "wiki-heal" / "SKILL.md",
-        PATHS.skills / "wiki-triage" / "SKILL.md",
+        PATHS.skills / "repobrain-brain" / "SKILL.md",
+        PATHS.skills / "repobrain-usage" / "SKILL.md",
+        PATHS.skills / "repobrain-retrieve" / "SKILL.md",
+        PATHS.skills / "repobrain-doctor" / "SKILL.md",
+        PATHS.skills / "repobrain-heal" / "SKILL.md",
+        PATHS.skills / "repobrain-triage" / "SKILL.md",
         PATHS.scripts / "wiki_retrieve.py",
         PATHS.scripts / "wiki_doctor.py",
         PATHS.scripts / "wiki_usage.py",
         PATHS.scripts / "wiki_graphify.py",
         PATHS.scripts / "wiki_setup.py",
         PATHS.scripts / "sync_graph.py",
-        PATHS.skills / "wiki-setup" / "SKILL.md",
+        PATHS.skills / "repobrain-setup" / "SKILL.md",
         WIKI / "episodic" / "INDEX.md",
         WIKI / "temporal" / "TIMELINE.md",
     ]:
@@ -295,7 +295,7 @@ def main() -> None:
     lines = [
         "---",
         f"id: doctor-{TODAY}",
-        f"title: Wiki Doctor Report {TODAY}",
+        f"title: RepoBrain Doctor Report {TODAY}",
         "type: meta",
         "status: active",
         f"created: {TODAY}",
@@ -310,11 +310,11 @@ def main() -> None:
         "agent:",
         "  priority: medium",
         "  read_when:",
-        '    - "after wiki doctor"',
+        '    - "after RepoBrain doctor"',
         "  maintain: []",
         "---",
         "",
-        f"# Wiki Doctor Report — {TODAY}",
+        f"# RepoBrain Doctor Report — {TODAY}",
         "",
         f"**Score:** {score}/100",
         "",
@@ -329,13 +329,13 @@ def main() -> None:
         f"({report['graph']['hard_orphans']} hard orphans)",
         "",
         f"Heal recommended: **{'yes' if report['heal_recommended'] else 'no'}** "
-        f"(use `wiki-heal`)",
+        f"(use `repobrain-heal`)",
         "",
         "## Findings",
         "",
     ]
     if not findings:
-        lines.append("_No findings. Wiki looks healthy._")
+        lines.append("_No findings. RepoBrain corpus looks healthy._")
     else:
         by = defaultdict(list)
         for f in findings:

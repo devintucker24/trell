@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Wiki retrieve — file-native hybrid lexical + graph + temporal rerank.
+"""RepoBrain retrieve — file-native hybrid lexical + graph + temporal rerank.
 
 Usage:
-  python3 docs/wiki/_system/scripts/wiki_retrieve.py "maritime colregs belief"
-  python3 docs/wiki/_system/scripts/wiki_retrieve.py "what did we decide about memory" --lane episodic
-  python3 docs/wiki/_system/scripts/wiki_retrieve.py "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
+  ./repobrain retrieve "maritime colregs belief"
+  ./repobrain retrieve "what did we decide about memory" --lane episodic
+  ./repobrain retrieve "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
 """
 
 from __future__ import annotations
@@ -263,7 +263,7 @@ def estimate_tokens(text: str) -> int:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Wiki-brain hybrid retrieve")
+    ap = argparse.ArgumentParser(description="RepoBrain hybrid retrieve")
     ap.add_argument("query", help="natural language query")
     ap.add_argument("--k", type=int, default=8, help="max candidates before budget trim")
     ap.add_argument("--budget-tokens", type=int, default=3500)
@@ -473,11 +473,14 @@ def _code_graph_note(query: str, run: bool = False) -> dict:
         return {}
     path = graph_json_path()
     if not path.exists():
-        return {"status": "missing graphify-out/graph.json — wiki_graphify.py sync"}
+        return {"status": "missing graphify-out/graph.json — repobrain graph sync"}
     g = load_code_graph()
     n, e = len(g.get("nodes") or []), len(g.get("edges") or [])
     note = {
-        "status": f"{path.relative_to(ROOT)} ({n}n/{e}e) — python3 docs/wiki/_system/scripts/wiki_graphify.py query {query!r}",
+        "status": (
+            f"{path.relative_to(ROOT)} ({n}n/{e}e) — "
+            f"./repobrain graph query {query!r}"
+        ),
         "nodes": n,
         "edges": e,
     }

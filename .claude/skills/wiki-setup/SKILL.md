@@ -1,19 +1,14 @@
 ---
 name: wiki-setup
-description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-setup/SKILL.md
+description: Deprecated alias for repobrain-setup; use the canonical RepoBrain skill.
 ---
 
 # wiki-setup
 
-Deprecated `wiki-*` compatibility launcher.
+Deprecated compatibility alias. Use `repobrain-setup`.
 
 Canonical playbook:
 
 ```text
-docs/wiki/_system/skills/wiki-setup/SKILL.md
+docs/wiki/_system/skills/repobrain-setup/SKILL.md
 ```
-
-Scripts: `docs/wiki/_system/scripts/`
-Operator: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
-Host overlay: `docs/wiki/_system/config/HOST.yaml`

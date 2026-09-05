@@ -1,17 +1,17 @@
 ---
 id: wiki-operator
-title: Wiki Brain Operator Manual
+title: RepoBrain Operator Manual
 type: schema
 status: active
 created: 2026-09-04
 updated: 2026-09-04
 tags: [schema, agents, operator, wiki]
 domain: meta
-summary: Detailed wiki operator manual — progressive disclosure after root AGENTS.md / CLAUDE.md.
+summary: Detailed RepoBrain operator manual — progressive disclosure after root AGENTS.md / CLAUDE.md.
 nodes:
   - id: wiki-operator
     kind: concept
-    label: Wiki Operator Manual
+    label: RepoBrain Operator Manual
   - id: agents-md
     kind: concept
     label: AGENTS.md
@@ -34,16 +34,16 @@ related:
 agent:
   priority: critical
   read_when:
-    - operating the wiki brain in depth
+    - operating RepoBrain in depth
     - triage ingest doctor heal workflows
   maintain:
     - keep in sync with root AGENTS.md pointers and _system/skills
 ---
 
-# OPERATOR.md — Wiki Brain Operator Manual
+# OPERATOR.md — RepoBrain Operator Manual
 
 > **Audience:** AI coding agents (Cursor, Codex, Claude Code, OpenCode) and human maintainers.  
-> **Purpose:** Turn any agent from a generic chatbot into a disciplined wiki operator.  
+> **Purpose:** Turn any agent from a generic chatbot into a disciplined RepoBrain operator.
 > **Pattern:** three layers (raw → corpus → engine). Host config:
 > `docs/wiki/_system/config/HOST.yaml`. Thin brief: root `AGENTS.md`.
 > **Portable pack:** [[FRAMEWORK]]
@@ -121,7 +121,7 @@ Minimum required fields:
 - `related` (wikilinks to neighbor pages)
 - `agent` (priority, read_when, maintain hooks)
 
-If you create or edit a page without valid frontmatter, you have failed the schema. Run `wiki-label` to heal.
+If you create or edit a page without valid frontmatter, you have failed the schema. Run `repobrain-label` to heal.
 
 ---
 
@@ -154,7 +154,7 @@ Canonical **code** graph: `graphify-out/graph.json`. See [[_system/docs/GRAPH]].
 ## 6. Operational Workflows
 
 ### 6.0 New repo / portable install
-Skill: `docs/wiki/_system/skills/wiki-setup/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`
 Setup: `python3 docs/wiki/_system/scripts/wiki_setup.py`.
 Export: `python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo`.
 Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Details: [[FRAMEWORK]].
@@ -167,12 +167,12 @@ Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Detail
 4. See `docs/wiki/inbox/README.md`.
 
 ### 6.1 Triage (classify before writing)
-Skill: `docs/wiki/_system/skills/wiki-triage/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-triage/SKILL.md`
 Decide `suggested_action`: `merge-existing` | `new-page` | `raw-only` | `discard` | `needs-human`.  
 Update `_system/docs/SCHEMA.md` before adding taxonomy.
 
 ### 6.2 Ingest (write wiki truth)
-Skill: `docs/wiki/_system/skills/wiki-ingest/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-ingest/SKILL.md`
 1. Execute triaged action (merge / new page / raw pointer).
 2. Full frontmatter per SCHEMA; sync the generated claim graph.
 3. Update `INDEX.md` if structure changed.
@@ -180,7 +180,7 @@ Skill: `docs/wiki/_system/skills/wiki-ingest/SKILL.md`
 5. Append `## [YYYY-MM-DD] ingest | <title>` to `docs/wiki/log.md`.
 
 ### 6.3 Query (answer from wiki)
-1. Prefer `wiki-retrieve` (scored top-k) over skimming all of INDEX.
+1. Prefer `repobrain-retrieve` (scored top-k) over skimming all of INDEX.
 2. For time questions: consult `temporal/TIMELINE.md` and/or `retrieve --as-of`.
 3. Read 2–6 relevant pages (not the whole wiki); cite with wikilinks.
 4. Prefer filing valuable answers back as new wiki pages (`type: synthesis` or expand existing).
@@ -188,7 +188,7 @@ Skill: `docs/wiki/_system/skills/wiki-ingest/SKILL.md`
 6. Pending `inbox/` items and unconsolidated episodes are not settled knowledge.
 
 ### 6.3b Retrieve (file RAG)
-Skill: `docs/wiki/_system/skills/wiki-retrieve/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md`
 `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>" --budget-tokens 3500`
 Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 
@@ -200,17 +200,17 @@ Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 5. Log: `## [YYYY-MM-DD] episodic | <slug>` or `temporal | <slug>`
 
 ### 6.4 Wiki Doctor (diagnose only)
-Skill: `docs/wiki/_system/skills/wiki-doctor/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-doctor/SKILL.md`
 Run `python3 docs/wiki/_system/scripts/wiki_doctor.py`.
 **No wiki content edits.**
 
 ### 6.5 Wiki Heal (apply safe fixes)
-Skill: `docs/wiki/_system/skills/wiki-heal/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-heal/SKILL.md`
 Consume the doctor report; fix frontmatter/links/orphan edges/inbox routing; never invent taxonomy.  
 Re-run doctor to verify. Log `## [date] heal | …`.
 
 ### 6.6 Lint (shortcut)
-Skill: `docs/wiki/_system/skills/wiki-lint/SKILL.md` = doctor → heal → re-doctor.
+Skill: `docs/wiki/_system/skills/repobrain-lint/SKILL.md` = doctor → heal → re-doctor.
 
 ### 6.7 Label
 Normalize tags, domains, node ids (kebab-case), edge relations to the allowed vocabulary in SCHEMA.md.
@@ -255,18 +255,18 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 | Read handoff | `.cursor/skills/read-handoff/SKILL.md` | Fresh chat: load newest handoff, then delete it (`/read-handoff`) |
 | Grill me | `.cursor/skills/grill-me/SKILL.md` | User-invoked front door → runs `grilling` |
 | Grilling | `.cursor/skills/grilling/SKILL.md` | Relentless design-tree interview (rounds / frontier) |
-| Wiki-brain (parent) | `_system/skills/wiki-brain/SKILL.md` | Portable operator kit |
-| Retrieve | `_system/skills/wiki-retrieve/SKILL.md` | File RAG |
-| Navigate | `_system/skills/wiki-navigate/SKILL.md` | Finding pages / graph traversal |
-| Triage | `_system/skills/wiki-triage/SKILL.md` | Classify inbox |
-| Ingest | `_system/skills/wiki-ingest/SKILL.md` | Promote reviewed knowledge |
-| Doctor | `_system/skills/wiki-doctor/SKILL.md` | Diagnose corpus health |
-| Heal | `_system/skills/wiki-heal/SKILL.md` | Apply doctor-driven fixes |
-| Lint | `_system/skills/wiki-lint/SKILL.md` | Doctor → heal → doctor |
-| Query | `_system/skills/wiki-query/SKILL.md` | Cited answers |
-| Label | `_system/skills/wiki-label/SKILL.md` | Frontmatter normalization |
-| Maintain | `_system/skills/wiki-maintain/SKILL.md` | Code/corpus synchronization |
-| Usage | `_system/skills/wiki-usage/SKILL.md` | Telemetry + dashboard |
+| RepoBrain (parent) | `_system/skills/repobrain-brain/SKILL.md` | Portable operator kit |
+| Retrieve | `_system/skills/repobrain-retrieve/SKILL.md` | File RAG |
+| Navigate | `_system/skills/repobrain-navigate/SKILL.md` | Finding pages / graph traversal |
+| Triage | `_system/skills/repobrain-triage/SKILL.md` | Classify inbox |
+| Ingest | `_system/skills/repobrain-ingest/SKILL.md` | Promote reviewed knowledge |
+| Doctor | `_system/skills/repobrain-doctor/SKILL.md` | Diagnose corpus health |
+| Heal | `_system/skills/repobrain-heal/SKILL.md` | Apply doctor-driven fixes |
+| Lint | `_system/skills/repobrain-lint/SKILL.md` | Doctor → heal → doctor |
+| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers |
+| Label | `_system/skills/repobrain-label/SKILL.md` | Frontmatter normalization |
+| Maintain | `_system/skills/repobrain-maintain/SKILL.md` | Code/corpus synchronization |
+| Usage | `_system/skills/repobrain-usage/SKILL.md` | Telemetry + dashboard |
 
 ---
 
