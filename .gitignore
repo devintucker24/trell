@@ -7,9 +7,7 @@ trell-program
 trell-program.o
 .impeccable
 
-# Disposable agent handoffs (keep folder + README)
-.handoffs/*.md
-!.handoffs/README.md
+# Git-backed agent handoffs are intentionally tracked for fresh Cloud Agent VMs.
 
 # skills.sh --all can spill into many harness folders; we only commit Cursor/Claude/.agents
 .adal/

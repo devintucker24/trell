@@ -1,3 +1,5 @@
-*
-!.gitignore
-!README.md
+# Handoff Markdown is intentionally tracked so fresh Cloud Agent VMs can read it.
+# Ignore only editor/OS scratch files.
+*.tmp
+*.swp
+.DS_Store
