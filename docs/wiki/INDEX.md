@@ -54,8 +54,8 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 3. [`_system/docs/ROUTER.md`](_system/docs/ROUTER.md) — context map + budgets
 4. [`_system/docs/CHEATSHEET.md`](_system/docs/CHEATSHEET.md) — human operator guide (not Tier-0)
 5. [`_system/docs/OPERATOR.md`](_system/docs/OPERATOR.md) — operator manual
-6. Retrieve: `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>"`
-7. Code graph: `python3 docs/wiki/_system/scripts/wiki_graphify.py query "<q>"`
+6. Retrieve: `./repobrain retrieve "<q>"`
+7. Code graph: `./repobrain graph query "<q>"`
 8. This INDEX — catalog when browsing structure
 9. [`_system/docs/SCHEMA.md`](_system/docs/SCHEMA.md) — corpus schema
 10. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)

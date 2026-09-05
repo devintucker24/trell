@@ -7,7 +7,6 @@
 |---|---|---|
 | `config/` | host + engine | Host overlay, router seeds, evaluation contract |
 | `skills/repobrain-*` | engine | Canonical agent playbooks |
-| `skills/wiki-*` | compatibility | Deprecated aliases |
 | `scripts/` | engine | Deterministic operators and path resolver |
 | `templates/` | engine | Export/setup templates |
 | `docs/` | engine | Schema, operator, cheat sheet, context, and graph protocols |

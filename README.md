@@ -191,9 +191,8 @@ For complete documentation on the mathematical theory, type calculi, 20-niche in
 
 **RepoBrain repository knowledge engine (for agents):**
 - **Human cheat sheet:** [`CHEATSHEET`](docs/wiki/_system/docs/CHEATSHEET.md) — layers, authority, CLI, health (not agent Tier-0)
-- Engine docs: [`OPERATOR`](docs/wiki/_system/docs/OPERATOR.md) · [`SCHEMA`](docs/wiki/_system/docs/SCHEMA.md) · [`ROUTER`](docs/wiki/_system/docs/ROUTER.md) · [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md)
+- Engine docs: [`OPERATOR`](docs/wiki/_system/docs/OPERATOR.md) · [`SCHEMA`](docs/wiki/_system/docs/SCHEMA.md) · [`ROUTER`](docs/wiki/_system/docs/ROUTER.md) · [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md) · [`MIGRATION`](docs/wiki/_system/docs/MIGRATION.md)
 - **Canonical skills:** [`docs/wiki/_system/skills/`](docs/wiki/_system/skills/repobrain-brain/SKILL.md)
-- **Compatibility adapters:** deprecated [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md)
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `repobrain-triage` → `repobrain-ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_system/docs/CONTEXT_PROTOCOL.md)
 - **CLI:** `./repobrain --help` · setup · retrieve · graph · source · doctor · eval · usage · dashboard

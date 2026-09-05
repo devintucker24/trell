@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the portable RepoBrain engine or install compatibility launchers."""
+"""Export the portable RepoBrain engine or install harness launchers."""
 
 from __future__ import annotations
 
@@ -44,22 +44,6 @@ Scripts: `docs/wiki/_system/scripts/`
 Operator: `docs/wiki/_system/docs/OPERATOR.md`
 Router: `docs/wiki/_system/docs/ROUTER.md`
 Host overlay: `docs/wiki/_system/config/HOST.yaml`
-"""
-
-DEPRECATED_LAUNCHER = """---
-name: {alias}
-description: Deprecated alias for {name}; use the canonical RepoBrain skill.
----
-
-# {alias}
-
-Deprecated compatibility alias. Use `{name}`.
-
-Canonical playbook:
-
-```text
-docs/wiki/_system/skills/{name}/SKILL.md
-```
 """
 
 DESCRIPTIONS = {
@@ -160,13 +144,10 @@ def cmd_install_launchers() -> None:
             )
             (skill_dir / "SKILL.md").write_text(text, encoding="utf-8")
             print(f"wrote {skill_dir / 'SKILL.md'}")
-
-            alias = f"wiki-{suffix}"
-            alias_dir = harness / alias
-            alias_dir.mkdir(parents=True, exist_ok=True)
-            alias_text = DEPRECATED_LAUNCHER.format(alias=alias, name=name)
-            (alias_dir / "SKILL.md").write_text(alias_text, encoding="utf-8")
-            print(f"wrote {alias_dir / 'SKILL.md'}")
+            alias_dir = harness / f"wiki-{suffix}"
+            if alias_dir.exists():
+                shutil.rmtree(alias_dir)
+                print(f"removed {alias_dir}")
 
         old = harness / "trell-wiki"
         if old.exists():
@@ -183,7 +164,7 @@ def main() -> None:
         return
 
     parser = argparse.ArgumentParser(
-        description="RepoBrain engine export and compatibility launchers"
+        description="RepoBrain engine export and harness launchers"
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
     export = sub.add_parser("export")

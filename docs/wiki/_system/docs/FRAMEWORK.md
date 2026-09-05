@@ -77,7 +77,6 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 | `docs/wiki/_system/generated/` | **generated** | Claim graph, doctor/eval/usage summaries |
 | `docs/wiki/core/` … domain folders | **host** | Compiled knowledge |
 | `.cursor/skills/repobrain-*` | **host adapter** | Thin launchers → canonical playbooks |
-| `.cursor/skills/wiki-*` | **compatibility adapter** | Deprecated aliases → `repobrain-*` |
 | Root `skills/` | **not used** | Do not duplicate the pack here |
 
 ## Export (from this repo)

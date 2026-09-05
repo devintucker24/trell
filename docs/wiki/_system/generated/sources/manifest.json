@@ -1,10 +1,51 @@
 {
   "changes": {
     "added": [],
-    "deleted": [],
+    "deleted": [
+      ".agents/skills/wiki-brain/SKILL.md",
+      ".agents/skills/wiki-doctor/SKILL.md",
+      ".agents/skills/wiki-heal/SKILL.md",
+      ".agents/skills/wiki-ingest/SKILL.md",
+      ".agents/skills/wiki-label/SKILL.md",
+      ".agents/skills/wiki-lint/SKILL.md",
+      ".agents/skills/wiki-maintain/SKILL.md",
+      ".agents/skills/wiki-navigate/SKILL.md",
+      ".agents/skills/wiki-query/SKILL.md",
+      ".agents/skills/wiki-retrieve/SKILL.md",
+      ".agents/skills/wiki-setup/SKILL.md",
+      ".agents/skills/wiki-triage/SKILL.md",
+      ".agents/skills/wiki-usage/SKILL.md",
+      ".claude/skills/wiki-brain/SKILL.md",
+      ".claude/skills/wiki-doctor/SKILL.md",
+      ".claude/skills/wiki-heal/SKILL.md",
+      ".claude/skills/wiki-ingest/SKILL.md",
+      ".claude/skills/wiki-label/SKILL.md",
+      ".claude/skills/wiki-lint/SKILL.md",
+      ".claude/skills/wiki-maintain/SKILL.md",
+      ".claude/skills/wiki-navigate/SKILL.md",
+      ".claude/skills/wiki-query/SKILL.md",
+      ".claude/skills/wiki-retrieve/SKILL.md",
+      ".claude/skills/wiki-setup/SKILL.md",
+      ".claude/skills/wiki-triage/SKILL.md",
+      ".claude/skills/wiki-usage/SKILL.md",
+      ".cursor/skills/wiki-brain/SKILL.md",
+      ".cursor/skills/wiki-doctor/SKILL.md",
+      ".cursor/skills/wiki-heal/SKILL.md",
+      ".cursor/skills/wiki-ingest/SKILL.md",
+      ".cursor/skills/wiki-label/SKILL.md",
+      ".cursor/skills/wiki-lint/SKILL.md",
+      ".cursor/skills/wiki-maintain/SKILL.md",
+      ".cursor/skills/wiki-navigate/SKILL.md",
+      ".cursor/skills/wiki-query/SKILL.md",
+      ".cursor/skills/wiki-retrieve/SKILL.md",
+      ".cursor/skills/wiki-setup/SKILL.md",
+      ".cursor/skills/wiki-triage/SKILL.md",
+      ".cursor/skills/wiki-usage/SKILL.md"
+    ],
     "modified": [
-      "examples/repobrain-sources/sample.csv",
-      "examples/repobrain-sources/sample.html"
+      "AGENTS.md",
+      "CLAUDE.md",
+      "README.md"
     ]
   },
   "config": {
@@ -1192,149 +1233,6 @@
       "path": ".agents/skills/wayfinder/agents/openai.yaml",
       "sha256": "88bc81a11a6d52ac67aeaa76b8b619e387020d47c5133a4dd4927fd15c4ad073",
       "size": 144
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-brain/SKILL.md",
-      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-doctor/SKILL.md",
-      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-heal/SKILL.md",
-      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-ingest/SKILL.md",
-      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-label/SKILL.md",
-      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-lint/SKILL.md",
-      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-maintain/SKILL.md",
-      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-navigate/SKILL.md",
-      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-query/SKILL.md",
-      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-retrieve/SKILL.md",
-      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-setup/SKILL.md",
-      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-triage/SKILL.md",
-      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".agents/skills/wiki-usage/SKILL.md",
-      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
-      "size": 265
     },
     {
       "classification": "docs",
@@ -2611,149 +2509,6 @@
       "path": ".claude/skills/wayfinder/agents/openai.yaml",
       "sha256": "88bc81a11a6d52ac67aeaa76b8b619e387020d47c5133a4dd4927fd15c4ad073",
       "size": 144
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-brain/SKILL.md",
-      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-doctor/SKILL.md",
-      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-heal/SKILL.md",
-      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-ingest/SKILL.md",
-      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-label/SKILL.md",
-      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-lint/SKILL.md",
-      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-maintain/SKILL.md",
-      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-navigate/SKILL.md",
-      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-query/SKILL.md",
-      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-retrieve/SKILL.md",
-      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-setup/SKILL.md",
-      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-triage/SKILL.md",
-      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".claude/skills/wiki-usage/SKILL.md",
-      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
-      "size": 265
     },
     {
       "classification": "docs",
@@ -4071,149 +3826,6 @@
         "state": "native"
       },
       "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-brain/SKILL.md",
-      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-doctor/SKILL.md",
-      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-heal/SKILL.md",
-      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-ingest/SKILL.md",
-      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-label/SKILL.md",
-      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-lint/SKILL.md",
-      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
-      "size": 260
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-maintain/SKILL.md",
-      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-navigate/SKILL.md",
-      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-query/SKILL.md",
-      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-retrieve/SKILL.md",
-      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
-      "size": 280
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-setup/SKILL.md",
-      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-triage/SKILL.md",
-      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
-      "size": 270
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
-      "path": ".cursor/skills/wiki-usage/SKILL.md",
-      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
-      "size": 265
-    },
-    {
-      "classification": "docs",
-      "conversion": {
-        "retryable": false,
-        "state": "native"
-      },
-      "freshness": "unchanged",
       "path": ".cursor/skills/wizard/SKILL.md",
       "sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1",
       "size": 4123
@@ -4378,10 +3990,10 @@
         "retryable": false,
         "state": "native"
       },
-      "freshness": "unchanged",
+      "freshness": "modified",
       "path": "AGENTS.md",
-      "sha256": "b1737679f4c23fa841c5912dff58fb1845de9ff3d9e9209072f97aaa71521c31",
-      "size": 2506
+      "sha256": "0695433425f87361181caf4e6fa50d2b4ab551260b49a38751a6733a7fed5c66",
+      "size": 2396
     },
     {
       "classification": "docs",
@@ -4389,10 +4001,10 @@
         "retryable": false,
         "state": "native"
       },
-      "freshness": "unchanged",
+      "freshness": "modified",
       "path": "CLAUDE.md",
-      "sha256": "b921eb07993ee53db0ae6885f625b0e76c94c4879cec730c61249ac858ad3293",
-      "size": 2785
+      "sha256": "2cc700ccc15f7002bc6941ea45f7863d5aa13165c90009547459d335a991d0a2",
+      "size": 2712
     },
     {
       "classification": "docs",
@@ -4422,10 +4034,10 @@
         "retryable": false,
         "state": "native"
       },
-      "freshness": "unchanged",
+      "freshness": "modified",
       "path": "README.md",
-      "sha256": "03993bbb8639354be7ce49ee2719af1fa1c0469e5d740a4952213c3165822a9d",
-      "size": 11766
+      "sha256": "410e9c450b1892636b5e2a065d7b6fce045da40dfabd14d8593bc3c66175e2d4",
+      "size": 11652
     },
     {
       "classification": "docs",
@@ -4637,9 +4249,9 @@
         "format": "csv",
         "retryable": false,
         "source_path": "examples/repobrain-sources/sample.csv",
-        "state": "converted"
+        "state": "cached"
       },
-      "freshness": "modified",
+      "freshness": "unchanged",
       "path": "examples/repobrain-sources/sample.csv",
       "sha256": "0b0a8d526f5bba9628783a9dfece3ea5ab7f7c90e18621394ab1d7627d5482c1",
       "size": 164
@@ -4656,9 +4268,9 @@
         "format": "html",
         "retryable": false,
         "source_path": "examples/repobrain-sources/sample.html",
-        "state": "converted"
+        "state": "cached"
       },
-      "freshness": "modified",
+      "freshness": "unchanged",
       "path": "examples/repobrain-sources/sample.html",
       "sha256": "85baa297837a31a5dd09b8aa6e30eb894f71b36bfcacdbef08da12e1aedd45d4",
       "size": 295
@@ -4873,7 +4485,7 @@
       "size": 8823
     }
   ],
-  "generated_at": "2026-09-05T14:28:46Z",
+  "generated_at": "2026-09-05T15:28:55Z",
   "schema_version": 1,
   "structures": {
     "adr": [],
