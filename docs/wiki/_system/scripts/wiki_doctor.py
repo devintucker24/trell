@@ -295,7 +295,7 @@ def main() -> None:
     lines = [
         "---",
         f"id: doctor-{TODAY}",
-        f"title: Wiki Doctor Report {TODAY}",
+        f"title: RepoBrain Doctor Report {TODAY}",
         "type: meta",
         "status: active",
         f"created: {TODAY}",
@@ -310,7 +310,7 @@ def main() -> None:
         "agent:",
         "  priority: medium",
         "  read_when:",
-        '    - "after wiki doctor"',
+        '    - "after RepoBrain doctor"',
         "  maintain: []",
         "---",
         "",

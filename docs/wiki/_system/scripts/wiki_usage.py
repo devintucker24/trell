@@ -162,7 +162,7 @@ summary: "Generated usage snapshot — retrieve tokens, hit quality, doctor scor
 nodes:
   - id: wiki-usage-dashboard
     kind: concept
-    label: Wiki usage dashboard
+    label: RepoBrain usage dashboard
 edges:
   - from: wiki-usage-dashboard
     to: wiki-usage-telemetry
