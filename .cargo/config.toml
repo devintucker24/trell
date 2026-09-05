@@ -1,0 +1,14 @@
+# Build settings for the LLVM-backed Trell compiler (inkwell / llvm-sys 18).
+#
+# On the cloud Linux VM the default `cc` is clang, which fails to link the
+# llvm-sys C++ objects (`cannot find -lstdc++`) because of `-nodefaultlibs`.
+# Linking through gcc resolves libstdc++ correctly. This only affects the
+# Linux target, so macOS/other hosts are untouched.
+[target.x86_64-unknown-linux-gnu]
+linker = "gcc"
+
+# llvm-sys needs LLVM_SYS_181_PREFIX to locate LLVM 18. `force = false` means an
+# already-set value (e.g. a macOS Homebrew prefix from env.zsh) is respected and
+# not overridden; the default below matches the apt `llvm-18-dev` install path.
+[env]
+LLVM_SYS_181_PREFIX = { value = "/usr/lib/llvm-18", force = false }
