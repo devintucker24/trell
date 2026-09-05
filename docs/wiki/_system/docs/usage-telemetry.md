@@ -1,17 +1,17 @@
 ---
 id: wiki-usage-telemetry
-title: Wiki-brain usage telemetry
+title: RepoBrain usage telemetry
 type: meta
 status: active
 created: 2026-09-04
 updated: 2026-09-04
 tags: [usage, telemetry, context-cost, retrieval, rag]
 domain: meta
-summary: "What the wiki logs: retrieve tokens, hit quality, doctor score, dumps, citations, and a heuristic usefulness index."
+summary: "What RepoBrain logs: retrieve tokens, hit quality, doctor score, dumps, citations, and a heuristic usefulness index."
 nodes:
   - id: wiki-usage-telemetry
     kind: concept
-    label: Wiki usage telemetry
+    label: RepoBrain usage telemetry
 edges:
   - from: wiki-usage-telemetry
     to: wiki-router
@@ -26,13 +26,13 @@ related:
 agent:
   priority: medium
   read_when:
-    - "designing or reading wiki usage metrics"
+    - "designing or reading RepoBrain usage metrics"
     - "reducing context cost"
   maintain:
     - "keep event fields aligned with wiki_usage.py"
 ---
 
-# Wiki-brain usage telemetry
+# RepoBrain usage telemetry
 
 Goal: see whether the brain is **used**, whether retrieve **hits**, and what it **costs** in tokens — without putting PII in git by default.
 
@@ -63,9 +63,9 @@ Goal: see whether the brain is **used**, whether retrieve **hits**, and what it 
 | `session` | Optional session start |
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_usage.py log --op query --query "..." \
+./repobrain usage log --op query --query "..." \
   --pages-opened "a.md,b.md" --cited "a.md" --tokens-est 3200
-python3 docs/wiki/_system/scripts/wiki_usage.py report --days 30
+./repobrain usage report --days 30
 ```
 
 ## Metrics to watch (now)
@@ -93,6 +93,6 @@ python3 docs/wiki/_system/scripts/wiki_usage.py report --days 30
 
 ## Usefulness index (heuristic)
 
-`wiki_usage.py score` mixes hit quality, last doctor score, activity, minus dump penalty. It is a **dashboard number**, not a proof the wiki is “correct.”
+`repobrain usage score` mixes hit quality, last doctor score, activity, minus dump penalty. It is a **dashboard number**, not a proof the corpus is “correct.”
 
-Skill: `docs/wiki/_system/skills/wiki-usage/SKILL.md`
+Skill: `docs/wiki/_system/skills/repobrain-usage/SKILL.md`

@@ -56,7 +56,7 @@ Install: `pip install graphifyy` (CLI name `graphify`). Config: `HOST.yaml` `gra
 
 Every Graphify edge is `EXTRACTED`, `INFERRED`, or `AMBIGUOUS`. Prefer EXTRACTED when asserting what the compiler does.
 
-Optional: `wiki_graphify.py export-wiki` → `graphify-out/wiki/` (regenerated community articles; **not** wiki-brain doctrine).
+Optional: `repobrain graph export-wiki` → `graphify-out/wiki/` (regenerated community articles; **not** RepoBrain doctrine).
 
 ## Claim graph (compiled from pages)
 

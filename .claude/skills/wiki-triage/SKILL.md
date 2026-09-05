@@ -1,19 +1,14 @@
 ---
 name: wiki-triage
-description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-triage/SKILL.md
+description: Deprecated alias for repobrain-triage; use the canonical RepoBrain skill.
 ---
 
 # wiki-triage
 
-Deprecated `wiki-*` compatibility launcher.
+Deprecated compatibility alias. Use `repobrain-triage`.
 
 Canonical playbook:
 
 ```text
-docs/wiki/_system/skills/wiki-triage/SKILL.md
+docs/wiki/_system/skills/repobrain-triage/SKILL.md
 ```
-
-Scripts: `docs/wiki/_system/scripts/`
-Operator: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
-Host overlay: `docs/wiki/_system/config/HOST.yaml`

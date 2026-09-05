@@ -188,10 +188,10 @@ Agents can filter pages by:
 ```
 docs/wiki/inbox/   type: inbox-item   triage_status: pending
         │
-        ▼  wiki-triage  (docs/wiki/_system/skills/wiki-triage)
+        ▼  repobrain-triage  (docs/wiki/_system/skills/repobrain-triage)
    classified / routed / needs-human / rejected
         │
-        ▼  wiki-ingest  (docs/wiki/_system/skills/wiki-ingest)
+        ▼  repobrain-ingest  (docs/wiki/_system/skills/repobrain-ingest)
    wiki page (domain folder)  +  optional raw/ pointer  +  GRAPH.yaml  +  log.md
         │
         ▼
@@ -270,7 +270,7 @@ Prefer these. Add new recurring tags here when promoted from inbox.
 
 **Market / roadmap:** `market`, `regulation`, `insurance`, `personas`, `adoption`, `roadmap`, `phases`, `vision`
 
-**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`, `usage`, `telemetry`, `wiki-brain`, `framework`, `host`, `graphify`, `setup`
+**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`, `usage`, `telemetry`, `repobrain`, `wiki-brain`, `framework`, `host`, `graphify`, `setup`
 
 One-off adjectives do **not** belong in `tags:` — put them in the body.
 

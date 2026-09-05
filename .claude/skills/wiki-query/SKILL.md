@@ -1,19 +1,14 @@
 ---
 name: wiki-query
-description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-query/SKILL.md
+description: Deprecated alias for repobrain-query; use the canonical RepoBrain skill.
 ---
 
 # wiki-query
 
-Deprecated `wiki-*` compatibility launcher.
+Deprecated compatibility alias. Use `repobrain-query`.
 
 Canonical playbook:
 
 ```text
-docs/wiki/_system/skills/wiki-query/SKILL.md
+docs/wiki/_system/skills/repobrain-query/SKILL.md
 ```
-
-Scripts: `docs/wiki/_system/scripts/`
-Operator: `docs/wiki/_system/docs/OPERATOR.md`
-Router: `docs/wiki/_system/docs/ROUTER.md`
-Host overlay: `docs/wiki/_system/config/HOST.yaml`

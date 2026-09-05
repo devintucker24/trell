@@ -25,7 +25,7 @@ PAGES: dict[str, dict] = {
         "status": "active",
         "tags": ["index", "navigation"],
         "domain": "meta",
-        "summary": "Master catalog of the Trell wiki brain for agent navigation.",
+        "summary": "Master catalog of the Trell RepoBrain corpus for agent navigation.",
         "nodes": [{"id": "wiki-index", "kind": "concept", "label": "Wiki Index"}],
         "edges": [
             {"from": "wiki-index", "to": "belief-type", "rel": "related_to"},

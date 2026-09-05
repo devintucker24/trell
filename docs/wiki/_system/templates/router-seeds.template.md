@@ -7,7 +7,7 @@ created: 2026-09-04
 updated: 2026-09-04
 tags: [router, host, pack]
 domain: meta
-summary: "Replace this table with project-specific intent → seed pages after installing the wiki-brain pack."
+summary: "Replace this table with project-specific intent → seed pages after installing RepoBrain."
 nodes:
   - id: host-router-seeds
     kind: concept

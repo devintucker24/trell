@@ -11,30 +11,28 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from repobrain_paths import PATHS, ROOT, WIKI
 
-SKILL_NAMES = [
-    "wiki-brain",
-    "wiki-retrieve",
-    "wiki-query",
-    "wiki-navigate",
-    "wiki-triage",
-    "wiki-ingest",
-    "wiki-doctor",
-    "wiki-heal",
-    "wiki-lint",
-    "wiki-label",
-    "wiki-maintain",
-    "wiki-usage",
-    "wiki-setup",
+SKILL_SUFFIXES = [
+    "brain",
+    "retrieve",
+    "query",
+    "navigate",
+    "triage",
+    "ingest",
+    "doctor",
+    "heal",
+    "lint",
+    "label",
+    "maintain",
+    "usage",
+    "setup",
 ]
 
-LAUNCHER = """---
+CANONICAL_LAUNCHER = """---
 name: {name}
 description: {description}
 ---
 
 # {name}
-
-Deprecated `wiki-*` compatibility launcher.
 
 Canonical playbook:
 
@@ -48,12 +46,36 @@ Router: `docs/wiki/_system/docs/ROUTER.md`
 Host overlay: `docs/wiki/_system/config/HOST.yaml`
 """
 
+DEPRECATED_LAUNCHER = """---
+name: {alias}
+description: Deprecated alias for {name}; use the canonical RepoBrain skill.
+---
+
+# {alias}
+
+Deprecated compatibility alias. Use `{name}`.
+
+Canonical playbook:
+
+```text
+docs/wiki/_system/skills/{name}/SKILL.md
+```
+"""
+
 DESCRIPTIONS = {
-    name: (
-        "Deprecated compatibility alias; canonical playbook: "
-        f"docs/wiki/_system/skills/{name}/SKILL.md"
-    )
-    for name in SKILL_NAMES
+    "brain": "Operate the RepoBrain repository knowledge engine.",
+    "retrieve": "Retrieve ranked evidence from the RepoBrain corpus.",
+    "query": "Answer repository questions from cited RepoBrain evidence.",
+    "navigate": "Navigate RepoBrain corpus and graph relationships.",
+    "triage": "Classify RepoBrain inbox material before ingestion.",
+    "ingest": "Promote reviewed material into the RepoBrain corpus.",
+    "doctor": "Audit RepoBrain corpus structure and health.",
+    "heal": "Repair findings from a RepoBrain doctor report.",
+    "lint": "Run the RepoBrain doctor, heal, and recheck workflow.",
+    "label": "Normalize RepoBrain page frontmatter.",
+    "maintain": "Synchronize code and RepoBrain knowledge.",
+    "usage": "Measure RepoBrain retrieval and context usefulness.",
+    "setup": "Install or export RepoBrain in a repository.",
 }
 
 
@@ -69,6 +91,7 @@ def cmd_export(dest_repo: Path) -> None:
     dest_wiki = dest_repo / "docs" / "wiki"
     dest_system = dest_wiki / "_system"
     dest_system.mkdir(parents=True, exist_ok=True)
+    _copy_tree(ROOT / "repobrain", dest_repo / "repobrain")
 
     for rel in [
         "README.md",
@@ -114,7 +137,7 @@ def cmd_export(dest_repo: Path) -> None:
 
     print(f"Exported RepoBrain engine → {dest_system}")
     print("Next: in the destination repository run")
-    print("  python3 docs/wiki/_system/scripts/wiki_setup.py")
+    print("  ./repobrain setup")
     print("(fills host config, launchers, and Graphify; optional --seed-pages)")
 
 
@@ -127,14 +150,24 @@ def harness_roots() -> tuple[Path, ...]:
 def cmd_install_launchers() -> None:
     for harness in harness_roots():
         harness.mkdir(parents=True, exist_ok=True)
-        for name in SKILL_NAMES:
+        for suffix in SKILL_SUFFIXES:
+            name = f"repobrain-{suffix}"
             skill_dir = harness / name
             skill_dir.mkdir(parents=True, exist_ok=True)
-            text = LAUNCHER.format(name=name, description=DESCRIPTIONS[name])
+            text = CANONICAL_LAUNCHER.format(
+                name=name,
+                description=DESCRIPTIONS[suffix],
+            )
             (skill_dir / "SKILL.md").write_text(text, encoding="utf-8")
             print(f"wrote {skill_dir / 'SKILL.md'}")
 
-    for harness in harness_roots():
+            alias = f"wiki-{suffix}"
+            alias_dir = harness / alias
+            alias_dir.mkdir(parents=True, exist_ok=True)
+            alias_text = DEPRECATED_LAUNCHER.format(alias=alias, name=name)
+            (alias_dir / "SKILL.md").write_text(alias_text, encoding="utf-8")
+            print(f"wrote {alias_dir / 'SKILL.md'}")
+
         old = harness / "trell-wiki"
         if old.exists():
             shutil.rmtree(old)

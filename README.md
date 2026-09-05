@@ -189,13 +189,14 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 
 For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
 
-**Karpathy LLM Wiki brain (for agents):**
+**RepoBrain repository knowledge engine (for agents):**
 - Engine docs: [`OPERATOR`](docs/wiki/_system/docs/OPERATOR.md) · [`SCHEMA`](docs/wiki/_system/docs/SCHEMA.md) · [`ROUTER`](docs/wiki/_system/docs/ROUTER.md) · [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md)
-- **Canonical skills:** [`docs/wiki/_system/skills/`](docs/wiki/_system/skills/wiki-brain/SKILL.md)
-- **Compatibility adapters:** [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md)
-- **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `wiki-triage` → `wiki-ingest`
+- **Canonical skills:** [`docs/wiki/_system/skills/`](docs/wiki/_system/skills/repobrain-brain/SKILL.md)
+- **Compatibility adapters:** deprecated [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md)
+- **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `repobrain-triage` → `repobrain-ingest`
 - **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_system/docs/CONTEXT_PROTOCOL.md)
-- **Usage:** [`usage-telemetry`](docs/wiki/_system/docs/usage-telemetry.md) · `_system/scripts/wiki_usage.py report`
+- **CLI:** `./repobrain --help` · setup · retrieve · graph · source · doctor · eval · usage · dashboard
+- **Usage:** [`usage-telemetry`](docs/wiki/_system/docs/usage-telemetry.md) · `./repobrain usage report`
 - **Export / setup:** [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md) · `_system/scripts/wiki_pack.py export`
 - Graphs: Graphify `graphify-out/graph.json` · RepoBrain [`claim-graph.yaml`](docs/wiki/_system/generated/claim-graph.yaml)
 - Scripts: [`docs/wiki/_system/scripts/`](docs/wiki/_system/scripts/)

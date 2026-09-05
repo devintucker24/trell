@@ -77,7 +77,7 @@ def evaluate_doctor(root: Path) -> CategoryResult:
     report_path = paths.doctor_latest
     evidence: list[dict[str, Any]] = [
         {
-            "command": "python3 docs/wiki/_system/scripts/wiki_doctor.py --no-log",
+            "command": "./repobrain doctor --no-log",
             "exit_code": proc.returncode,
             "stdout": display_text(proc.stdout, root).strip(),
             "stderr": display_text(proc.stderr, root).strip(),
@@ -91,7 +91,7 @@ def evaluate_doctor(root: Path) -> CategoryResult:
             "Wiki doctor did not produce a readable report.",
             evidence,
             [
-                "Run `python3 docs/wiki/_system/scripts/wiki_doctor.py` "
+                "Run `./repobrain doctor` "
                 "and fix the reported error."
             ],
         )
@@ -123,7 +123,7 @@ def evaluate_doctor(root: Path) -> CategoryResult:
             []
             if blocking == 0
             else [
-                "Run `python3 docs/wiki/_system/scripts/wiki_doctor.py`, then apply each "
+                "Run `./repobrain doctor`, then apply each "
                 "critical/high finding before rerunning `./repobrain eval`."
             ]
         ),
@@ -152,7 +152,7 @@ def retrieve_case(
     ]
     proc = run(args, cwd=root)
     command = (
-        f'python3 docs/wiki/_system/scripts/wiki_retrieve.py "{case["q"]}" '
+        f'./repobrain retrieve "{case["q"]}" '
         f"--k {top_k} --budget-tokens {budget} --lane {case.get('lane', 'all')} "
         "--json --no-log"
     )
@@ -584,11 +584,11 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
 
     evidence = [
         {
-            "status_command": "python3 docs/wiki/_system/scripts/wiki_graphify.py status",
+            "status_command": "./repobrain graph status",
             "status_exit_code": status.returncode,
             "status": display_text(status.stdout or status.stderr, root).strip(),
             "query_command": (
-                "python3 docs/wiki/_system/scripts/wiki_graphify.py "
+                "./repobrain graph "
                 f"query {symbol} --budget 800"
             ),
             "query_exit_code": query.returncode,
@@ -625,7 +625,7 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
             if not failures
             else [
                 "Install Graphify with `python3 -m pip install --user graphifyy`, "
-                "run `python3 docs/wiki/_system/scripts/wiki_graphify.py sync`, "
+                "run `./repobrain graph sync`, "
                 "then rerun eval."
             ]
         ),
@@ -790,7 +790,7 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
                 "tracked_file_count": len(tracked),
                 "ignored_file_count": len(ignored),
                 "setup_command": (
-                    "python3 docs/wiki/_system/scripts/wiki_setup.py --no-graphify"
+                    "./repobrain setup --no-graphify"
                 ),
                 "setup_exit_code": setup.returncode,
                 "setup_detection": detected_line,

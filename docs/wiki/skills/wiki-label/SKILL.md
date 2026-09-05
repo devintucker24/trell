@@ -1,3 +1,5 @@
 # Deprecated path: wiki-label
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-label/SKILL.md`.
+`wiki-label` is a historical compatibility alias. Use `repobrain-label`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-label/SKILL.md`.

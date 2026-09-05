@@ -1,23 +1,23 @@
 ---
 id: wiki-framework
-title: Wiki-brain pack — portable install and export
+title: RepoBrain engine — portable install and export
 type: meta
 status: active
 created: 2026-09-04
 updated: 2026-09-04
-tags: [pack, export, portable, wiki-brain, schema]
+tags: [pack, export, portable, repobrain, schema]
 domain: meta
-summary: "How to copy this wiki-brain into another repo: portable files vs host overlay, Graphify code graph, and wiki-setup."
+summary: "How to copy RepoBrain into another repo: engine files, host overlay, Graphify code graph, and setup."
 nodes:
   - id: wiki-brain-pack
     kind: concept
-    label: Wiki-brain pack
+    label: RepoBrain engine
   - id: wiki-brain
     kind: concept
-    label: Wiki-brain
+    label: RepoBrain
   - id: wiki-setup
     kind: concept
-    label: Wiki setup
+    label: RepoBrain setup
   - id: wiki-graphify-bridge
     kind: concept
     label: Graphify code-graph bridge
@@ -57,7 +57,7 @@ agent:
     - "keep pack/manifest.yaml aligned with real portable paths"
 ---
 
-# Wiki-brain pack (portable)
+# RepoBrain engine (portable)
 
 The **pack** is the operator: schema, skills, scripts, router, inbox/episodic/temporal machinery.  
 The **host** is the project: thesis, domain pages, `HOST.yaml`, Cursor/Claude launchers.
@@ -75,7 +75,8 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 | `docs/wiki/_system/config/` | **host config** | Host overlay, router seeds, eval contract |
 | `docs/wiki/_system/generated/` | **generated** | Claim graph, doctor/eval/usage summaries |
 | `docs/wiki/core/` … domain folders | **host** | Compiled knowledge |
-| `.cursor/skills/wiki-*` | **compatibility adapter** | Thin launchers → `_system/skills/` |
+| `.cursor/skills/repobrain-*` | **host adapter** | Thin launchers → canonical playbooks |
+| `.cursor/skills/wiki-*` | **compatibility adapter** | Deprecated aliases → `repobrain-*` |
 | Root `skills/` | **not used** | Do not duplicate the pack here |
 
 ## Export (from this repo)
@@ -84,17 +85,17 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo
 ```
 
-Creates `other-repo/docs/wiki/` with portable files and stub `HOST.yaml` / `host/router-seeds.md` if missing. Does **not** copy Trell `core/`, `applications/`, etc.
+Creates `other-repo/repobrain` and `other-repo/docs/wiki/_system/` with portable files plus stub host config. It does **not** copy Trell `core/`, `applications/`, or other host corpus pages.
 
 Then **in the other repo** run setup (this is the agent install skill):
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_setup.py --seed-pages
+./repobrain setup --seed-pages
 ```
 
 That fills `HOST.yaml` from the repo layout, installs launchers, gitignores `graphify-out/`, extracts the Graphify **code** graph (`--code-only`, no LLM), and only if the corpus is empty writes **draft** seed pages from god nodes. Remaining human/agent work: write `HOST.yaml` `anchor`, fill router-seeds, review drafts.
 
-Playbook: `docs/wiki/_system/skills/wiki-setup/SKILL.md`.
+Playbook: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.
 
 Need Graphify: `pip install graphifyy` (CLI is `graphify`).
 
@@ -104,7 +105,7 @@ The wiki does **not** ship a homegrown code knowledge graph. Graphify already do
 
 | Graph | Path | What it stores | Who writes it |
 |-------|------|----------------|---------------|
-| **Code / structure** | `graphify-out/graph.json` (gitignored) | symbols, calls, imports, communities | Graphify (`wiki_graphify.py sync`) |
+| **Code / structure** | `graphify-out/graph.json` (gitignored) | symbols, calls, imports, communities | Graphify (`repobrain graph sync`) |
 | **Claims** | corpus YAML → `_system/generated/claim-graph.yaml` | reviewed doctrine | RepoBrain |
 
 Agents query Graphify for “what calls what”. They retrieve wiki pages for “what we assert”. Do not dump either file into context.

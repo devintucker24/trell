@@ -1,3 +1,5 @@
 # Deprecated path: wiki-retrieve
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-retrieve/SKILL.md`.
+`wiki-retrieve` is a historical compatibility alias. Use `repobrain-retrieve`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md`.

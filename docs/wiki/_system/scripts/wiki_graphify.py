@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Wiki-brain wrapper around Graphify — the machine code graph.
+"""RepoBrain wrapper around Graphify — the machine code graph.
 
 We do not rebuild a code AST graph. Graphify owns `graphify-out/graph.json`.
 RepoBrain's generated claim graph is compiled from corpus frontmatter only.
 
-  python3 docs/wiki/_system/scripts/wiki_graphify.py sync
-  python3 docs/wiki/_system/scripts/wiki_graphify.py query "who calls TypeChecker"
-  python3 docs/wiki/_system/scripts/wiki_graphify.py path Parser TypeChecker
-  python3 docs/wiki/_system/scripts/wiki_graphify.py explain TypeChecker
-  python3 docs/wiki/_system/scripts/wiki_graphify.py god-nodes
-  python3 docs/wiki/_system/scripts/wiki_graphify.py status
-  python3 docs/wiki/_system/scripts/wiki_graphify.py export-wiki
+  ./repobrain graph sync
+  ./repobrain graph query "who calls TypeChecker"
+  ./repobrain graph path Parser TypeChecker
+  ./repobrain graph explain TypeChecker
+  ./repobrain graph god-nodes
+  ./repobrain graph status
+  ./repobrain graph export-wiki
 """
 
 from __future__ import annotations
@@ -236,7 +236,7 @@ def cmd_passthrough(verb: str, rest: list[str]) -> None:
     if not path.exists():
         raise SystemExit(
             f"No {path}. Run: "
-            "python3 docs/wiki/_system/scripts/wiki_graphify.py sync"
+            "./repobrain graph sync"
         )
     args = [verb, *rest]
     if "--graph" not in rest:
@@ -256,7 +256,7 @@ def cmd_export_wiki() -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Graphify code-graph wrapper for wiki-brain")
+    ap = argparse.ArgumentParser(description="Graphify code-graph wrapper for RepoBrain")
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("sync", help="extract/rebuild graph.json from HOST.yaml targets")
     s.add_argument("--force", action="store_true")

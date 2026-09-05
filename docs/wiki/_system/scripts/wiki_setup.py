@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Stand up a wiki-brain in this repo with minimal human steps.
+"""Set up RepoBrain in this repository with minimal human steps.
 
 Idempotent: will not overwrite a filled HOST.yaml, existing doctrine pages,
 or AGENTS.md that already knows about retrieve.
 
-  python3 docs/wiki/_system/scripts/wiki_setup.py
-  python3 docs/wiki/_system/scripts/wiki_setup.py --dry-run
-  python3 docs/wiki/_system/scripts/wiki_setup.py --no-graphify
-  python3 docs/wiki/_system/scripts/wiki_setup.py --seed-pages
+  ./repobrain setup
+  ./repobrain setup --dry-run
+  ./repobrain setup --no-graphify
+  ./repobrain setup --seed-pages
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ created: '{today}'
 updated: '{today}'
 tags: [index, navigation]
 domain: meta
-summary: Master catalog of the {name} wiki brain for agent navigation.
+summary: Master catalog of the {name} RepoBrain corpus for agent navigation.
 nodes:
   - id: wiki-index
     kind: concept
@@ -75,19 +75,19 @@ Agent bootstrap: `AGENTS.md` → `docs/wiki/_system/docs/ROUTER.md` → retrieve
 Do not dump this INDEX.
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
-python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
+./repobrain retrieve "<question>" --budget-tokens 3500
+./repobrain graph query "<code question>"
 ```
 
 Fill `HOST.yaml` `anchor`, then ingest real pages via inbox → triage → ingest.
 Seed/draft pages (if any) are **not** compiled doctrine until reviewed.
 """
 
-LOG_STUB = """# Wiki-brain operations log (append-only)
+LOG_STUB = """# RepoBrain operations log (append-only)
 
 ## [{today}] schema | wiki-setup bootstrap
 
-- Ran `wiki_setup.py` in this repo
+- Ran `repobrain setup` in this repo
 - Fill `HOST.yaml` anchor; review any graphify-seed draft pages
 """
 
@@ -335,7 +335,11 @@ def maybe_patch_agents(dry: bool) -> str:
     if not agents.exists() or not fragment.exists():
         return "no AGENTS.md"
     text = agents.read_text(encoding="utf-8")
-    if "wiki_retrieve.py" in text or "Wiki brain (portable pack)" in text:
+    if (
+        "repobrain retrieve" in text
+        or "wiki_retrieve.py" in text
+        or "Wiki brain (portable pack)" in text
+    ):
         return "AGENTS.md already wired"
     if not dry:
         agents.write_text(text.rstrip() + "\n\n" + fragment.read_text(encoding="utf-8"), encoding="utf-8")
@@ -354,7 +358,7 @@ def gitignore_graphify(dry: bool) -> str:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Stand up wiki-brain in this repo")
+    ap = argparse.ArgumentParser(description="Set up RepoBrain in this repository")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--no-graphify", action="store_true")
     ap.add_argument("--seed-pages", action="store_true", help="write draft concept pages from Graphify god nodes if the corpus is empty")
@@ -364,9 +368,9 @@ def main() -> None:
 
     if not (PATHS.system / "docs" / "SCHEMA.md").exists():
         raise SystemExit(
-            "Pack files missing. From a repo that already has wiki-brain:\n"
+            "RepoBrain engine files are missing. Export them from an installed repo:\n"
             "  python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/this-repo\n"
-            "then re-run wiki_setup.py"
+            "then run ./repobrain setup"
         )
 
     detected = detect()
@@ -425,8 +429,8 @@ def main() -> None:
     print("  2. Fill docs/wiki/_system/config/router-seeds.md with your keywords → pages")
     print("  3. If seed drafts exist, fill them from source (do not paste code into wiki pages)")
     print("  4. pip install graphifyy   # if code graph was skipped")
-    print("  5. python3 docs/wiki/_system/scripts/wiki_doctor.py")
-    print("  6. python3 docs/wiki/_system/scripts/wiki_retrieve.py \"what is this repo\" --budget-tokens 1500")
+    print("  5. ./repobrain doctor")
+    print("  6. ./repobrain retrieve \"what is this repo\" --budget-tokens 1500")
 
 
 if __name__ == "__main__":

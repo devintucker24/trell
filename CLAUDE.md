@@ -36,17 +36,17 @@ python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
 
 ## Skills
 
-RepoBrain **canonical** playbooks: `docs/wiki/_system/skills/` (parent `wiki-brain`).
-Claude/Cursor copies under `.claude/skills/wiki-*` and `.cursor/skills/wiki-*` are **thin launchers**.
+RepoBrain **canonical** playbooks: `docs/wiki/_system/skills/` (parent `repobrain-brain`).
+Claude/Cursor `repobrain-*` folders are thin launchers. `wiki-*` launchers are deprecated aliases.
 
 | Slash / name | Purpose |
 |--------------|---------|
-| `wiki-brain` | Parent operator skill |
-| `wiki-setup` | New repo / portable install |
-| `wiki-retrieve` / `wiki-query` | File RAG + cited answers |
-| `wiki-triage` / `wiki-ingest` | Inbox pipeline |
-| `wiki-doctor` / `wiki-heal` | Brain health |
-| `wiki-usage` | Telemetry / dashboard |
+| `repobrain-brain` | Parent operator skill |
+| `repobrain-setup` | New repo / portable install |
+| `repobrain-retrieve` / `repobrain-query` | File RAG + cited answers |
+| `repobrain-triage` / `repobrain-ingest` | Inbox pipeline |
+| `repobrain-doctor` / `repobrain-heal` | Brain health |
+| `repobrain-usage` | Telemetry / dashboard |
 | `handoff` | Compact session → `.handoffs/handoff-*.md` |
 | `read-handoff` | Load newest workspace handoff, then delete it |
 | `grill-me` / `grilling` | Relentless interview to stress-test a plan or idea |

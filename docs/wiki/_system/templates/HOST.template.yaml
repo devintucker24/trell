@@ -1,4 +1,4 @@
-# Host overlay — fill after installing the wiki-brain pack.
+# Host overlay — fill after installing the RepoBrain engine.
 name: My Project
 anchor: >
   One paragraph: what this repo is, and the invariants agents must not dilute.

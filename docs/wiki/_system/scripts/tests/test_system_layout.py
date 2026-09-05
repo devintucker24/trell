@@ -75,24 +75,45 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
 
     def test_harness_launchers_point_to_canonical_skills(self) -> None:
         for harness in (".cursor", ".claude", ".agents"):
-            launcher = (
+            canonical = (
+                ROOT / harness / "skills" / "repobrain-brain" / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn(
+                "docs/wiki/_system/skills/repobrain-brain/SKILL.md",
+                canonical,
+            )
+            self.assertNotIn("Deprecated", canonical)
+
+            deprecated = (
                 ROOT / harness / "skills" / "wiki-brain" / "SKILL.md"
             ).read_text(encoding="utf-8")
             self.assertIn(
-                "docs/wiki/_system/skills/wiki-brain/SKILL.md",
-                launcher,
+                "docs/wiki/_system/skills/repobrain-brain/SKILL.md",
+                deprecated,
             )
-            self.assertIn("Deprecated", launcher)
+            self.assertIn("Deprecated", deprecated)
 
-        for skill_dir in PATHS.skills.iterdir():
-            if not (skill_dir / "SKILL.md").exists():
-                continue
-            compatibility = (
-                PATHS.corpus / "skills" / skill_dir.name / "SKILL.md"
-            ).read_text(encoding="utf-8")
+        for suffix in (
+            "brain",
+            "retrieve",
+            "query",
+            "navigate",
+            "triage",
+            "ingest",
+            "doctor",
+            "heal",
+            "lint",
+            "label",
+            "maintain",
+            "usage",
+            "setup",
+        ):
+            canonical = PATHS.skills / f"repobrain-{suffix}" / "SKILL.md"
+            deprecated = PATHS.skills / f"wiki-{suffix}" / "SKILL.md"
+            self.assertTrue(canonical.exists())
             self.assertIn(
-                f"docs/wiki/_system/skills/{skill_dir.name}/SKILL.md",
-                compatibility,
+                f"docs/wiki/_system/skills/repobrain-{suffix}/SKILL.md",
+                deprecated.read_text(encoding="utf-8"),
             )
 
     def test_export_resolves_from_arbitrary_destination(self) -> None:
@@ -141,6 +162,16 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "HOST.yaml"
                 ).exists()
             )
+            exported_cli = destination / "repobrain"
+            self.assertTrue(exported_cli.exists())
+            help_proc = subprocess.run(
+                [str(exported_cli), "--help"],
+                cwd=destination,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            self.assertIn("RepoBrain technical CLI", help_proc.stdout)
             self.assertFalse(
                 (
                     destination

@@ -33,13 +33,13 @@ agent:
 Generated `2026-09-05` from local `docs/wiki/_system/generated/usage/events.jsonl` (last **30** days).
 Raw events are gitignored; this page is the shareable snapshot.
 
-**Usefulness index:** 56.0/100
+**Usefulness index:** 67.0/100
 
 (heuristic: retrieval hit quality + last doctor score + activity − INDEX-dump admissions)
 
 | Metric | Value |
 |--------|------:|
-| Events | 3 |
+| Events | 4 |
 | Retrieves | 3 |
 | Est. retrieve tokens (sum) | 3426 |
 | Est. tokens / event with tokens | 1142 |
@@ -47,7 +47,7 @@ Raw events are gitignored; this page is the shareable snapshot.
 | Mean top hit score | 0.479 |
 | Weak-hit rate (top < 0.25) | 0.0 |
 | Strong-hit rate (top ≥ 0.45) | 0.667 |
-| Last doctor score | — |
+| Last doctor score | 100.0 |
 | Repeat-query groups (≥3) | 0 |
 | Dump admissions | 0 |
 | Mean latency (ms) | 106.3 |
@@ -58,6 +58,7 @@ Raw events are gitignored; this page is the shareable snapshot.
 
 | op | count |
 |----|------:|
+| `doctor` | 1 |
 | `retrieve` | 3 |
 
 ## Hottest retrieve pages

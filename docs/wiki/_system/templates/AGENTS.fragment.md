@@ -17,11 +17,13 @@ python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 
 
 | Need | Skill (under `docs/wiki/_system/skills/`) |
 |------|-----------------------------------|
-| Answer | `wiki-retrieve` / `wiki-query` |
-| New material | inbox → `wiki-triage` → `wiki-ingest` |
-| Health | `wiki-doctor` → `wiki-heal` |
-| Context cost | `wiki-usage` |
-| Export this brain | `_system/docs/FRAMEWORK.md` + `wiki-setup` |
+| Answer | `repobrain-retrieve` / `repobrain-query` |
+| New material | inbox → `repobrain-triage` → `repobrain-ingest` |
+| Health | `repobrain-doctor` → `repobrain-heal` |
+| Context cost | `repobrain-usage` |
+| Export this engine | `_system/docs/FRAMEWORK.md` + `repobrain-setup` |
+
+`wiki-*` names are deprecated compatibility aliases.
 | Code wiring | `wiki_graphify.py query` |
 
 New checkout: `python3 docs/wiki/_system/scripts/wiki_setup.py`

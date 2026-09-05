@@ -1,3 +1,5 @@
 # Deprecated path: wiki-lint
 
-Canonical playbook: `docs/wiki/_system/skills/wiki-lint/SKILL.md`.
+`wiki-lint` is a historical compatibility alias. Use `repobrain-lint`.
+
+Canonical playbook: `docs/wiki/_system/skills/repobrain-lint/SKILL.md`.
