@@ -45,6 +45,7 @@ related:
   - "[[OPERATOR]]"
   - "[[ROUTER]]"
   - "[[_system/docs/GRAPH]]"
+  - "[[_system/docs/GRAPHIFY]]"
   - "[[_system/docs/usage-telemetry]]"
 agent:
   priority: high
@@ -97,7 +98,8 @@ That fills `HOST.yaml` from the repo layout, installs launchers, gitignores `gra
 
 Playbook: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.
 
-Need Graphify: `pip install graphifyy` (CLI is `graphify`).
+Graphify is optional. Supported versions and the exact install command are in
+`docs/wiki/_system/docs/GRAPHIFY.md`.
 
 ## Two graphs (machines, not humans)
 

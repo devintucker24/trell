@@ -105,7 +105,7 @@ def _dashboard(argv: list[str]) -> int:
     usage = commands.add_parser("usage", help="generate the Markdown usage dashboard")
     usage.add_argument("--days", type=int, default=30)
     commands.add_parser("status", help="show dashboard artifact locations")
-    commands.add_parser("html", help="generate the HTML dashboard (not installed)")
+    commands.add_parser("html", help="generate Graphify's code-graph HTML")
     args = parser.parse_args(argv)
 
     if args.dashboard_command is None:
@@ -115,16 +115,14 @@ def _dashboard(argv: list[str]) -> int:
         return _delegate("usage", ["report", "--days", str(args.days)])
     if args.dashboard_command == "status":
         usage_state = "present" if PATHS.usage_dashboard.exists() else "not generated"
+        graph_html = PATHS.graphify / "graph.html"
+        graph_state = "present" if graph_html.exists() else "not generated"
         html_state = "present" if PATHS.dashboard_dir.exists() else "not generated"
         print(f"Usage dashboard: {PATHS.usage_dashboard} ({usage_state})")
-        print(f"HTML dashboard: {PATHS.dashboard_dir} ({html_state})")
+        print(f"Code graph HTML: {graph_html} ({graph_state})")
+        print(f"RepoBrain HTML dashboard: {PATHS.dashboard_dir} ({html_state})")
         return 0
-    print(
-        "repobrain dashboard html: operator not installed; "
-        f"reserved output is {PATHS.dashboard_dir}",
-        file=sys.stderr,
-    )
-    return 2
+    return _delegate("graph", ["export-html"])
 
 
 def main(argv: list[str] | None = None) -> int:

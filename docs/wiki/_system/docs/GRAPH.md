@@ -25,6 +25,7 @@ related:
   - "[[INDEX]]"
   - "[[SCHEMA]]"
   - "[[FRAMEWORK]]"
+  - "[[GRAPHIFY]]"
 agent:
   priority: high
   read_when:
@@ -44,15 +45,17 @@ These files are for **agents and scripts**. Do not render them as a human produc
 Path: `graphify-out/graph.json` (gitignored).
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_graphify.py sync
-python3 docs/wiki/_system/scripts/wiki_graphify.py status
-python3 docs/wiki/_system/scripts/wiki_graphify.py query "who uses TypeChecker"
-python3 docs/wiki/_system/scripts/wiki_graphify.py path Parser TypeChecker
-python3 docs/wiki/_system/scripts/wiki_graphify.py explain TypeChecker
-python3 docs/wiki/_system/scripts/wiki_graphify.py god-nodes
+./repobrain graph sync
+./repobrain graph status --json
+./repobrain graph query "who uses TypeChecker"
+./repobrain graph path Parser TypeChecker
+./repobrain graph explain TypeChecker
+./repobrain graph affected TypeChecker
+./repobrain graph god-nodes
 ```
 
-Install: `pip install graphifyy` (CLI name `graphify`). Config: `HOST.yaml` `graphify:`.
+Supported dependency, configuration, recovery, and ownership:
+[`GRAPHIFY.md`](GRAPHIFY.md).
 
 Every Graphify edge is `EXTRACTED`, `INFERRED`, or `AMBIGUOUS`. Prefer EXTRACTED when asserting what the compiler does.
 

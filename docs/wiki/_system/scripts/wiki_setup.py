@@ -34,11 +34,20 @@ RAW_CANDIDATES = ("THESIS.md", "README.md")
 GRAPHIFY_BLOCK = """
 graphify:
   enabled: true
+  requirement: graphifyy>=0.9.54,<0.10
   code_only: true
   out: graphify-out
-  # AST extract only (no LLM). Override targets if code_roots includes non-code.
-  targets:
+  # AST extract only (no LLM). Add roots for each code tree.
+  roots:
     - src
+  excludes:
+    - '**/target/**'
+    - '**/node_modules/**'
+    - '**/vendor/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/generated/**'
+  emit_html: false
 """
 
 INDEX_STUB = """---
@@ -206,10 +215,10 @@ def write_host_if_missing(detected: dict, dry: bool) -> str:
         text = HOST_PATH.read_text(encoding="utf-8")
         if "graphify:" not in text:
             if not dry:
-                targets = "\n".join(
+                roots = "\n".join(
                     f"    - {t.rstrip('/')}" for t in (detected["code_roots"][:3] or ["src"])
                 )
-                block = GRAPHIFY_BLOCK.replace("    - src", targets or "    - src")
+                block = GRAPHIFY_BLOCK.replace("    - src", roots or "    - src")
                 HOST_PATH.write_text(text.rstrip() + "\n" + block, encoding="utf-8")
             return "appended graphify block"
         return "kept existing HOST.yaml"
@@ -227,10 +236,24 @@ def write_host_if_missing(detected: dict, dry: bool) -> str:
             data["domains"] = ["core"] + list(data["domains"])
     data["graphify"] = {
         "enabled": True,
+        "requirement": "graphifyy>=0.9.54,<0.10",
         "code_only": True,
         "out": "graphify-out",
-        "targets": [t.rstrip("/") for t in detected["code_roots"] if t.rstrip("/") not in ("examples", "tests")][:3]
+        "roots": [
+            t.rstrip("/")
+            for t in detected["code_roots"]
+            if t.rstrip("/") not in ("examples", "tests")
+        ][:3]
         or ["src"],
+        "excludes": [
+            "**/target/**",
+            "**/node_modules/**",
+            "**/vendor/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/generated/**",
+        ],
+        "emit_html": False,
     }
     if not dry:
         HOST_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -298,7 +321,8 @@ def seed_pages(host: dict, dry: bool, force: bool) -> list[str]:
     dest = WIKI / domain
     if not dry:
         dest.mkdir(parents=True, exist_ok=True)
-    code_root = (host.get("graphify") or {}).get("targets") or ["src"]
+    graphify = host.get("graphify") or {}
+    code_root = graphify.get("roots") or graphify.get("targets") or ["src"]
     prefix = str(code_root[0]).rstrip("/") + "/"
     for n in seedable_god_nodes(graph, top=8):
         path = dest / f"{n['slug']}.md"
@@ -393,14 +417,16 @@ def main() -> None:
     print("AGENTS.md: " + maybe_patch_agents(dry))
     if not dry:
         install_launchers(dry)
-        print("launchers: installed .cursor/skills/wiki-* and .claude/skills/wiki-*")
+        print("launchers: installed canonical repobrain-* and deprecated wiki-* aliases")
 
     graphify_ok = False
     if not args.no_graphify and not dry:
         try:
-            from wiki_graphify import cmd_sync, find_graphify
-            if not find_graphify():
-                print("graphify: NOT INSTALLED — pip install graphifyy  (code graph skipped)")
+            from graphify_adapter import cli_info, cmd_sync
+
+            info = cli_info()
+            if not info.compatible:
+                print(f"graphify: {info.diagnostic} (code graph skipped)")
             else:
                 cmd_sync()
                 graphify_ok = True
@@ -428,7 +454,7 @@ def main() -> None:
     print("  1. Edit docs/wiki/_system/config/HOST.yaml `anchor` — one paragraph the wiki must not dilute")
     print("  2. Fill docs/wiki/_system/config/router-seeds.md with your keywords → pages")
     print("  3. If seed drafts exist, fill them from source (do not paste code into wiki pages)")
-    print("  4. pip install graphifyy   # if code graph was skipped")
+    print("  4. python3 -m pip install --user 'graphifyy>=0.9.54,<0.10'  # if skipped")
     print("  5. ./repobrain doctor")
     print("  6. ./repobrain retrieve \"what is this repo\" --budget-tokens 1500")
 

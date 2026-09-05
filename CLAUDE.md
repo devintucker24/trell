@@ -26,7 +26,7 @@ Full always-on brief: **`AGENTS.md`**. Deep RepoBrain ops:
 
 ```bash
 python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
-python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
+./repobrain graph query "<code question>"
 ```
 
 4. New material → `docs/wiki/inbox/` → triage → ingest (never invent taxonomy without `SCHEMA.md`).

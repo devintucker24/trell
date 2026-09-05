@@ -137,7 +137,7 @@ Two graphs. Neither is a human document. Do not paste them into chat.
 
 Canonical file: `graphify-out/graph.json` (gitignored, regenerated).
 
-- Built by Graphify tree-sitter (`wiki_graphify.py sync` → `graphify extract --code-only`).
+- Built by Graphify tree-sitter (`repobrain graph sync` → `graphify extract --code-only`).
 - Edges tagged `EXTRACTED` | `INFERRED` | `AMBIGUOUS`.
 - Query through `docs/wiki/_system/scripts/wiki_graphify.py`.
 - Optional crawlable dump: `graphify export wiki` → `graphify-out/wiki/` (not SCHEMA pages).

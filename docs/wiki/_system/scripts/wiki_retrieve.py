@@ -474,7 +474,15 @@ def _code_graph_note(query: str, run: bool = False) -> dict:
     path = graph_json_path()
     if not path.exists():
         return {"status": "missing graphify-out/graph.json — repobrain graph sync"}
-    g = load_code_graph()
+    try:
+        g = load_code_graph()
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "status": (
+                f"invalid Graphify artifact: {exc} — "
+                "run ./repobrain graph sync --force"
+            )
+        }
     n, e = len(g.get("nodes") or []), len(g.get("edges") or [])
     note = {
         "status": (
@@ -493,7 +501,7 @@ def _code_graph_note(query: str, run: bool = False) -> dict:
                 capture=True,
             )
             note["query_output"] = ((proc.stdout or "") + (proc.stderr or ""))[:4000]
-        except (OSError, subprocess.SubprocessError) as exc:
+        except (OSError, subprocess.SubprocessError, RuntimeError) as exc:
             note["query_output"] = str(exc)
     return note
 

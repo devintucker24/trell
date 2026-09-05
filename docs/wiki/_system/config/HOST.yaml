@@ -34,7 +34,16 @@ router_seeds: docs/wiki/_system/config/router-seeds.md
 maintain_skill: docs/wiki/_system/skills/repobrain-maintain/SKILL.md
 graphify:
   enabled: true
+  requirement: graphifyy>=0.9.54,<0.10
   code_only: true
   out: graphify-out
-  targets:
+  roots:
     - src
+  excludes:
+    - '**/target/**'
+    - '**/node_modules/**'
+    - '**/vendor/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/generated/**'
+  emit_html: false
