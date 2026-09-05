@@ -1,17 +1,19 @@
 ---
 name: wiki-ingest
-description: Ingest triaged wiki inbox items. Canonical: docs/wiki/skills/wiki-ingest/SKILL.md
+description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-ingest/SKILL.md
 ---
 
 # wiki-ingest
 
-Canonical playbook (portable wiki-brain pack):
+Deprecated `wiki-*` compatibility launcher.
+
+Canonical playbook:
 
 ```text
-docs/wiki/skills/wiki-ingest/SKILL.md
+docs/wiki/_system/skills/wiki-ingest/SKILL.md
 ```
 
-Scripts: `docs/wiki/scripts/`
-Operator: `docs/wiki/OPERATOR.md`
-Router: `docs/wiki/ROUTER.md`
-Host overlay: `docs/wiki/HOST.yaml`
+Scripts: `docs/wiki/_system/scripts/`
+Operator: `docs/wiki/_system/docs/OPERATOR.md`
+Router: `docs/wiki/_system/docs/ROUTER.md`
+Host overlay: `docs/wiki/_system/config/HOST.yaml`

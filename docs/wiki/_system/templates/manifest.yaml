@@ -1,0 +1,43 @@
+# Portable RepoBrain engine manifest.
+# Used by docs/wiki/_system/scripts/wiki_pack.py export
+
+version: 2
+pack_name: repobrain
+install_root: docs/wiki/_system
+
+# Copied as-is into the destination system root
+portable:
+  - README.md
+  - skills/
+  - scripts/
+  - templates/
+  - docs/
+  - config/README.md
+  - logs/README.md
+  - generated/README.md
+
+# Written from templates if missing; host-owned thereafter
+templates:
+  - config/HOST.yaml
+  - config/router-seeds.md
+  - logs/operations.md
+
+# Never copy from the source host
+exclude:
+  - ../INDEX.md
+  - ../inbox/
+  - ../episodic/
+  - ../temporal/
+  - ../raw/
+  - core/
+  - theory/
+  - applications/
+  - market/
+  - roadmap/
+  - config/HOST.yaml
+  - config/router-seeds.md
+  - logs/operations.md
+  - generated/claim-graph.yaml
+  - generated/doctor/
+  - generated/eval/
+  - generated/usage/

@@ -1,0 +1,14 @@
+{
+  "date": "2026-09-05",
+  "score": 100.0,
+  "counts": {},
+  "graph": {
+    "nodes": 92,
+    "edges": 101,
+    "hard_orphans": 0
+  },
+  "pages_with_frontmatter": 30,
+  "pages_scanned": 30,
+  "findings": [],
+  "heal_recommended": false
+}

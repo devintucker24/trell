@@ -16,7 +16,7 @@ edges:
     to: wiki-schema
     rel: depends_on
 related:
-  - "[[SCHEMA]]"
+  - "[[_system/docs/SCHEMA]]"
   - "[[INDEX]]"
 agent:
   priority: critical
@@ -62,6 +62,6 @@ Or say in chat:
 The agent creates `docs/wiki/inbox/YYYY-MM-DD-<slug>.md`, then runs **triage** → **ingest**.
 
 ## Skills
-- Triage: `docs/wiki/skills/wiki-triage/SKILL.md`
-- Ingest: `docs/wiki/skills/wiki-ingest/SKILL.md`
-- Schema / taxonomy rules: `docs/wiki/SCHEMA.md` §6–§8
+- Triage: `docs/wiki/_system/skills/wiki-triage/SKILL.md`
+- Ingest: `docs/wiki/_system/skills/wiki-ingest/SKILL.md`
+- Schema: `docs/wiki/_system/docs/SCHEMA.md` §6–§8

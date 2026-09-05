@@ -52,6 +52,7 @@ agent:
   read_when:
   - explaining what Trell is
   - type system questions
+  - epistemic safety for autonomous ships under COLREGs
   maintain:
   - sync Non-Coercion rule with typecheck.is_assignable
 ---

@@ -190,15 +190,15 @@ trell compile examples/medical_diagnosis.trell -o build/diagnosis.trellc
 For complete documentation on the mathematical theory, type calculi, 20-niche industry matrix, competitive landscape, and 10-year evolutionary roadmap, see the **[Trell Technical Wiki](docs/wiki/INDEX.md)**.
 
 **Karpathy LLM Wiki brain (for agents):**
-- Schema: [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) · [`docs/wiki/OPERATOR.md`](docs/wiki/OPERATOR.md) · [`docs/wiki/SCHEMA.md`](docs/wiki/SCHEMA.md) · [`docs/wiki/ROUTER.md`](docs/wiki/ROUTER.md) · [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md)
-- **Canonical skills:** [`docs/wiki/skills/`](docs/wiki/skills/wiki-brain/SKILL.md) (`wiki-brain` parent; not a repo-root `skills/` folder)
-- **IDE adapters:** [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md) (thin launchers)
+- Engine docs: [`OPERATOR`](docs/wiki/_system/docs/OPERATOR.md) · [`SCHEMA`](docs/wiki/_system/docs/SCHEMA.md) · [`ROUTER`](docs/wiki/_system/docs/ROUTER.md) · [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md)
+- **Canonical skills:** [`docs/wiki/_system/skills/`](docs/wiki/_system/skills/wiki-brain/SKILL.md)
+- **Compatibility adapters:** [`.cursor/skills/wiki-*`](.cursor/skills/wiki-brain/SKILL.md) · [`.claude/skills/wiki-*`](.claude/skills/wiki-brain/SKILL.md)
 - **Inbox / triage:** [`docs/wiki/inbox/`](docs/wiki/inbox/README.md) → `wiki-triage` → `wiki-ingest`
-- **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_meta/CONTEXT_PROTOCOL.md)
-- **Usage:** [`usage-telemetry`](docs/wiki/_meta/usage-telemetry.md) · `python3 docs/wiki/scripts/wiki_usage.py report`
-- **Export / setup:** [`FRAMEWORK.md`](docs/wiki/FRAMEWORK.md) · `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo` · then `wiki_setup.py` in the dest repo
-- Graphs: Graphify `graphify-out/graph.json` (code, gitignored) · claim index [`GRAPH.yaml`](docs/wiki/_meta/GRAPH.yaml) · protocol [`GRAPH.md`](docs/wiki/_meta/GRAPH.md)
-- Scripts: [`docs/wiki/scripts/`](docs/wiki/scripts/) (`wiki_retrieve.py`, `wiki_doctor.py`, `wiki_usage.py`, `wiki_pack.py`, `wiki_setup.py`, `wiki_graphify.py`, `sync_graph.py`)
+- **Memory:** [`episodic/`](docs/wiki/episodic/INDEX.md) · [`temporal/TIMELINE.md`](docs/wiki/temporal/TIMELINE.md) · [`CONTEXT_PROTOCOL`](docs/wiki/_system/docs/CONTEXT_PROTOCOL.md)
+- **Usage:** [`usage-telemetry`](docs/wiki/_system/docs/usage-telemetry.md) · `_system/scripts/wiki_usage.py report`
+- **Export / setup:** [`FRAMEWORK`](docs/wiki/_system/docs/FRAMEWORK.md) · `_system/scripts/wiki_pack.py export`
+- Graphs: Graphify `graphify-out/graph.json` · RepoBrain [`claim-graph.yaml`](docs/wiki/_system/generated/claim-graph.yaml)
+- Scripts: [`docs/wiki/_system/scripts/`](docs/wiki/_system/scripts/)
 - Other Cursor/Claude skills (Matt Pocock, cargo-verify): [`.cursor/skills/`](.cursor/skills/) via [`skills-lock.json`](skills-lock.json)
 - Log: [`docs/wiki/log.md`](docs/wiki/log.md)
 

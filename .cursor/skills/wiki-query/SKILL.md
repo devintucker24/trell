@@ -1,17 +1,19 @@
 ---
 name: wiki-query
-description: Answer from docs/wiki with citations. Canonical: docs/wiki/skills/wiki-query/SKILL.md
+description: Deprecated compatibility alias; canonical playbook: docs/wiki/_system/skills/wiki-query/SKILL.md
 ---
 
 # wiki-query
 
-Canonical playbook (portable wiki-brain pack):
+Deprecated `wiki-*` compatibility launcher.
+
+Canonical playbook:
 
 ```text
-docs/wiki/skills/wiki-query/SKILL.md
+docs/wiki/_system/skills/wiki-query/SKILL.md
 ```
 
-Scripts: `docs/wiki/scripts/`
-Operator: `docs/wiki/OPERATOR.md`
-Router: `docs/wiki/ROUTER.md`
-Host overlay: `docs/wiki/HOST.yaml`
+Scripts: `docs/wiki/_system/scripts/`
+Operator: `docs/wiki/_system/docs/OPERATOR.md`
+Router: `docs/wiki/_system/docs/ROUTER.md`
+Host overlay: `docs/wiki/_system/config/HOST.yaml`

@@ -13,7 +13,8 @@ Trell = epistemic programming language (Rust). Core invariants:
 - `when` / `fork` speculative execution with rollback
 - Natural Trell: colon + indent + `end`
 
-Full always-on brief: **`AGENTS.md`**. Deep wiki ops: **`docs/wiki/OPERATOR.md`**.
+Full always-on brief: **`AGENTS.md`**. Deep RepoBrain ops:
+**`docs/wiki/_system/docs/OPERATOR.md`**.
 
 ---
 
@@ -21,11 +22,11 @@ Full always-on brief: **`AGENTS.md`**. Deep wiki ops: **`docs/wiki/OPERATOR.md`*
 
 1. Read `AGENTS.md` (and this file if you are Claude Code).
 2. Code changes → `src/`, `examples/`, `tests/` → run `cargo test`.
-3. Knowledge / memory → `docs/wiki/ROUTER.md` → retrieve:
+3. Knowledge / memory → `docs/wiki/_system/docs/ROUTER.md` → retrieve:
 
 ```bash
-python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
-python3 docs/wiki/scripts/wiki_graphify.py query "<code question>"
+python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
 ```
 
 4. New material → `docs/wiki/inbox/` → triage → ingest (never invent taxonomy without `SCHEMA.md`).
@@ -35,7 +36,7 @@ python3 docs/wiki/scripts/wiki_graphify.py query "<code question>"
 
 ## Skills
 
-Wiki-brain **canonical** playbooks: `docs/wiki/skills/` (parent `wiki-brain`).  
+RepoBrain **canonical** playbooks: `docs/wiki/_system/skills/` (parent `wiki-brain`).
 Claude/Cursor copies under `.claude/skills/wiki-*` and `.cursor/skills/wiki-*` are **thin launchers**.
 
 | Slash / name | Purpose |
