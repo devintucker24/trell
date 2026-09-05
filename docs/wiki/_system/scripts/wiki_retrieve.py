@@ -189,6 +189,7 @@ def lexical_score(query_tokens: list[str], meta: dict, chunk: dict, path: str) -
         return 0.0
     titleish = f"{meta.get('id','')} {meta.get('title','')} {meta.get('summary','')}".lower()
     tags = " ".join(meta.get("tags") or []).lower()
+    read_when = " ".join((meta.get("agent") or {}).get("read_when") or []).lower()
     path_l = path.lower().replace("/", " ").replace("-", " ")
     heading = (chunk.get("heading") or "").lower()
     body = (chunk.get("text") or "")[:1600].lower()
@@ -199,6 +200,8 @@ def lexical_score(query_tokens: list[str], meta: dict, chunk: dict, path: str) -
         if t in titleish:
             weight = max(weight, 2.4)
         if t in tags:
+            weight = max(weight, 2.0)
+        if t in read_when:
             weight = max(weight, 2.0)
         if t in path_l:
             weight = max(weight, 1.8)

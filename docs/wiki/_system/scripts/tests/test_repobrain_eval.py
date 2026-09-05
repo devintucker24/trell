@@ -19,6 +19,7 @@ from repobrain_eval import (
     evaluate_setup_fixture,
 )
 from repobrain_paths import is_wiki_content_page
+from wiki_retrieve import lexical_score
 from wiki_usage import STRONG_HIT, WEAK_HIT
 
 
@@ -26,6 +27,16 @@ class RepoBrainEvalTests(unittest.TestCase):
     def test_score_classes_reuse_usage_thresholds(self) -> None:
         self.assertEqual(SCORE_FLOORS["relevant"], WEAK_HIT)
         self.assertEqual(SCORE_FLOORS["strong"], STRONG_HIT)
+
+    def test_read_when_terms_contribute_to_lexical_relevance(self) -> None:
+        score = lexical_score(
+            ["maritime", "colregs"],
+            {"agent": {"read_when": ["maritime safety under COLREGs"]}},
+            {"heading": "", "text": ""},
+            "applications/safety-pattern.md",
+        )
+
+        self.assertGreaterEqual(score, 1.0)
 
     def test_generated_eval_reports_are_not_corpus_pages(self) -> None:
         self.assertFalse(
