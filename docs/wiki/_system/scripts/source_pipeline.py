@@ -1416,9 +1416,22 @@ def status_data(
         manifest = _load_manifest(manifest_path)
     entries = list(manifest.get("entries") or [])
     conversion_states: dict[str, int] = {}
+    classifications: dict[str, int] = {}
+    failures: list[dict[str, str]] = []
     for entry in entries:
-        state = str((entry.get("conversion") or {}).get("state") or "unknown")
+        conversion = entry.get("conversion") or {}
+        state = str(conversion.get("state") or "unknown")
         conversion_states[state] = conversion_states.get(state, 0) + 1
+        kind = str(entry.get("classification") or "unknown")
+        classifications[kind] = classifications.get(kind, 0) + 1
+        if state == "failed":
+            failures.append(
+                {
+                    "path": str(entry.get("path") or ""),
+                    "diagnostic": str(conversion.get("diagnostic") or "conversion failed"),
+                }
+            )
+    conversion_cfg = dict(inventory.config.conversion or {})
     return {
         "enabled": inventory.config.enabled,
         "manifest": {
@@ -1429,6 +1442,15 @@ def status_data(
         },
         "changes": manifest.get("changes") or {},
         "conversion": conversion_states,
+        "classifications": classifications,
+        "failures": failures[:25],
+        "policy": {
+            "formats": list(enabled_formats(conversion_cfg)),
+            "commit_groups": list(conversion_cfg.get("commit_groups") or []),
+            "allow_external": bool(conversion_cfg.get("allow_external")),
+            "strict": bool(conversion_cfg.get("strict")),
+            "cache_gitignored": True,
+        },
         "converter": markitdown_info(),
         "structures": manifest.get("structures") or {},
         "denied": len(manifest.get("denied") or []),

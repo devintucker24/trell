@@ -39,8 +39,8 @@ agent:
 This page is for humans. Agents should **not** auto-load it in Router Tier-0.
 Use `./repobrain retrieve` or open this file on demand.
 
-Deprecated `wiki-*` launchers still exist as compatibility aliases. Prefer
-`./repobrain …` and `repobrain-*` skills.
+Prefer `./repobrain …` and `repobrain-*` skills. Temporary `wiki-*` aliases
+were removed; see `_system/docs/MIGRATION.md`.
 
 ## Three layers
 
@@ -88,11 +88,9 @@ Starlight, `CONTEXT.md`). They are not auto-ingested as compiled truth.
 ./repobrain eval
 ./repobrain usage report
 ./repobrain dashboard html
-./repobrain dashboard usage
 ```
 
-Code-graph HTML remains `./repobrain graph export-html` (or
-`./repobrain dashboard graph`).
+The HTML dashboard has Overview, Sources, Code graph (Graphify embed + full-page fallback), and Cheat sheet tabs. Code-graph HTML also remains `./repobrain graph export-html`.
 
 ## Pasteable agent prompts
 

@@ -12,7 +12,7 @@ Every wiki/memory/research task:
 3. Retrieve:
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+./repobrain retrieve "<question>" --budget-tokens 3500
 ```
 
 | Need | Skill (under `docs/wiki/_system/skills/`) |
@@ -21,9 +21,7 @@ python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 
 | New material | inbox → `repobrain-triage` → `repobrain-ingest` |
 | Health | `repobrain-doctor` → `repobrain-heal` |
 | Context cost | `repobrain-usage` |
+| Code wiring | `./repobrain graph query` |
 | Export this engine | `_system/docs/FRAMEWORK.md` + `repobrain-setup` |
 
-`wiki-*` names are deprecated compatibility aliases.
-| Code wiring | `wiki_graphify.py query` |
-
-New checkout: `python3 docs/wiki/_system/scripts/wiki_setup.py`
+New checkout: `./repobrain setup`

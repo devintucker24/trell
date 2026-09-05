@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 import tempfile
@@ -52,26 +51,8 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             is_wiki_content_page("_meta/GRAPH.md", "GRAPH.md")
         )
 
-    def test_old_script_path_delegates_with_deprecation_message(self) -> None:
-        proc = subprocess.run(
-            [
-                sys.executable,
-                "docs/wiki/scripts/wiki_retrieve.py",
-                "belief certain",
-                "--k",
-                "1",
-                "--json",
-                "--no-log",
-            ],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        payload = json.loads(proc.stdout)
-        self.assertTrue(payload["hits"])
-        self.assertIn("DEPRECATED:", proc.stderr)
-        self.assertIn("docs/wiki/_system/scripts/wiki_retrieve.py", proc.stderr)
+    def test_old_script_shim_directory_is_gone(self) -> None:
+        self.assertFalse((ROOT / "docs" / "wiki" / "scripts").exists())
 
     def test_harness_launchers_point_to_canonical_skills(self) -> None:
         for harness in (".cursor", ".claude", ".agents"):
@@ -83,15 +64,9 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                 canonical,
             )
             self.assertNotIn("Deprecated", canonical)
-
-            deprecated = (
-                ROOT / harness / "skills" / "wiki-brain" / "SKILL.md"
-            ).read_text(encoding="utf-8")
-            self.assertIn(
-                "docs/wiki/_system/skills/repobrain-brain/SKILL.md",
-                deprecated,
+            self.assertFalse(
+                (ROOT / harness / "skills" / "wiki-brain" / "SKILL.md").exists()
             )
-            self.assertIn("Deprecated", deprecated)
 
         for suffix in (
             "brain",
@@ -109,12 +84,8 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             "setup",
         ):
             canonical = PATHS.skills / f"repobrain-{suffix}" / "SKILL.md"
-            deprecated = PATHS.skills / f"wiki-{suffix}" / "SKILL.md"
             self.assertTrue(canonical.exists())
-            self.assertIn(
-                f"docs/wiki/_system/skills/repobrain-{suffix}/SKILL.md",
-                deprecated.read_text(encoding="utf-8"),
-            )
+            self.assertFalse((PATHS.skills / f"wiki-{suffix}" / "SKILL.md").exists())
 
     def test_export_resolves_from_arbitrary_destination(self) -> None:
         with tempfile.TemporaryDirectory(prefix="repobrain-layout-") as tmp:

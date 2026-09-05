@@ -25,7 +25,7 @@ Full always-on brief: **`AGENTS.md`**. Deep RepoBrain ops:
 3. Knowledge / memory → `docs/wiki/_system/docs/ROUTER.md` → retrieve:
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+./repobrain retrieve "<question>" --budget-tokens 3500
 ./repobrain graph query "<code question>"
 ```
 
@@ -37,7 +37,7 @@ python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 
 ## Skills
 
 RepoBrain **canonical** playbooks: `docs/wiki/_system/skills/` (parent `repobrain-brain`).
-Claude/Cursor `repobrain-*` folders are thin launchers. `wiki-*` launchers are deprecated aliases.
+Claude/Cursor `repobrain-*` folders are thin launchers.
 
 | Slash / name | Purpose |
 |--------------|---------|

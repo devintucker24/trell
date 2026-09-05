@@ -49,7 +49,7 @@
     },
     "freshness": {
       "built_commit": "3b15cc6a224f72002bd365d9734f0c4adffd43b4",
-      "current_commit": "fc061cd6246d4602d621c47999954421bf849fe1",
+      "current_commit": "8016233b3984c97abd535571350c1dd75aebdd23",
       "commit": "stale",
       "source": "fresh",
       "method": "git-diff",
@@ -66,21 +66,85 @@
     "manifest": {
       "path": "/workspace/docs/wiki/_system/generated/sources/manifest.json",
       "present": true,
-      "generated_at": "2026-09-05T14:28:46Z",
-      "entries": 436
+      "generated_at": "2026-09-05T15:28:55Z",
+      "entries": 397
     },
     "changes": {
       "added": [],
-      "deleted": [],
+      "deleted": [
+        ".agents/skills/wiki-brain/SKILL.md",
+        ".agents/skills/wiki-doctor/SKILL.md",
+        ".agents/skills/wiki-heal/SKILL.md",
+        ".agents/skills/wiki-ingest/SKILL.md",
+        ".agents/skills/wiki-label/SKILL.md",
+        ".agents/skills/wiki-lint/SKILL.md",
+        ".agents/skills/wiki-maintain/SKILL.md",
+        ".agents/skills/wiki-navigate/SKILL.md",
+        ".agents/skills/wiki-query/SKILL.md",
+        ".agents/skills/wiki-retrieve/SKILL.md",
+        ".agents/skills/wiki-setup/SKILL.md",
+        ".agents/skills/wiki-triage/SKILL.md",
+        ".agents/skills/wiki-usage/SKILL.md",
+        ".claude/skills/wiki-brain/SKILL.md",
+        ".claude/skills/wiki-doctor/SKILL.md",
+        ".claude/skills/wiki-heal/SKILL.md",
+        ".claude/skills/wiki-ingest/SKILL.md",
+        ".claude/skills/wiki-label/SKILL.md",
+        ".claude/skills/wiki-lint/SKILL.md",
+        ".claude/skills/wiki-maintain/SKILL.md",
+        ".claude/skills/wiki-navigate/SKILL.md",
+        ".claude/skills/wiki-query/SKILL.md",
+        ".claude/skills/wiki-retrieve/SKILL.md",
+        ".claude/skills/wiki-setup/SKILL.md",
+        ".claude/skills/wiki-triage/SKILL.md",
+        ".claude/skills/wiki-usage/SKILL.md",
+        ".cursor/skills/wiki-brain/SKILL.md",
+        ".cursor/skills/wiki-doctor/SKILL.md",
+        ".cursor/skills/wiki-heal/SKILL.md",
+        ".cursor/skills/wiki-ingest/SKILL.md",
+        ".cursor/skills/wiki-label/SKILL.md",
+        ".cursor/skills/wiki-lint/SKILL.md",
+        ".cursor/skills/wiki-maintain/SKILL.md",
+        ".cursor/skills/wiki-navigate/SKILL.md",
+        ".cursor/skills/wiki-query/SKILL.md",
+        ".cursor/skills/wiki-retrieve/SKILL.md",
+        ".cursor/skills/wiki-setup/SKILL.md",
+        ".cursor/skills/wiki-triage/SKILL.md",
+        ".cursor/skills/wiki-usage/SKILL.md"
+      ],
       "modified": [
-        "examples/repobrain-sources/sample.csv",
-        "examples/repobrain-sources/sample.html"
+        "AGENTS.md",
+        "CLAUDE.md",
+        "README.md"
       ]
     },
     "conversion": {
-      "native": 403,
+      "native": 364,
       "graphify-delegate": 31,
-      "converted": 2
+      "cached": 2
+    },
+    "classifications": {
+      "docs": 244,
+      "config": 120,
+      "code": 31,
+      "data": 1,
+      "tests": 1
+    },
+    "failures": [],
+    "policy": {
+      "formats": [
+        "csv",
+        "html",
+        "epub",
+        "pdf",
+        "docx",
+        "pptx",
+        "xlsx"
+      ],
+      "commit_groups": [],
+      "allow_external": false,
+      "strict": false,
+      "cache_gitignored": true
     },
     "converter": {
       "name": "markitdown",

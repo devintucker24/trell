@@ -31,7 +31,7 @@ For knowledge, memory, research, or RepoBrain work:
 2. Retrieve instead of loading the full index:
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+./repobrain retrieve "<question>" --budget-tokens 3500
 ./repobrain graph query "<code question>"
 ```
 
@@ -64,5 +64,3 @@ python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 
 
 Cursor Cloud: Python scripts require Python 3 and PyYAML. Verify Rust with
 `cargo test`.
-
-`wiki-*` skill names remain deprecated compatibility aliases during migration.

@@ -516,7 +516,7 @@ def main() -> None:
     print("AGENTS.md: " + maybe_patch_agents(dry))
     if not dry:
         install_launchers(dry)
-        print("launchers: installed canonical repobrain-* and deprecated wiki-* aliases")
+        print("launchers: installed canonical repobrain-* skills")
 
     graphify_ok = False
     if not args.no_graphify and not dry:
