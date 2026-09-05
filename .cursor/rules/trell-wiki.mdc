@@ -4,20 +4,20 @@ globs: docs/wiki/**/*.md,AGENTS.md,CLAUDE.md
 alwaysApply: false
 ---
 
-# Wiki brain
+# RepoBrain
 
-- Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/OPERATOR.md`. Canonical skills: `docs/wiki/skills/` (parent `wiki-brain`).
-- Context: `docs/wiki/ROUTER.md` — retrieve; do not dump INDEX/SCHEMA/GRAPH.yaml/graph.json.
+- Always-on: root `AGENTS.md`. Deep ops: `docs/wiki/_system/docs/OPERATOR.md`. Canonical skills: `docs/wiki/_system/skills/`.
+- Context: `docs/wiki/_system/docs/ROUTER.md` — retrieve; do not dump INDEX/claim-graph/graph.json.
 - New material → `docs/wiki/inbox/` only; triage before ingest.
-- No new folders/types/domains/rels without `docs/wiki/SCHEMA.md`.
+- No new folders/types/domains/rels without `docs/wiki/_system/docs/SCHEMA.md`.
 - Episodes and TIMELINE are not semantic truth until consolidated.
-- After structural edits: sync claim graph (`python3 docs/wiki/scripts/sync_graph.py`). After `src/` edits: `python3 docs/wiki/scripts/wiki_graphify.py sync`. Prefer doctor/heal.
+- After structural edits: sync claim graph (`python3 docs/wiki/_system/scripts/sync_graph.py`). After `src/` edits: run the canonical Graphify wrapper. Prefer doctor/heal.
 
 ## Autonomous Skill Execution Checklist
 
-1. **Retrieval**: Before opening wiki files, run `python3 docs/wiki/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`. Code wiring: `python3 docs/wiki/scripts/wiki_graphify.py query "<task>"`.
-2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → execute `docs/wiki/skills/wiki-triage/SKILL.md` → execute `docs/wiki/skills/wiki-ingest/SKILL.md`.
-3. **Health & Linting**: Run `python3 docs/wiki/scripts/wiki_doctor.py`. If score < 95 or issues found, execute `docs/wiki/skills/wiki-heal/SKILL.md`.
-4. **Claim graph**: Whenever page frontmatter `nodes` or `edges` are modified, execute `python3 docs/wiki/scripts/sync_graph.py`.
-5. **New repo / empty host**: execute `docs/wiki/skills/wiki-setup/SKILL.md` (`wiki_setup.py`).
-6. **Canonical skills** live in `docs/wiki/skills/` (portable). `.cursor/skills/wiki-*` are thin launchers only.
+1. **Retrieval**: Run `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<task>" --budget-tokens 3500`. Cite with `[[folder/page]]`. Use Graphify for code wiring.
+2. **Ingest pipeline**: Drop raw content into `docs/wiki/inbox/` → run the canonical triage and ingest skills.
+3. **Health & Linting**: Run `python3 docs/wiki/_system/scripts/wiki_doctor.py`; use the canonical heal skill if needed.
+4. **Claim graph**: After frontmatter node/edge changes, run `python3 docs/wiki/_system/scripts/sync_graph.py`.
+5. **New repo / empty host**: use `docs/wiki/_system/skills/wiki-setup/SKILL.md`.
+6. **Canonical skills** live in `docs/wiki/_system/skills/`; harness `wiki-*` paths are deprecated launchers.

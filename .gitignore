@@ -1,5 +1,5 @@
 # Wiki-brain local telemetry (dashboard markdown is committed)
-docs/wiki/_meta/usage/events.jsonl
+docs/wiki/_system/generated/usage/events.jsonl
 
 /target
 out.ll
@@ -65,7 +65,8 @@ trell-program.o
 /data/
 
 # Wiki-brain local telemetry (dashboard markdown may be committed)
-docs/wiki/_meta/usage/events.jsonl
+docs/wiki/_system/generated/usage/events.jsonl
+docs/wiki/_system/scripts/__pycache__/
 docs/wiki/scripts/__pycache__/
 __pycache__/
 

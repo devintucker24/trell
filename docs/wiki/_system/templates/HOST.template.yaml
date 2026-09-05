@@ -1,0 +1,23 @@
+# Host overlay — fill after installing the wiki-brain pack.
+name: My Project
+anchor: >
+  One paragraph: what this repo is, and the invariants agents must not dilute.
+brief: AGENTS.md
+claude_brief: CLAUDE.md
+code_roots:
+  - src/
+raw: []
+domains:
+  - meta
+  - episodic
+  - temporal
+semantic_dirs: []
+types_extra: []
+router_seeds: docs/wiki/_system/config/router-seeds.md
+
+graphify:
+  enabled: true
+  code_only: true
+  out: graphify-out
+  targets:
+    - src

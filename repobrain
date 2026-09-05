@@ -10,7 +10,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-SCRIPTS = Path(__file__).resolve().parent / "docs" / "wiki" / "scripts"
+SCRIPTS = (
+    Path(__file__).resolve().parent
+    / "docs"
+    / "wiki"
+    / "_system"
+    / "scripts"
+)
 sys.path.insert(0, str(SCRIPTS))
 
 

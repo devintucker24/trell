@@ -15,4 +15,5 @@ cargo test
 
 If clippy is too strict for an existing warning baseline, run `cargo test` at minimum and report clippy issues honestly.
 
-When epistemic behavior changes, also run wiki maintain (`docs/wiki/skills/wiki-maintain/SKILL.md`).
+When epistemic behavior changes, also run wiki maintain
+(`docs/wiki/_system/skills/wiki-maintain/SKILL.md`).

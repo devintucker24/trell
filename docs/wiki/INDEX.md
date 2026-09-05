@@ -50,18 +50,18 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 ### Agent bootstrap (read first)
 1. [`AGENTS.md`](../../AGENTS.md) — thin project brief (always-on)
 2. [`CLAUDE.md`](../../CLAUDE.md) — Claude Code twin brief
-3. [`ROUTER.md`](ROUTER.md) — **always-on context map + budgets** (prefer over loading this whole INDEX)
-4. [`OPERATOR.md`](OPERATOR.md) — detailed wiki operator manual
-5. Retrieve: `python3 docs/wiki/scripts/wiki_retrieve.py "<q>"` — [`docs/wiki/skills/wiki-retrieve`](skills/wiki-retrieve/SKILL.md)
-6. Code graph: `python3 docs/wiki/scripts/wiki_graphify.py query "<q>"` — [`_meta/GRAPH.md`](_meta/GRAPH.md)
+3. [`_system/docs/ROUTER.md`](_system/docs/ROUTER.md) — context map + budgets
+4. [`_system/docs/OPERATOR.md`](_system/docs/OPERATOR.md) — operator manual
+5. Retrieve: `python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>"`
+6. Code graph: `python3 docs/wiki/_system/scripts/wiki_graphify.py query "<q>"`
 7. This INDEX — catalog when browsing structure
-8. [`SCHEMA.md`](SCHEMA.md) — frontmatter + node/edge + temporal vocabulary
+8. [`_system/docs/SCHEMA.md`](_system/docs/SCHEMA.md) — corpus schema
 9. Memory lanes: [`episodic/`](episodic/INDEX.md) · [`temporal/TIMELINE.md`](temporal/TIMELINE.md)
-10. [`_meta/GRAPH.yaml`](_meta/GRAPH.yaml) (claim index) · [`log.md`](log.md)
-11. Skills: [`docs/wiki/skills/wiki-brain`](skills/wiki-brain/SKILL.md) · setup: [`wiki-setup`](skills/wiki-setup/SKILL.md) · pack: [`FRAMEWORK.md`](FRAMEWORK.md)
+10. [`_system/generated/claim-graph.yaml`](_system/generated/claim-graph.yaml)
+11. Engine: [`_system/`](_system/README.md)
 
-**Layers:** raw (`raw/`, host sources) → wiki (this tree, plus episodic/temporal) → schema (`AGENTS.md` + `OPERATOR.md` + `docs/wiki/skills/`).
-**Context rule:** never dump this entire INDEX into an agent turn — use ROUTER + retrieve.
+**Layers:** raw sources → reviewed host corpus → portable `_system/` engine.
+**Context rule:** use the Router and retrieval instead of loading this index.
 
 ---
 
@@ -114,47 +114,46 @@ Welcome to the **Trell Knowledge Base**, modeled after Andrej Karpathy's network
 | **Speculative Branches** | [[core/speculative-execution-engine]] | [[theory/hardware-silicon-codesign]], [[applications/autonomous-physical-systems]] |
 | **Market Niches** | [[applications/overview-and-safety-patterns]] | [[market/competitive-analysis]], [[market/regulatory-and-insurance-drivers]] |
 | **Future Roadmap** | [[roadmap/ten-year-vision]] | [[roadmap/phases-and-milestones]], [[theory/bayesian-and-distributional-types]] |
-| **Knowledge Graph** | [[_meta/GRAPH]] | Graphify `graph.json` (code) + GRAPH.yaml (claims) |
-| **Context Router** | [[ROUTER]] | [[_meta/CONTEXT_PROTOCOL]], [[FRAMEWORK]] |
+| **Knowledge Graph** | [[_system/docs/GRAPH]] | Graphify code + generated claims |
+| **Context Router** | [[_system/docs/ROUTER]] | [[_system/docs/CONTEXT_PROTOCOL]] |
 | **Episodic memory** | [[episodic/INDEX]] | [[episodic/session-current]], [[temporal/TIMELINE]] |
-| **Temporal memory** | [[temporal/TIMELINE]] | [[_meta/CONTEXT_PROTOCOL]], retrieve `--as-of` |
+| **Temporal memory** | [[temporal/TIMELINE]] | retrieve `--as-of` |
 
 ---
 
 ## 6. Brain Ops (Schema, Graph, Memory, Raw, Inbox, Log)
-* [[ROUTER]]: Progressive-disclosure router + token budgets (always-on for agents)
-* [[OPERATOR]]: Detailed wiki operator manual (after thin root `AGENTS.md` / `CLAUDE.md`)
-* [[_meta/CONTEXT_PROTOCOL]]: Semantic / episodic / temporal assembly rules
-* [[_meta/brain-gap-analysis-2026-09-04]]: Memory/RAG gap analysis vs 2026 research
-* [[SCHEMA]]: YAML frontmatter contract, node kinds, edge relations, **temporal fields**, taxonomy evolution
+* [[_system/docs/ROUTER]]: Progressive-disclosure router + token budgets
+* [[_system/docs/OPERATOR]]: Detailed operator manual
+* [[_system/docs/CONTEXT_PROTOCOL]]: Context assembly rules
+* [[_system/docs/SCHEMA]]: Corpus frontmatter contract
 * [[episodic/INDEX]]: Episodic memory catalog (session narratives)
 * [[temporal/TIMELINE]]: Temporal spine for as-of / what-changed recall
 * [[inbox/README]]: **Drop zone** — how humans/agents input material
-* [[_meta/GRAPH]]: Machine graph protocol — Graphify code graph + claim index
+* [[_system/docs/GRAPH]]: Machine graph protocol
 * [[raw/thesis]]: Pointer to immutable THESIS.md
 * [[raw/examples]]: Pointers to executable `.trell` examples
 * [[raw/market-research-2026-09-03]]: Historical market note (reconcile carefully)
-* [[log]]: Append-only operations log for agents
-* [[FRAMEWORK]]: Portable wiki-brain pack — skills-in-wiki, export, adapters
-* [[_meta/usage-telemetry]]: Usage metric catalog + agent logging protocol
-* [[host/router-seeds]]: Trell-specific ROUTER Tier-1 seeds (`HOST.yaml`)
+* `_system/logs/operations.md`: Append-only operations log
+* [[_system/docs/FRAMEWORK]]: Portable engine export and setup
+* [[_system/docs/usage-telemetry]]: Usage metric catalog
+* `_system/config/router-seeds.md`: Trell-specific router seeds
 
 ---
 
-## 7. Agent Skills (`docs/wiki/skills/`)
+## 7. Agent Skills (`docs/wiki/_system/skills/`)
 | Skill | Path | Job |
 |-------|------|-----|
-| Parent | `docs/wiki/skills/wiki-brain/SKILL.md` | Portable pack entry point |
-| **Retrieve** | `docs/wiki/skills/wiki-retrieve/SKILL.md` | **File RAG** — lexical + graph + temporal rerank |
-| Navigate | `docs/wiki/skills/wiki-navigate/SKILL.md` | INDEX + graph traversal |
-| Triage | `docs/wiki/skills/wiki-triage/SKILL.md` | Classify inbox; merge vs new vs taxonomy gate |
-| Ingest | `docs/wiki/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
-| Doctor | `docs/wiki/skills/wiki-doctor/SKILL.md` | Diagnose only (no edits) |
-| Heal | `docs/wiki/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
-| Lint | `docs/wiki/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
-| Query | `docs/wiki/skills/wiki-query/SKILL.md` | Answer + file synthesis |
-| Label | `docs/wiki/skills/wiki-label/SKILL.md` | Normalize frontmatter |
-| Maintain | `docs/wiki/skills/wiki-maintain/SKILL.md` | Sync code ↔ wiki claims ↔ Graphify |
-| Usage | `docs/wiki/skills/wiki-usage/SKILL.md` | Telemetry + context cost |
-| **Setup** | `docs/wiki/skills/wiki-setup/SKILL.md` | New repo / portable install |
-| Pack | `docs/wiki/FRAMEWORK.md` | Export into another project |
+| Parent | `_system/skills/wiki-brain/SKILL.md` | Portable engine entry |
+| **Retrieve** | `_system/skills/wiki-retrieve/SKILL.md` | File RAG |
+| Navigate | `_system/skills/wiki-navigate/SKILL.md` | Corpus + graph traversal |
+| Triage | `_system/skills/wiki-triage/SKILL.md` | Inbox classification |
+| Ingest | `_system/skills/wiki-ingest/SKILL.md` | Reviewed promotion |
+| Doctor | `_system/skills/wiki-doctor/SKILL.md` | Structural diagnosis |
+| Heal | `_system/skills/wiki-heal/SKILL.md` | Doctor-driven repair |
+| Lint | `_system/skills/wiki-lint/SKILL.md` | Doctor → heal → doctor |
+| Query | `_system/skills/wiki-query/SKILL.md` | Cited answers |
+| Label | `_system/skills/wiki-label/SKILL.md` | Frontmatter normalization |
+| Maintain | `_system/skills/wiki-maintain/SKILL.md` | Synchronization |
+| Usage | `_system/skills/wiki-usage/SKILL.md` | Context telemetry |
+| **Setup** | `_system/skills/wiki-setup/SKILL.md` | Portable install |
+| Engine | `_system/docs/FRAMEWORK.md` | Export into another project |
