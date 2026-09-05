@@ -147,7 +147,7 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertEqual(by_id["repobrain-navigate"]["command"], "")
         retrieve_cmd = by_id["cli-retrieve"]["command"]
         self.assertNotEqual(by_id["repobrain-query"]["command"], retrieve_cmd)
-        self.assertIn("Playbook — no ./repobrain query verb.", by_id["repobrain-query"]["note"])
+        self.assertIn("Skill /repobrain-query — playbook, not a ./repobrain query command.", by_id["repobrain-query"]["note"])
 
     def test_render_html_separates_commands_and_skills(self) -> None:
         html = dashboard.render_html(
@@ -171,8 +171,9 @@ class DashboardHtmlTests(unittest.TestCase):
         skills_block = html[skills_at:]
         self.assertIn("<h3>repobrain-query</h3>", skills_block)
         self.assertNotIn("<h3>repobrain-query</h3>", commands_block)
-        self.assertIn("Playbook — no ./repobrain query verb.", skills_block)
-        self.assertIn("Playbook — no ./repobrain navigate verb.", skills_block)
+        self.assertIn("Skill /repobrain-query — playbook, not a ./repobrain query command.", skills_block)
+        self.assertIn("Skill /repobrain-navigate — playbook, not a ./repobrain navigate command.", skills_block)
+        self.assertIn("/repobrain-query", skills_block)
 
     def test_cheatsheet_splits_skills_and_commands(self) -> None:
         text = (dashboard.PATHS.system / "docs" / "CHEATSHEET.md").read_text(
@@ -182,6 +183,7 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("## Skills", text)
         self.assertLess(text.index("## Commands"), text.index("## Skills"))
         self.assertIn("There is no `./repobrain query`", text)
+        self.assertIn("`/repobrain-query`", text)
         self.assertIn("playbook only", text)
         self.assertIn("wraps CLI", text)
         self.assertIn("file://", text)

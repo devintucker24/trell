@@ -79,7 +79,9 @@ Starlight, `CONTEXT.md`). They are not auto-ingested as compiled truth.
 ## Commands
 
 These are the public `./repobrain` verbs. There is no `./repobrain query` or
-`./repobrain navigate`. `graph query` searches the **code** graph, not the wiki.
+`./repobrain navigate` **command**. The skills `/repobrain-query` and
+`/repobrain-navigate` exist; they tell the agent what to do after
+`./repobrain retrieve`. `graph query` searches the **code** graph, not the wiki.
 
 ```bash
 ./repobrain setup
@@ -115,8 +117,8 @@ Harness launchers (`.cursor/skills/`, `.claude/skills/`) only point here.
 | Skill | Kind | Does | Related command |
 |---|---|---|---|
 | `repobrain-retrieve` | wraps CLI | Ranked wiki RAG (lexical + claim graph + temporal) | `./repobrain retrieve` |
-| `repobrain-query` | playbook only | After retrieve: answer with `[[cites]]`, optionally file a synthesis page | uses retrieve; **no** `query` verb |
-| `repobrain-navigate` | playbook only | After retrieve: return wikilinks + one-line summaries; for code, Graphify paths | uses retrieve + `graph query`; **no** `navigate` verb |
+| `repobrain-query` | playbook only | After retrieve: answer with `[[cites]]`, optionally file a synthesis page | skill `/repobrain-query`; lookup is `./repobrain retrieve` |
+| `repobrain-navigate` | playbook only | After retrieve: return wikilinks + one-line summaries; for code, Graphify paths | skill `/repobrain-navigate`; code uses `graph query` |
 | `repobrain-triage` | playbook only | Classify inbox; do not ingest yet | — |
 | `repobrain-ingest` | playbook only | Promote reviewed inbox into compiled pages | — |
 | `repobrain-doctor` | wraps CLI | Corpus health audit | `./repobrain doctor` |
@@ -150,8 +152,8 @@ with those hits** (essay vs map). They are not extra search backends.
 
 | Skill | Prompt |
 |---|---|
-| Query | Answer from cited RepoBrain retrieve hits. Do not invent compiled claims. File a synthesis page if the answer should persist. There is no `./repobrain query`. |
-| Navigate | Navigate the corpus: retrieve, then return wikilinks and one-line summaries. For code wiring use `./repobrain graph query`. There is no `./repobrain navigate`. |
+| Query | Follow `/repobrain-query`. Retrieve with `./repobrain retrieve` (no `./repobrain query` command). Answer from cited hits; do not invent compiled claims. File a synthesis page if the answer should persist. |
+| Navigate | Follow `/repobrain-navigate`. Retrieve, then return wikilinks and one-line summaries. For code wiring use `./repobrain graph query`. |
 
 ## Health signals
 

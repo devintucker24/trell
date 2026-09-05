@@ -58,12 +58,14 @@ SKILL_PROMPTS = {
     "brain": "Operate RepoBrain with the public CLI. Do not dump the wiki.",
     "retrieve": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
     "query": (
-        "Answer from cited RepoBrain retrieve hits. Do not invent compiled claims. "
-        "There is no ./repobrain query."
+        "Follow the /repobrain-query skill. Lookup with ./repobrain retrieve "
+        "(there is no ./repobrain query CLI command). Answer from cited hits; "
+        "do not invent compiled claims."
     ),
     "navigate": (
-        "Return wikilinks and one-line summaries after retrieve. "
-        "For code wiring use ./repobrain graph query. There is no ./repobrain navigate."
+        "Follow the /repobrain-navigate skill. Lookup with ./repobrain retrieve "
+        "(there is no ./repobrain navigate CLI command). Return wikilinks and "
+        "one-line summaries. For code wiring use ./repobrain graph query."
     ),
     "triage": "Classify inbox material. Do not ingest until a human or skill says to.",
     "ingest": "Promote reviewed inbox pages into the compiled corpus without inventing taxonomy.",
@@ -185,7 +187,7 @@ def command_catalog() -> list[dict[str, str]]:
                 "description": _skill_description(suffix),
                 "command": "" if playbook else related,
                 "note": (
-                    f"Playbook — no ./repobrain {suffix} verb."
+                    f"Skill /repobrain-{suffix} — playbook, not a ./repobrain {suffix} command."
                     if playbook
                     else f"Wraps {related}."
                 ),
@@ -448,7 +450,8 @@ def render_html(data: dict[str, Any]) -> str:
 
     command_html = (
         '<p class="meta">Commands are <code>./repobrain</code> verbs. '
-        "Skills are agent playbooks. Query and navigate have no CLI.</p>"
+        "Skills are agent playbooks such as /repobrain-query. "
+        "Those names are not ./repobrain CLI commands.</p>"
         '<h3 id="dash-commands">Commands</h3>'
         + (_catalog_articles(cli_items) or '<p class="ok">No commands in this snapshot.</p>')
         + '<h3 id="dash-skills">Skills</h3>'
