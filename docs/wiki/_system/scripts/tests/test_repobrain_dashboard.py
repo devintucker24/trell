@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 import sys
+import urllib.request
 
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
@@ -62,6 +63,7 @@ class DashboardHtmlTests(unittest.TestCase):
             self.assertIn(f"repobrain-{suffix}", html)
         self.assertIn("./repobrain graph query", html)
         self.assertIn("ERR_NAME_NOT_RESOLVED", html)
+        self.assertIn("--serve", html)
 
     def test_missing_and_stale_states_include_copyable_remediation(self) -> None:
         html = dashboard.render_html(
@@ -145,7 +147,7 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertEqual(by_id["repobrain-navigate"]["command"], "")
         retrieve_cmd = by_id["cli-retrieve"]["command"]
         self.assertNotEqual(by_id["repobrain-query"]["command"], retrieve_cmd)
-        self.assertIn("Playbook — no ./repobrain query verb.", by_id["repobrain-query"]["note"])
+        self.assertIn("Skill /repobrain-query — playbook, not a ./repobrain query command.", by_id["repobrain-query"]["note"])
 
     def test_render_html_separates_commands_and_skills(self) -> None:
         html = dashboard.render_html(
@@ -169,8 +171,9 @@ class DashboardHtmlTests(unittest.TestCase):
         skills_block = html[skills_at:]
         self.assertIn("<h3>repobrain-query</h3>", skills_block)
         self.assertNotIn("<h3>repobrain-query</h3>", commands_block)
-        self.assertIn("Playbook — no ./repobrain query verb.", skills_block)
-        self.assertIn("Playbook — no ./repobrain navigate verb.", skills_block)
+        self.assertIn("Skill /repobrain-query — playbook, not a ./repobrain query command.", skills_block)
+        self.assertIn("Skill /repobrain-navigate — playbook, not a ./repobrain navigate command.", skills_block)
+        self.assertIn("/repobrain-query", skills_block)
 
     def test_cheatsheet_splits_skills_and_commands(self) -> None:
         text = (dashboard.PATHS.system / "docs" / "CHEATSHEET.md").read_text(
@@ -180,16 +183,47 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("## Skills", text)
         self.assertLess(text.index("## Commands"), text.index("## Skills"))
         self.assertIn("There is no `./repobrain query`", text)
+        self.assertIn("`/repobrain-query`", text)
         self.assertIn("playbook only", text)
         self.assertIn("wraps CLI", text)
         self.assertIn("file://", text)
         self.assertIn("ERR_NAME_NOT_RESOLVED", text)
+        self.assertIn("--serve", text)
+
+    def test_dashboard_http_url_is_clickable_localhost(self) -> None:
+        path = dashboard.PATHS.dashboard_dir / "index.html"
+        url = dashboard.dashboard_http_url(path, 8765)
+        self.assertEqual(
+            url,
+            "http://127.0.0.1:8765/docs/wiki/_system/generated/dashboard/index.html",
+        )
+
+    def test_local_server_serves_dashboard_over_http(self) -> None:
+        path = dashboard.write_dashboard()
+        httpd, port = dashboard.start_dashboard_server(port=0)
+        try:
+            url = dashboard.dashboard_http_url(path, port)
+            with urllib.request.urlopen(url, timeout=3) as response:
+                body = response.read().decode("utf-8")
+                status = response.status
+            self.assertEqual(status, 200)
+            self.assertIn("Health and exploration", body)
+            self.assertTrue(url.startswith("http://127.0.0.1:"))
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
 
     def test_dashboard_file_uri_is_file_scheme(self) -> None:
-        uri = dashboard.dashboard_file_uri(Path("/Users/devintucker/code/trell/docs/wiki/_system/generated/dashboard/index.html"))
+        uri = dashboard.dashboard_file_uri(
+            Path(
+                "/Users/devintucker/code/trell/docs/wiki/_system/generated/dashboard/index.html"
+            )
+        )
         self.assertTrue(uri.startswith("file://"))
         self.assertIn("index.html", uri)
         self.assertNotIn("https://users/", uri)
+
+    def test_cli_html_writes_local_dashboard(self) -> None:
         code = main(["dashboard", "html"])
         self.assertEqual(code, 0)
         path = dashboard.PATHS.dashboard_dir / "index.html"

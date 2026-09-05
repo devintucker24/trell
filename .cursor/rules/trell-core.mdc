@@ -7,7 +7,7 @@ alwaysApply: true
 
 - Project brief: `AGENTS.md` (and `CLAUDE.md` for Claude Code).
 - Wiki map: `docs/wiki/_system/docs/ROUTER.md` → retrieve, don't dump the corpus.
-- RepoBrain skills: `docs/wiki/_system/skills/` (canonical `repobrain-*`). Harness `wiki-*` folders are deprecated aliases.
+- RepoBrain skills: `docs/wiki/_system/skills/` (canonical `repobrain-*`). Temporary `wiki-*` launchers were removed.
 - Verify Rust with `/cargo-verify` or `cargo test`.
 
 ## Autonomous Wiki Triggers (When & What to use)

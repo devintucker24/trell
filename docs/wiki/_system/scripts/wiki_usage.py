@@ -26,7 +26,7 @@ from repobrain_paths import DASHBOARD_PATH, EVENTS_PATH, USAGE_DIR
 
 OPS = {
     "retrieve", "query", "navigate", "triage", "ingest", "doctor", "heal",
-    "lint", "label", "maintain", "session", "dump", "usage",
+    "lint", "label", "maintain", "session", "dump", "usage", "setup",
     # dump = agent admitted it loaded INDEX/folder
 }
 

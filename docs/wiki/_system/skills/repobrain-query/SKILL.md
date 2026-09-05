@@ -5,6 +5,10 @@ description: Answer questions from the Trell RepoBrain corpus with citations. Pr
 
 # Skill: RepoBrain Query
 
+This is the **`/repobrain-query` skill**. There is no `./repobrain query` CLI
+command. Corpus lookup is `./repobrain retrieve`. `./repobrain graph query` is
+Graphify (code), not this playbook.
+
 ## When to use
 - Conceptual questions about Trell
 - "What industries use this?" / "What's the 10-year plan?" / "How does belief work?"

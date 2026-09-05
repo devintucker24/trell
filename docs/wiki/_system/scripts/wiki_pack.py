@@ -9,23 +9,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from repobrain_catalog import SKILL_SUFFIXES
 from repobrain_paths import PATHS, ROOT, WIKI
-
-SKILL_SUFFIXES = [
-    "brain",
-    "retrieve",
-    "query",
-    "navigate",
-    "triage",
-    "ingest",
-    "doctor",
-    "heal",
-    "lint",
-    "label",
-    "maintain",
-    "usage",
-    "setup",
-]
 
 CANONICAL_LAUNCHER = """---
 name: {name}

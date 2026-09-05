@@ -9,6 +9,7 @@ from pathlib import Path
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 
+from repobrain_catalog import SKILL_SUFFIXES
 from repobrain_paths import PATHS, ROOT, is_wiki_content_page
 
 
@@ -68,21 +69,7 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                 (ROOT / harness / "skills" / "wiki-brain" / "SKILL.md").exists()
             )
 
-        for suffix in (
-            "brain",
-            "retrieve",
-            "query",
-            "navigate",
-            "triage",
-            "ingest",
-            "doctor",
-            "heal",
-            "lint",
-            "label",
-            "maintain",
-            "usage",
-            "setup",
-        ):
+        for suffix in SKILL_SUFFIXES:
             canonical = PATHS.skills / f"repobrain-{suffix}" / "SKILL.md"
             self.assertTrue(canonical.exists())
             self.assertFalse((PATHS.skills / f"wiki-{suffix}" / "SKILL.md").exists())
