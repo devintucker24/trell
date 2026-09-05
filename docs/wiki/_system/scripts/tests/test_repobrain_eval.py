@@ -73,6 +73,33 @@ class RepoBrainEvalTests(unittest.TestCase):
             payload["hits"][0]["path"],
         )
 
+    def test_code_graph_evidence_stays_separate_from_claim_hits(self) -> None:
+        proc = subprocess.run(
+            [
+                str(ROOT / "repobrain"),
+                "retrieve",
+                "TypeChecker",
+                "--k",
+                "1",
+                "--json",
+                "--no-log",
+                "--code",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(proc.stdout)
+
+        self.assertTrue(payload["hits"])
+        self.assertTrue(
+            all(hit["provenance"]["kind"] != "code" for hit in payload["hits"])
+        )
+        self.assertIn("code_graph", payload)
+        self.assertIn("query_output", payload["code_graph"])
+        self.assertIn("[EXTRACTED", payload["code_graph"]["query_output"])
+
     def test_answer_fidelity_cannot_use_forbidden_index_evidence(self) -> None:
         config = {
             "tier0": {

@@ -223,19 +223,39 @@ def main() -> None:
             add(findings, "critical", "missing_artifact", f"Missing {req.relative_to(ROOT)}",
                 str(req.relative_to(ROOT)), "Restore from git / recreate")
 
+    graphify_status = {}
     gcfg = host.get("graphify") or {}
     if gcfg.get("enabled", False):
-        from wiki_graphify import graph_json_path, find_graphify
-        gj = graph_json_path(gcfg if "out" in gcfg else None)
-        if not find_graphify():
+        from graphify_adapter import status_data
+
+        graphify_status = status_data()
+        cli = graphify_status["cli"]
+        artifact = graphify_status["artifact"]
+        freshness = graphify_status["freshness"]
+        if graphify_status["config"]["missing_roots"]:
+            add(findings, "high", "graphify_roots_missing",
+                "Configured Graphify roots do not exist: "
+                + ", ".join(graphify_status["config"]["missing_roots"]),
+                str(PATHS.host_config), "Update graphify.roots in HOST.yaml")
+        if not cli["compatible"]:
             add(findings, "low", "graphify_cli_missing",
-                "graphify CLI not on PATH (code graph owner)",
-                "graphify-out/graph.json", "pip install graphifyy")
-        elif not gj.exists():
+                cli["diagnostic"], artifact["path"], cli["install_command"])
+        if artifact["state"] == "missing":
             add(findings, "low", "graphify_graph_missing",
                 "HOST.yaml enables Graphify but graph.json is missing",
-                str(gj.relative_to(ROOT)) if ROOT in gj.parents else str(gj),
-                "python3 docs/wiki/_system/scripts/wiki_graphify.py sync")
+                artifact["path"], "./repobrain graph sync")
+        elif artifact["state"] != "ready":
+            add(findings, "high", "graphify_graph_invalid",
+                artifact["diagnostic"], artifact["path"],
+                "./repobrain graph sync --force")
+        elif freshness["source"] == "stale":
+            add(findings, "medium", "graphify_graph_stale",
+                "Graphify graph is stale relative to configured code roots",
+                artifact["path"], "./repobrain graph sync")
+        if gcfg.get("emit_html", False) and not graphify_status["html"]["fresh"]:
+            add(findings, "low", "graphify_html_missing",
+                "Graphify HTML visualization is requested but missing or stale",
+                graphify_status["html"]["path"], "./repobrain graph export-html")
 
     # Temporal hygiene: active pages with expired valid_until
     today = date.today()
@@ -281,6 +301,7 @@ def main() -> None:
             "edges": len(graph.get("edges") or []),
             "hard_orphans": len(hard_orphans),
         },
+        "graphify": graphify_status,
         "pages_with_frontmatter": len(metas),
         "pages_scanned": len([p for p in md_files if p.name != "_TEMPLATE.md"]),
         "findings": findings,
@@ -331,9 +352,24 @@ def main() -> None:
         f"Heal recommended: **{'yes' if report['heal_recommended'] else 'no'}** "
         f"(use `repobrain-heal`)",
         "",
-        "## Findings",
-        "",
     ]
+    if graphify_status:
+        artifact = graphify_status["artifact"]
+        freshness = graphify_status["freshness"]
+        html = graphify_status["html"]
+        lines.extend(
+            [
+                "## Graphify adapter",
+                "",
+                f"- CLI: `{graphify_status['cli']['version'] or 'unavailable'}`",
+                f"- Artifact: `{artifact['state']}` "
+                f"({artifact['nodes'] or 0} nodes / {artifact['edges'] or 0} edges)",
+                f"- Source freshness: `{freshness['source']}`",
+                f"- Visualization: `{'fresh' if html['fresh'] else 'stale' if html['available'] else 'missing'}`",
+                "",
+            ]
+        )
+    lines.extend(["## Findings", ""])
     if not findings:
         lines.append("_No findings. RepoBrain corpus looks healthy._")
     else:

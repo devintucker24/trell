@@ -17,7 +17,16 @@ router_seeds: docs/wiki/_system/config/router-seeds.md
 
 graphify:
   enabled: true
+  requirement: graphifyy>=0.9.54,<0.10
   code_only: true
   out: graphify-out
-  targets:
+  roots:
     - src
+  excludes:
+    - '**/target/**'
+    - '**/node_modules/**'
+    - '**/vendor/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/generated/**'
+  emit_html: false

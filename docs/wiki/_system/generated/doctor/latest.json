@@ -7,6 +7,60 @@
     "edges": 101,
     "hard_orphans": 0
   },
+  "graphify": {
+    "cli": {
+      "path": "/home/ubuntu/.local/bin/graphify",
+      "version": "0.9.54",
+      "requirement": "graphifyy>=0.9.54,<0.10",
+      "compatible": true,
+      "diagnostic": "Graphify 0.9.54 satisfies graphifyy>=0.9.54,<0.10.",
+      "install_command": "python3 -m pip install --user 'graphifyy>=0.9.54,<0.10'"
+    },
+    "config": {
+      "enabled": true,
+      "roots": [
+        "src"
+      ],
+      "excludes": [
+        "**/target/**",
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/generated/**"
+      ],
+      "code_only": true,
+      "out": "graphify-out",
+      "emit_html": false,
+      "missing_roots": []
+    },
+    "artifact": {
+      "path": "/workspace/graphify-out/graph.json",
+      "state": "ready",
+      "schema": "links",
+      "nodes": 151,
+      "edges": 486,
+      "confidence": {
+        "EXTRACTED": 481,
+        "INFERRED": 5,
+        "AMBIGUOUS": 0
+      },
+      "diagnostic": null
+    },
+    "freshness": {
+      "built_commit": "3b15cc6a224f72002bd365d9734f0c4adffd43b4",
+      "current_commit": "2e90d051733be1027ddd430dc03b04a28b9aac74",
+      "commit": "stale",
+      "source": "fresh",
+      "method": "git-diff",
+      "changed_sources": []
+    },
+    "html": {
+      "path": "/workspace/graphify-out/graph.html",
+      "available": true,
+      "fresh": true
+    }
+  },
   "pages_with_frontmatter": 30,
   "pages_scanned": 30,
   "findings": [],

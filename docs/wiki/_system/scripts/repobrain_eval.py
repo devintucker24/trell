@@ -508,7 +508,7 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
     symbol = str(graph_case.get("symbol", "Parser"))
     expected_source = str(graph_case.get("source_file", "parser.rs"))
     wrapper = paths.scripts / "wiki_graphify.py"
-    status = run([sys.executable, str(wrapper), "status"], cwd=root)
+    status = run([sys.executable, str(wrapper), "status", "--json"], cwd=root)
     query = run(
         [sys.executable, str(wrapper), "query", symbol, "--budget", "800"],
         cwd=root,
@@ -518,6 +518,11 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
     graph_rel = Path(graph_cfg.get("out") or "graphify-out") / "graph.json"
     graph_path = root / graph_rel
     failures: list[str] = []
+    adapter_status: dict[str, Any] = {}
+    try:
+        adapter_status = json.loads(status.stdout)
+    except (json.JSONDecodeError, TypeError):
+        failures.append("Graphify adapter status did not return valid JSON")
     graph: dict[str, Any] = {}
     if not graph_path.exists():
         failures.append(f"missing {graph_rel.as_posix()}")
@@ -553,32 +558,8 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
     if status.returncode != 0:
         failures.append("Graphify status is not healthy")
 
-    targets = graph_cfg.get("targets") or ["src"]
-    built_at = str(graph.get("built_at_commit") or "")
-    current = _git_output(root, ["rev-parse", "HEAD"])
-    fresh = False
-    freshness_method = "unavailable"
-    changed_targets: list[str] = []
-    if built_at and current:
-        verify = run(["git", "cat-file", "-e", f"{built_at}^{{commit}}"], cwd=root)
-        if verify.returncode == 0:
-            diff = run(
-                ["git", "diff", "--name-only", f"{built_at}..{current}", "--", *targets],
-                cwd=root,
-            )
-            changed_targets = [line for line in diff.stdout.splitlines() if line]
-            fresh = diff.returncode == 0 and not changed_targets
-            freshness_method = "no configured code-target changes since built_at_commit"
-    if graph_path.exists() and freshness_method == "unavailable":
-        source_files = [
-            path
-            for target in targets
-            for path in (root / target).rglob("*")
-            if path.is_file()
-        ]
-        newest_source = max((path.stat().st_mtime for path in source_files), default=0)
-        fresh = graph_path.stat().st_mtime >= newest_source
-        freshness_method = "graph mtime >= newest configured code target"
+    freshness = adapter_status.get("freshness") or {}
+    fresh = freshness.get("source") == "fresh"
     if not fresh:
         failures.append("Graphify graph is stale relative to configured code targets")
 
@@ -601,13 +582,8 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
             "source_exists": actual_source.exists(),
             "nodes": len(nodes),
             "edges": len(graph.get("edges") or graph.get("links") or []),
-            "freshness": {
-                "fresh": fresh,
-                "method": freshness_method,
-                "built_at_commit": built_at or None,
-                "current_commit": current or None,
-                "changed_targets": changed_targets,
-            },
+            "adapter_status": adapter_status,
+            "freshness": freshness,
             "failures": failures,
         }
     ]
@@ -624,7 +600,8 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
             []
             if not failures
             else [
-                "Install Graphify with `python3 -m pip install --user graphifyy`, "
+                "Install Graphify with "
+                "`python3 -m pip install --user 'graphifyy>=0.9.54,<0.10'`, "
                 "run `./repobrain graph sync`, "
                 "then rerun eval."
             ]

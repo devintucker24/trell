@@ -15,10 +15,13 @@ description: Keep compiled RepoBrain claims in sync with the compiler/examples/T
 ## Always (code changed)
 
 ```bash
+./repobrain graph status
 ./repobrain graph sync
 ```
 
 That **pulls** Graphify’s AST graph. Do not hand-edit `graphify-out/graph.json`. Do not rebuild a parallel call graph.
+Use `sync --force` only to recover a corrupt or refactor-reduced graph. See
+`docs/wiki/_system/docs/GRAPHIFY.md` for adapter diagnostics and supported versions.
 
 Then update the few claim pages in the matrix below. Point at code with `implements_code:`; do not paste `src/` into wiki pages.
 

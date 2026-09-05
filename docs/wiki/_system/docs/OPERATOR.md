@@ -147,7 +147,8 @@ If you create or edit a page without valid frontmatter, you have failed the sche
 | `milestone_of` | Phase milestone belongs to vision |
 
 Canonical **claim** dump: `_system/generated/claim-graph.yaml`.
-Canonical **code** graph: `graphify-out/graph.json`. See [[_system/docs/GRAPH]].
+Canonical **code** graph: `graphify-out/graph.json`. See
+[[_system/docs/GRAPH]] and [[_system/docs/GRAPHIFY]].
 
 ---
 
@@ -155,7 +156,7 @@ Canonical **code** graph: `graphify-out/graph.json`. See [[_system/docs/GRAPH]].
 
 ### 6.0 New repo / portable install
 Skill: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`
-Setup: `python3 docs/wiki/_system/scripts/wiki_setup.py`.
+Setup: `./repobrain setup`.
 Export: `python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo`.
 Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Details: [[FRAMEWORK]].
 

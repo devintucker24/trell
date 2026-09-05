@@ -82,7 +82,9 @@ Graphify cannot emit Trell-style `reduces_via` / `contradicts`. Do not treat god
 
 Code questions: `./repobrain graph query "…"`
 
-Need Graphify: `pip install graphifyy` (CLI name is still `graphify`).
+Supported Graphify install:
+`python3 -m pip install --user 'graphifyy>=0.9.54,<0.10'`.
 
 Operator: `docs/wiki/_system/docs/FRAMEWORK.md`
 Claim vs code graphs: `docs/wiki/_system/docs/GRAPH.md`
+Adapter contract: `docs/wiki/_system/docs/GRAPHIFY.md`

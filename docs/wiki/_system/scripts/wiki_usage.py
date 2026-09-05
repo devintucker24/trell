@@ -149,6 +149,28 @@ def write_dashboard(stats: dict, days: int) -> Path:
     op_rows = "\n".join(f"| `{k}` | {v} |" for k, v in sorted(by_op.items())) or "| _(none)_ | 0 |"
     hot = stats["hot_pages"] or []
     hot_rows = "\n".join(f"| `{p}` | {n} |" for p, n in hot) or "| _(none)_ | 0 |"
+    try:
+        from graphify_adapter import status_data
+
+        graphify = status_data()
+        visualization = (
+            "fresh"
+            if graphify["html"]["fresh"]
+            else "stale"
+            if graphify["html"]["available"]
+            else "missing"
+        )
+        graphify_rows = "\n".join(
+            [
+                f"| CLI | {graphify['cli']['version'] or 'unavailable'} |",
+                f"| Artifact | {graphify['artifact']['state']} |",
+                f"| Nodes / edges | {graphify['artifact']['nodes'] or 0} / {graphify['artifact']['edges'] or 0} |",
+                f"| Source freshness | {graphify['freshness']['source']} |",
+                f"| Visualization | {visualization} |",
+            ]
+        )
+    except Exception as exc:  # noqa: BLE001
+        graphify_rows = f"| Adapter | unavailable: {exc} |"
     body = f"""---
 id: wiki-usage-dashboard
 title: RepoBrain usage dashboard
@@ -204,6 +226,12 @@ Raw events are gitignored; this page is the shareable snapshot.
 | Mean latency (ms) | {stats['latency_ms_avg'] if stats['latency_ms_avg'] is not None else '—'} |
 | Pages opened / cited | {stats['pages_opened']} / {stats['pages_cited']} |
 | Citation overlap (cited ∩ opened / opened) | {stats['citation_overlap_ratio'] if stats['citation_overlap_ratio'] is not None else '—'} |
+
+## Graphify adapter
+
+| Signal | Value |
+|---|---|
+{graphify_rows}
 
 ## Ops mix
 

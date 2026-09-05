@@ -72,6 +72,27 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("invalid choice", proc.stderr)
 
+    def test_graph_status_json_uses_public_cli_seam(self) -> None:
+        proc = run_cli("graph", "status", "--json")
+
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertTrue(payload["cli"]["compatible"])
+        self.assertEqual(payload["artifact"]["state"], "ready")
+        self.assertIn("EXTRACTED", payload["artifact"]["confidence"])
+        self.assertIn(payload["freshness"]["source"], ("fresh", "unknown"))
+
+    def test_graph_affected_and_recovery_help_are_exposed(self) -> None:
+        affected = run_cli("graph", "affected", "--help")
+        sync = run_cli("graph", "sync", "--help")
+
+        self.assertEqual(affected.returncode, 0, affected.stderr)
+        self.assertIn("--depth", affected.stdout)
+        self.assertIn("--relation", affected.stdout)
+        self.assertEqual(sync.returncode, 0, sync.stderr)
+        self.assertIn("--force", sync.stdout)
+        self.assertIn("--html", sync.stdout)
+
     def test_source_status_and_future_operator_statuses_are_explicit(self) -> None:
         status = run_cli("source", "status")
         unavailable = run_cli("source", "scan")

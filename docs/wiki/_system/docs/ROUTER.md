@@ -67,7 +67,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 
 **Host-specific:** read `docs/wiki/_system/config/router-seeds.md`.
 
-After seeding, expand **one hop** via frontmatter `edges` (claim graph) — not whole categories. For code wiring use Graphify (`wiki_graphify.py query`), not `GRAPH.yaml`.
+After seeding, expand **one hop** via frontmatter `edges` (claim graph) — not whole categories. For code wiring use Graphify (`repobrain graph query`), not the claim graph.
 
 ## Tier 2 — Retrieve + rerank (+ temporal)
 
@@ -120,7 +120,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 |---|---|
 | New clone / empty host | `repobrain-setup` |
 | Find knowledge | `retrieve` → open top hits |
-| Code wiring | `wiki_graphify.py query` |
+| Code wiring | `repobrain graph query` |
 | Add knowledge | `inbox/` → triage → ingest |
 | Remember a decision | write `episodic/YYYY-MM-DD-<slug>.md` + append TIMELINE |
 | Ask “as of date” | `retrieve --as-of` + TIMELINE |

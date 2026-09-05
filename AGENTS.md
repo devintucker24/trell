@@ -32,7 +32,7 @@ For knowledge, memory, research, or RepoBrain work:
 
 ```bash
 python3 docs/wiki/_system/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
-python3 docs/wiki/_system/scripts/wiki_graphify.py query "<code question>"
+./repobrain graph query "<code question>"
 ```
 
 3. Follow the matching canonical playbook under
