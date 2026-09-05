@@ -1,0 +1,21 @@
+// Native LLVM compilation of Trell's certain-integer core.
+//
+// Everything here is `certain int` — fully grounded, deterministic arithmetic —
+// so it lowers cleanly to LLVM IR and a native executable:
+//
+//   trell emit-llvm examples/native_arithmetic.trell        # -> native_arithmetic.ll
+//   trell build     examples/native_arithmetic.trell -o /tmp/native_arithmetic
+//   /tmp/native_arithmetic ; echo $?                          # -> 42
+//
+// The result (42) is returned from `main` and becomes the process exit code.
+
+fn square(n: int) -> int {
+    n * n
+}
+
+fn main() -> int {
+    let a: int = 6;
+    let b: int = 7;
+    let base: int = a * b;            // 42
+    return base + square(3) - 9;      // 42 + 9 - 9 = 42
+}
