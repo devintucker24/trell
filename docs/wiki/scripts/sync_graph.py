@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3]
-WIKI = ROOT / "docs" / "wiki"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wiki_paths import WIKI, is_wiki_content_page
+
 GRAPH_PATH = WIKI / "_meta" / "GRAPH.yaml"
 
 
@@ -27,9 +29,9 @@ def main() -> None:
     seen: set[tuple] = set()
 
     for path in sorted(WIKI.rglob("*.md")):
-        if path.name == "log.md":
-            continue
         rel = path.relative_to(WIKI).as_posix()
+        if not is_wiki_content_page(rel, path.name):
+            continue
         meta = parse_frontmatter(path.read_text(encoding="utf-8"))
         if not meta:
             continue
@@ -66,7 +68,7 @@ def main() -> None:
     graph = {
         "version": 1,
         "updated": date.today().isoformat(),
-        "description": "Trell epistemic wiki knowledge graph — regenerated from page frontmatter",
+        "description": "Wiki-brain knowledge graph — regenerated from page frontmatter",
         "nodes": sorted(nodes.values(), key=lambda x: x["id"]),
         "edges": sorted(edges, key=lambda x: (x["from"], x["to"], x["rel"])),
     }

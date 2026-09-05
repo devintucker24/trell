@@ -1,6 +1,6 @@
 version: 1
 updated: '2026-09-04'
-description: Trell epistemic wiki knowledge graph — regenerated from page frontmatter
+description: Wiki-brain knowledge graph — regenerated from page frontmatter
 nodes:
 - id: affine-cognitive-budget
   kind: concept
@@ -154,6 +154,10 @@ nodes:
   kind: concept
   page: episodic/2026-09-04-brain-memory-upgrade
   label: Brain memory upgrade episode
+- id: episode-graphify-machine-graph
+  kind: concept
+  page: episodic/2026-09-04-graphify-machine-graph
+  label: Graphify machine-graph episode
 - id: epistemic-contamination
   kind: concept
   page: core/epistemic-foundations
@@ -198,6 +202,10 @@ nodes:
   kind: technology
   page: theory/hardware-silicon-codesign
   label: hardware-rollback
+- id: host-router-seeds
+  kind: concept
+  page: host/router-seeds
+  label: Host router seeds
 - id: insurance-epistemic-bound
   kind: concept
   page: market/regulatory-and-insurance-drivers
@@ -354,10 +362,22 @@ nodes:
   kind: primitive
   page: theory/affine-cognitive-economics
   label: token-budget
+- id: wiki-brain
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki-brain
+- id: wiki-brain-pack
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki-brain pack
 - id: wiki-graph-overview
   kind: concept
   page: _meta/GRAPH
   label: wiki-graph-overview
+- id: wiki-graphify-bridge
+  kind: concept
+  page: _meta/GRAPH
+  label: Graphify code-graph bridge
 - id: wiki-inbox
   kind: concept
   page: inbox/README
@@ -378,6 +398,18 @@ nodes:
   kind: concept
   page: SCHEMA
   label: wiki-schema
+- id: wiki-setup
+  kind: concept
+  page: FRAMEWORK
+  label: Wiki setup
+- id: wiki-usage-dashboard
+  kind: concept
+  page: _meta/usage-dashboard
+  label: Wiki usage dashboard
+- id: wiki-usage-telemetry
+  kind: concept
+  page: _meta/usage-telemetry
+  label: Wiki usage telemetry
 - id: zk-epistemic-proof
   kind: technology
   page: theory/cryptographic-model-provenance
@@ -478,6 +510,14 @@ edges:
   to: memory-temporal
   rel: related_to
   page: episodic/2026-09-04-brain-memory-upgrade
+- from: episode-graphify-machine-graph
+  to: wiki-graphify-bridge
+  rel: related_to
+  page: episodic/2026-09-04-graphify-machine-graph
+- from: episode-graphify-machine-graph
+  to: wiki-setup
+  rel: related_to
+  page: episodic/2026-09-04-graphify-machine-graph
 - from: epistemic-lie
   to: belief-type
   rel: depends_on
@@ -518,6 +558,10 @@ edges:
   to: reg-eu-ai-act
   rel: implements
   page: market/regulatory-and-insurance-drivers
+- from: host-router-seeds
+  to: wiki-router
+  rel: depends_on
+  page: host/router-seeds
 - from: insurance-epistemic-bound
   to: epistemic-receipt
   rel: depends_on
@@ -816,9 +860,37 @@ edges:
   to: speculative-execution
   rel: depends_on
   page: applications/overview-and-safety-patterns
+- from: wiki-brain
+  to: wiki-brain-pack
+  rel: implements
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-router
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-schema
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-setup
+  rel: depends_on
+  page: FRAMEWORK
+- from: wiki-brain-pack
+  to: wiki-usage-telemetry
+  rel: related_to
+  page: FRAMEWORK
 - from: wiki-graph-overview
   to: wiki-index
   rel: depends_on
+  page: _meta/GRAPH
+- from: wiki-graphify-bridge
+  to: wiki-brain-pack
+  rel: implements
+  page: FRAMEWORK
+- from: wiki-graphify-bridge
+  to: wiki-graph-overview
+  rel: implements
   page: _meta/GRAPH
 - from: wiki-inbox
   to: wiki-schema
@@ -864,6 +936,18 @@ edges:
   to: memory-temporal
   rel: related_to
   page: SCHEMA
+- from: wiki-usage-dashboard
+  to: wiki-usage-telemetry
+  rel: implements
+  page: _meta/usage-dashboard
+- from: wiki-usage-telemetry
+  to: wiki-brain-pack
+  rel: depends_on
+  page: _meta/usage-telemetry
+- from: wiki-usage-telemetry
+  to: wiki-router
+  rel: related_to
+  page: _meta/usage-telemetry
 - from: zk-epistemic-proof
   to: app-aml-sar
   rel: applies_to

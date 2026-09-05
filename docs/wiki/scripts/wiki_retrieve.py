@@ -12,14 +12,18 @@ from __future__ import annotations
 import argparse
 import math
 import re
+import sys
+import time
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3]
-WIKI = ROOT / "docs" / "wiki"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wiki_paths import ROOT, WIKI, is_wiki_content_page, load_host
+from wiki_usage import log_event
+
 GRAPH_PATH = WIKI / "_meta" / "GRAPH.yaml"
 
 STOP = {
@@ -256,7 +260,7 @@ def estimate_tokens(text: str) -> int:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Trell wiki hybrid retrieve")
+    ap = argparse.ArgumentParser(description="Wiki-brain hybrid retrieve")
     ap.add_argument("query", help="natural language query")
     ap.add_argument("--k", type=int, default=8, help="max candidates before budget trim")
     ap.add_argument("--budget-tokens", type=int, default=3500)
@@ -268,7 +272,18 @@ def main() -> None:
         help="memory lane filter",
     )
     ap.add_argument("--json", action="store_true", help="machine-readable output")
+    ap.add_argument("--no-log", action="store_true", help="do not append usage telemetry")
+    ap.add_argument(
+        "--code",
+        action="store_true",
+        help="also query Graphify graph.json (AST/call graph) after wiki hits",
+    )
     args = ap.parse_args()
+
+    t0 = time.perf_counter()
+    host = load_host()
+    semantic = tuple(host.get("semantic_dirs") or LANE_DIRS["semantic"])
+    lane_map = {**LANE_DIRS, "semantic": semantic}
 
     as_of = parse_day(args.as_of) if args.as_of else None
     q_tokens = tokenize(args.query)
@@ -284,15 +299,13 @@ def main() -> None:
         if any(t in nid.lower() or t in label for t in q_tokens):
             seed_nodes.add(nid)
 
-    lane_dirs = LANE_DIRS[args.lane]
+    lane_dirs = lane_map[args.lane]
     candidates: list[dict] = []
 
     for path in sorted(WIKI.rglob("*.md")):
-        if path.name == "log.md" or path.name == "_TEMPLATE.md":
-            continue
-        if "inbox/archive" in path.as_posix():
-            continue
         rel = path.relative_to(WIKI).as_posix()
+        if not is_wiki_content_page(rel, path.name):
+            continue
         top = rel.split("/", 1)[0]
         if lane_dirs is not None and top not in lane_dirs and not (
             args.lane == "semantic" and rel in ("INDEX.md", "SCHEMA.md", "ROUTER.md")
@@ -381,13 +394,36 @@ def main() -> None:
         packed.append(c)
         used += cost
 
+    duration_ms = int((time.perf_counter() - t0) * 1000)
+    if not args.no_log:
+        log_event(
+            "retrieve",
+            query=args.query,
+            lane=args.lane,
+            as_of=args.as_of,
+            hits=len(packed),
+            tokens_est=used,
+            budget_tokens=args.budget_tokens,
+            top_score=packed[0]["score"] if packed else 0.0,
+            duration_ms=duration_ms,
+            hit_paths=[c["path"] for c in packed[:8]],
+            source="script",
+        )
+
+    code_note = _code_graph_note(args.query, run=args.code)
+
     if args.json:
         import json
-        print(json.dumps({"query": args.query, "as_of": args.as_of, "lane": args.lane, "hits": packed}, indent=2))
+        payload = {"query": args.query, "as_of": args.as_of, "lane": args.lane, "hits": packed}
+        if code_note:
+            payload["code_graph"] = code_note
+        print(json.dumps(payload, indent=2))
         return
 
     print(f"# retrieve: {args.query!r}")
     print(f"# lane={args.lane} as_of={args.as_of or 'none'} hits={len(packed)} ~tokens={used}")
+    if code_note.get("status"):
+        print(f"# code-graph: {code_note['status']}")
     print()
     for i, c in enumerate(packed, 1):
         heading = f" › {c['heading']}" if c["heading"] else ""
@@ -396,6 +432,39 @@ def main() -> None:
         print(f"   why: {c['why']}")
         print(f"   {c['excerpt'][:220]}…")
         print()
+    if args.code and code_note.get("query_output"):
+        print("## code graph (Graphify)")
+        print(code_note["query_output"])
+
+
+def _code_graph_note(query: str, run: bool = False) -> dict:
+    """Pointer to Graphify; optionally run query. Never dump graph.json."""
+    try:
+        from wiki_graphify import graph_json_path, load_code_graph, find_graphify, run_graphify
+    except Exception:  # noqa: BLE001
+        return {}
+    path = graph_json_path()
+    if not path.exists():
+        return {"status": "missing graphify-out/graph.json — wiki_graphify.py sync"}
+    g = load_code_graph()
+    n, e = len(g.get("nodes") or []), len(g.get("edges") or [])
+    note = {
+        "status": f"{path.relative_to(ROOT)} ({n}n/{e}e) — python3 docs/wiki/scripts/wiki_graphify.py query {query!r}",
+        "nodes": n,
+        "edges": e,
+    }
+    if run and find_graphify():
+        import subprocess
+        try:
+            proc = run_graphify(
+                ["query", query, "--graph", str(path), "--budget", "800"],
+                check=False,
+                capture=True,
+            )
+            note["query_output"] = ((proc.stdout or "") + (proc.stderr or ""))[:4000]
+        except (OSError, subprocess.SubprocessError) as exc:
+            note["query_output"] = str(exc)
+    return note
 
 
 def _why(lex, gprox, tscore, fboost) -> str:

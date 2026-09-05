@@ -75,6 +75,9 @@ Example: `- 14:00 | episode | brain upgrade | router+temporal | episodic/2026-09
 - — | schema | agent project setup | thin AGENTS.md + CLAUDE.md + .cursor skills/rules | [[OPERATOR]]
 - — | schema | temporal lane | `temporal:` frontmatter + domain/type episode | [[SCHEMA]]
 - — | schema | skills cleanup & rules | root skills removed; scripts to docs/wiki/scripts; .cursor rules triggers | [[OPERATOR]]
+- — | schema | portable wiki-brain pack | skills in wiki; HOST.yaml; usage telemetry; wiki_pack.py | [[FRAMEWORK]]
+- — | decision | Graphify code graph | pull graphify-out/graph.json; GRAPH.yaml is claim index only | [[_meta/GRAPH]]
+- — | schema | wiki-setup | portable install skill; optional graphify-seed drafts | [[FRAMEWORK]]
 
 ---
 

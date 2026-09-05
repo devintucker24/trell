@@ -42,16 +42,18 @@ episode:
 > **Hard cap:** keep body under ~800 tokens. Overflow → write a dated episode and reset.
 
 ## Now
-- Memory upgrade landed: ROUTER, CONTEXT_PROTOCOL, episodic, temporal, retrieve+rerank.
+- Graphify is the code graph; wiki-setup stands up new hosts.
 
 ## Decisions (this session)
 - Stay file-first (no required vector DB at ~35 pages).
 - Progressive disclosure: ROUTER always-on; INDEX on demand.
 - Temporal is first-class: `temporal:` frontmatter + TIMELINE + `--as-of` retrieve.
+- Do not roll a homegrown AST graph — pull Graphify. GRAPH.yaml = claim index only.
+- Corpus doctrine is authored; Graphify wiki/seeds are structure/drafts.
 
 ## Blockers
 - None.
 
 ## Next
-- Optional: automate `eval-queries.yaml` scoring script.
+- Optional: `_system/` folder move (grilling).
 - Clear this scratch after PR merges / next session starts.

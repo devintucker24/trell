@@ -109,3 +109,27 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Updated `.cursor/rules/trell-wiki.mdc` with autonomous skill execution checklist
 - Doctor check score: 100.0/100
 
+## [2026-09-04] usage | dashboard snapshot
+
+- Report: `docs/wiki/_meta/usage-dashboard.md`
+- Usefulness index: 82 (retrieve+doctor events; local JSONL gitignored)
+- Doctor: 100/100 after skills-in-wiki + skip `skills/` scan
+
+## [2026-09-04] schema | wiki-brain launchers + telemetry catalog
+
+- Parent skill `docs/wiki/skills/wiki-brain` (agnostic); `wiki-usage` playbook
+- Replaced `.cursor/.claude/skills/trell-wiki` with thin `wiki-brain` launchers
+- All `wiki-*` Cursor/Claude skills point at `docs/wiki/skills/<name>/SKILL.md`
+- Catalog: `docs/wiki/_meta/usage-telemetry.md`; gitignore `events.jsonl`
+
+## [2026-09-04] schema | Graphify code graph + wiki-setup
+
+- Installed Graphify (`graphifyy`); code graph is `graphify-out/graph.json` (gitignored)
+- Wrapper: `docs/wiki/scripts/wiki_graphify.py` (sync/query/path/explain/god-nodes)
+- Setup: `docs/wiki/scripts/wiki_setup.py` + skill `wiki-setup`
+- Claim index remains `_meta/GRAPH.yaml` (frontmatter only) — not a second AST graph
+- Protocol: `docs/wiki/_meta/GRAPH.md` · pack: `FRAMEWORK.md`
+
+
+
+

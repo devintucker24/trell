@@ -29,20 +29,23 @@ related:
   - "[[SCHEMA]]"
   - "[[ROUTER]]"
   - "[[INDEX]]"
+  - "[[FRAMEWORK]]"
+  - "[[_meta/GRAPH]]"
 agent:
   priority: critical
   read_when:
     - operating the wiki brain in depth
     - triage ingest doctor heal workflows
   maintain:
-    - keep in sync with root AGENTS.md pointers and skills/wiki
+    - keep in sync with root AGENTS.md pointers and docs/wiki/skills
 ---
 
-# OPERATOR.md — Trell Wiki Brain Operator Manual
+# OPERATOR.md — Wiki Brain Operator Manual
 
 > **Audience:** AI coding agents (Cursor, Codex, Claude Code, OpenCode) and human maintainers.  
-> **Purpose:** Turn any agent from a generic chatbot into a disciplined Trell wiki operator.  
-> **Pattern:** Karpathy LLM Wiki — three layers (raw → wiki → schema). This file is the **detailed wiki operator manual**. Thin always-on project brief: root `AGENTS.md` / `CLAUDE.md`.
+> **Purpose:** Turn any agent from a generic chatbot into a disciplined wiki operator.  
+> **Pattern:** Karpathy LLM Wiki — three layers (raw → wiki → schema). Host thesis: `docs/wiki/HOST.yaml`. Thin always-on project brief: root `AGENTS.md` / `CLAUDE.md`.
+> **Portable pack:** [[FRAMEWORK]]
 
 ---
 
@@ -52,8 +55,8 @@ agent:
 ┌─────────────────────────────────────────────────────────────────┐
 | LAYER 3 — SCHEMA                                                    |
 |   root AGENTS.md / CLAUDE.md (thin)  ·  docs/wiki/OPERATOR.md       |
-|   docs/wiki/SCHEMA.md  ·  .cursor/skills/  ·  docs/wiki/scripts/    |
-|   Tells agents HOW to navigate, heal, label, ingest, maintain       |
+|   docs/wiki/SCHEMA.md  ·  docs/wiki/skills/  ·  docs/wiki/scripts/  |
+|   HOST.yaml (project overlay)  ·  thin .cursor/.claude launchers    |
 ├─────────────────────────────────────────────────────────────────┤
 | LAYER 2 — WIKI (LLM-owned, compounding)                         |
 |   docs/wiki/**/*.md  ·  ROUTER.md  ·  INDEX.md  ·  GRAPH.yaml   |
@@ -81,17 +84,18 @@ agent:
 4. For when/as-of/what-changed: `docs/wiki/temporal/TIMELINE.md` + retrieve `--as-of`.
 5. For prior decisions: `docs/wiki/episodic/INDEX.md` (then dated episodes).
 6. Only then open `INDEX.md` / `SCHEMA.md` if browsing or editing structure.
-7. Load the relevant skill from `.cursor/skills/` for the task:
-   - Retrieve → `.cursor/skills/wiki-retrieve/SKILL.md`  ← **prefer for Q&A**
-   - Navigate → `.cursor/skills/wiki-navigate/SKILL.md`
-   - Triage → `.cursor/skills/wiki-triage/SKILL.md`
-   - Ingest → `.cursor/skills/wiki-ingest/SKILL.md`
-   - Doctor → `.cursor/skills/wiki-doctor/SKILL.md`
-   - Heal → `.cursor/skills/wiki-heal/SKILL.md`
-   - Lint (doctor+heal) → `.cursor/skills/wiki-lint/SKILL.md`
-   - Label → `.cursor/skills/wiki-label/SKILL.md`
-   - Maintain → `.cursor/skills/wiki-maintain/SKILL.md`
-   - Query / Answer → `.cursor/skills/wiki-query/SKILL.md`
+   - Parent → `docs/wiki/skills/wiki-brain/SKILL.md`
+   - Retrieve → `docs/wiki/skills/wiki-retrieve/SKILL.md`  ← **prefer for Q&A**
+   - Navigate → `docs/wiki/skills/wiki-navigate/SKILL.md`
+   - Triage → `docs/wiki/skills/wiki-triage/SKILL.md`
+   - Ingest → `docs/wiki/skills/wiki-ingest/SKILL.md`
+   - Doctor → `docs/wiki/skills/wiki-doctor/SKILL.md`
+   - Heal → `docs/wiki/skills/wiki-heal/SKILL.md`
+   - Lint (doctor+heal) → `docs/wiki/skills/wiki-lint/SKILL.md`
+   - Label → `docs/wiki/skills/wiki-label/SKILL.md`
+   - Maintain → `docs/wiki/skills/wiki-maintain/SKILL.md`
+   - Query / Answer → `docs/wiki/skills/wiki-query/SKILL.md`
+   - Usage / tokens → `docs/wiki/skills/wiki-usage/SKILL.md`
 
 ---
 
@@ -104,7 +108,7 @@ agent:
 | `application` | `docs/wiki/applications/` | Rewriteable | Domain niches + Trell code |
 | `market` | `docs/wiki/market/` | Rewriteable | Competitors, regulation, personas |
 | `roadmap` | `docs/wiki/roadmap/` | Rewriteable | Vision + phased milestones |
-| `schema` | `docs/wiki/SCHEMA.md`, `docs/wiki/OPERATOR.md`, root `AGENTS.md` | Human+agent co-evolve | Operating rules |
+| `schema` | `docs/wiki/SCHEMA.md`, `docs/wiki/OPERATOR.md`, `docs/wiki/FRAMEWORK.md`, root `AGENTS.md` | Human+agent co-evolve | Operating rules |
 | `meta` | `docs/wiki/_meta/`, `docs/wiki/ROUTER.md` | Agent-maintained | GRAPH, health, router, protocols |
 | `episode` | `docs/wiki/episodic/` | Append + consolidate | Episodic memory (not semantic truth) |
 | `inbox-item` | `docs/wiki/inbox/` | Pending → archive | Unprocessed drops (not wiki truth) |
@@ -151,14 +155,20 @@ If you create or edit a page without valid frontmatter, you have failed the sche
 | `owned_by` | Persona / agent role responsible |
 | `milestone_of` | Phase milestone belongs to vision |
 
-Canonical graph dump: `docs/wiki/_meta/GRAPH.yaml` 
-Agents must update GRAPH.yaml when adding/removing nodes or edges (using `docs/wiki/scripts/sync_graph.py`).
+Canonical **claim** dump: `docs/wiki/_meta/GRAPH.yaml` (compiled from page frontmatter via `sync_graph.py`).
+Canonical **code** graph: `graphify-out/graph.json` (Graphify; `wiki_graphify.py sync`). Do not hand-build a second AST graph. Do not dump either file into context. See [[_meta/GRAPH]].
 
 ---
 
 ## 6. Operational Workflows
 
-### 6.0 Inbox drop (default on-ramp)
+### 6.0 New repo / portable install
+Skill: `docs/wiki/skills/wiki-setup/SKILL.md`  
+From a repo that already has the pack: `python3 docs/wiki/scripts/wiki_setup.py`.  
+Export first if needed: `python3 docs/wiki/scripts/wiki_pack.py export /path/to/other-repo`.  
+Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Details: [[FRAMEWORK]].
+
+### 6.0b Inbox drop (default on-ramp)
 1. Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md` from `inbox/_TEMPLATE.md`  
    — or accept user phrase: *"Inbox this: …"*
 2. Leave `triage_status: pending`.
@@ -166,12 +176,12 @@ Agents must update GRAPH.yaml when adding/removing nodes or edges (using `docs/w
 4. See `docs/wiki/inbox/README.md`.
 
 ### 6.1 Triage (classify before writing)
-Skill: `.cursor/skills/wiki-triage/SKILL.md`  
+Skill: `docs/wiki/skills/wiki-triage/SKILL.md`  
 Decide `suggested_action`: `merge-existing` | `new-page` | `raw-only` | `discard` | `needs-human`.  
 **Never invent a new top-level folder / type / domain / edge `rel` / recurring tag without updating `docs/wiki/SCHEMA.md` first** (and ask a human if unsure).
 
 ### 6.2 Ingest (write wiki truth)
-Skill: `.cursor/skills/wiki-ingest/SKILL.md`  
+Skill: `docs/wiki/skills/wiki-ingest/SKILL.md`  
 1. Execute triaged action (merge / new page / raw pointer).
 2. Full frontmatter per SCHEMA; sync `_meta/GRAPH.yaml`.
 3. Update `INDEX.md` if structure changed.
@@ -187,7 +197,7 @@ Skill: `.cursor/skills/wiki-ingest/SKILL.md`
 6. Pending `inbox/` items and unconsolidated episodes are not settled knowledge.
 
 ### 6.3b Retrieve (file RAG)
-Skill: `.cursor/skills/wiki-retrieve/SKILL.md`  
+Skill: `docs/wiki/skills/wiki-retrieve/SKILL.md`  
 `python3 docs/wiki/scripts/wiki_retrieve.py "<q>" --budget-tokens 3500`  
 Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 
@@ -199,17 +209,17 @@ Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 5. Log: `## [YYYY-MM-DD] episodic | <slug>` or `temporal | <slug>`
 
 ### 6.4 Wiki Doctor (diagnose only)
-Skill: `.cursor/skills/wiki-doctor/SKILL.md`  
+Skill: `docs/wiki/skills/wiki-doctor/SKILL.md`  
 Run `python3 docs/wiki/scripts/wiki_doctor.py` → writes `_meta/doctor-YYYY-MM-DD.md` + `doctor-latest.json`.  
 **No wiki content edits.**
 
 ### 6.5 Wiki Heal (apply safe fixes)
-Skill: `.cursor/skills/wiki-heal/SKILL.md`  
+Skill: `docs/wiki/skills/wiki-heal/SKILL.md`  
 Consume the doctor report; fix frontmatter/links/orphan edges/inbox routing; never invent taxonomy.  
 Re-run doctor to verify. Log `## [date] heal | …`.
 
 ### 6.6 Lint (shortcut)
-Skill: `.cursor/skills/wiki-lint/SKILL.md` = doctor → heal → re-doctor.
+Skill: `docs/wiki/skills/wiki-lint/SKILL.md` = doctor → heal → re-doctor.
 
 ### 6.7 Label
 Normalize tags, domains, node ids (kebab-case), edge relations to the allowed vocabulary in SCHEMA.md.
@@ -254,16 +264,18 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 | Read handoff | `.cursor/skills/read-handoff/SKILL.md` | Fresh chat: load newest handoff, then delete it (`/read-handoff`) |
 | Grill me | `.cursor/skills/grill-me/SKILL.md` | User-invoked front door → runs `grilling` |
 | Grilling | `.cursor/skills/grilling/SKILL.md` | Relentless design-tree interview (rounds / frontier) |
-| Retrieve | `.cursor/skills/wiki-retrieve/SKILL.md` | File RAG: scored top-k with temporal/graph rerank |
-| Navigate | `.cursor/skills/wiki-navigate/SKILL.md` | Finding pages / graph traversal |
-| Triage | `.cursor/skills/wiki-triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
-| Ingest | `.cursor/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
-| Doctor | `.cursor/skills/wiki-doctor/SKILL.md` | Diagnose only (wiki doctor) |
-| Heal | `.cursor/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
-| Lint | `.cursor/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
-| Query | `.cursor/skills/wiki-query/SKILL.md` | Answering questions from the brain |
-| Label | `.cursor/skills/wiki-label/SKILL.md` | Frontmatter + tag normalization |
-| Maintain | `.cursor/skills/wiki-maintain/SKILL.md` | Sync wiki with compiler / examples |
+| Wiki-brain (parent) | `docs/wiki/skills/wiki-brain/SKILL.md` | Portable operator kit |
+| Retrieve | `docs/wiki/skills/wiki-retrieve/SKILL.md` | File RAG: scored top-k with temporal/graph rerank |
+| Navigate | `docs/wiki/skills/wiki-navigate/SKILL.md` | Finding pages / graph traversal |
+| Triage | `docs/wiki/skills/wiki-triage/SKILL.md` | Classify inbox; decide merge vs new vs taxonomy gate |
+| Ingest | `docs/wiki/skills/wiki-ingest/SKILL.md` | Write triaged knowledge into wiki/raw |
+| Doctor | `docs/wiki/skills/wiki-doctor/SKILL.md` | Diagnose only (wiki doctor) |
+| Heal | `docs/wiki/skills/wiki-heal/SKILL.md` | Apply safe fixes from doctor report |
+| Lint | `docs/wiki/skills/wiki-lint/SKILL.md` | Shortcut: doctor → heal → re-doctor |
+| Query | `docs/wiki/skills/wiki-query/SKILL.md` | Answering questions from the brain |
+| Label | `docs/wiki/skills/wiki-label/SKILL.md` | Frontmatter + tag normalization |
+| Maintain | `docs/wiki/skills/wiki-maintain/SKILL.md` | Sync wiki with compiler / examples |
+| Usage | `docs/wiki/skills/wiki-usage/SKILL.md` | JSONL telemetry + dashboard |
 
 ---
 
@@ -273,7 +285,7 @@ Every `docs/wiki/log.md` entry must start with:
 ```markdown
 ## [YYYY-MM-DD] <op> | <short title>
 ```
-Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal`.
+Where `<op>` ∈ `inbox | triage | ingest | query | retrieve | doctor | heal | lint | label | maintain | schema | graph | episodic | temporal | usage`.
 
 This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 

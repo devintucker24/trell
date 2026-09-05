@@ -25,6 +25,7 @@ Full always-on brief: **`AGENTS.md`**. Deep wiki ops: **`docs/wiki/OPERATOR.md`*
 
 ```bash
 python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
+python3 docs/wiki/scripts/wiki_graphify.py query "<code question>"
 ```
 
 4. New material → `docs/wiki/inbox/` → triage → ingest (never invent taxonomy without `SCHEMA.md`).
@@ -34,19 +35,23 @@ python3 docs/wiki/scripts/wiki_retrieve.py "<question>" --budget-tokens 3500
 
 ## Skills
 
-Claude Code can load project skills from `.claude/skills/` (and `.cursor/skills/`).
+Wiki-brain **canonical** playbooks: `docs/wiki/skills/` (parent `wiki-brain`).  
+Claude/Cursor copies under `.claude/skills/wiki-*` and `.cursor/skills/wiki-*` are **thin launchers**.
 
 | Slash / name | Purpose |
 |--------------|---------|
+| `wiki-brain` | Parent operator skill |
+| `wiki-setup` | New repo / portable install |
+| `wiki-retrieve` / `wiki-query` | File RAG + cited answers |
+| `wiki-triage` / `wiki-ingest` | Inbox pipeline |
+| `wiki-doctor` / `wiki-heal` | Brain health |
+| `wiki-usage` | Telemetry / dashboard |
 | `handoff` | Compact session → `.handoffs/handoff-*.md` |
 | `read-handoff` | Load newest workspace handoff, then delete it |
 | `grill-me` / `grilling` | Relentless interview to stress-test a plan or idea |
-| `wiki-retrieve` | File RAG + temporal/graph rerank |
-| `wiki-triage` / `wiki-ingest` | Inbox pipeline |
-| `wiki-doctor` / `wiki-heal` | Brain health |
 | `cargo-verify` | `fmt` / `clippy` / `test` |
 
-Full Matt Pocock set is under `.claude/skills/` · `.cursor/skills/` (`skills-lock.json`).
+Matt Pocock set remains under `.claude/skills/` · `.cursor/skills/` (`skills-lock.json`), not repo-root `skills/`.
 
 ---
 

@@ -1,0 +1,41 @@
+# Host overlay — this file is NOT part of the portable pack.
+# Copy pack files into docs/wiki/, then fill HOST.yaml for your project.
+
+name: Trell
+anchor: >
+  Epistemic programming language: certain T vs belief<T>; reduction only via
+  verify/require + guard; speculative when/fork with rollback; Natural Trell
+  colon + indent + end.
+brief: AGENTS.md
+claude_brief: CLAUDE.md
+code_roots:
+  - src/
+  - examples/
+  - tests/
+raw:
+  - THESIS.md
+  - examples/
+domains:
+  - core
+  - theory
+  - applications
+  - market
+  - roadmap
+  - meta
+  - episodic
+  - temporal
+semantic_dirs:
+  - core
+  - theory
+  - applications
+  - market
+  - roadmap
+types_extra: []
+router_seeds: host/router-seeds.md
+maintain_skill: docs/wiki/skills/wiki-maintain/SKILL.md
+graphify:
+  enabled: true
+  code_only: true
+  out: graphify-out
+  targets:
+    - src
