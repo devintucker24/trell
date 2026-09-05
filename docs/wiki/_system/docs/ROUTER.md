@@ -94,6 +94,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 | “When / as-of / what superseded what” | Temporal | `temporal/TIMELINE.md` + page `temporal:` fields |
 | “How to operate” | Procedural | `AGENTS.md`, `docs/wiki/_system/skills/` |
 | “Who calls / where defined” | Code graph | `graphify-out/graph.json` via `wiki_graphify.py` |
+| Existing ADRs / project docs | Raw sources | source manifest + bounded `--include-sources` excerpts |
 
 ## Hard budget defaults
 
@@ -110,6 +111,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 - Loading `INDEX.md` “just in case”
 - Dumping a whole domain folder
 - Pasting full `GRAPH.yaml` or `graph.json`
+- Treating source-inventory excerpts as authoritative compiled claims
 - Treating Graphify `--wiki` articles or `graphify-seed` drafts as compiled thesis
 - Citing inbox / unconsolidated episodes as semantic truth
 - Ignoring `valid_until` / superseded pages (stale temporal memory)
@@ -120,6 +122,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 |---|---|
 | New clone / empty host | `repobrain-setup` |
 | Find knowledge | `retrieve` → open top hits |
+| Search existing project docs | `retrieve --include-sources` (raw, non-authoritative) |
 | Code wiring | `repobrain graph query` |
 | Add knowledge | `inbox/` → triage → ingest |
 | Remember a decision | write `episodic/YYYY-MM-DD-<slug>.md` + append TIMELINE |

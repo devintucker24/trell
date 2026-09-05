@@ -150,12 +150,17 @@ def retrieve_case(
         "--json",
         "--no-log",
     ]
+    include_sources = bool(case.get("include_sources", False))
+    if include_sources:
+        args.append("--include-sources")
     proc = run(args, cwd=root)
     command = (
         f'./repobrain retrieve "{case["q"]}" '
         f"--k {top_k} --budget-tokens {budget} --lane {case.get('lane', 'all')} "
         "--json --no-log"
     )
+    if include_sources:
+        command += " --include-sources"
     if proc.returncode != 0:
         return None, {
             "id": case["id"],
@@ -230,6 +235,15 @@ def retrieve_case(
                 )
         checks.append(check)
 
+    for forbidden in case.get("forbid_paths") or []:
+        if str(forbidden) in ranked:
+            failures.append(f"forbidden source {forbidden} appeared in retrieval")
+
+    expected_conflict = bool(case.get("expect_conflict", False))
+    conflicts = payload.get("conflicts") or []
+    if expected_conflict and not conflicts:
+        failures.append("expected a raw/compiled conflict but none was reported")
+
     packed_tokens = int(payload.get("packed_tokens", 0))
     reported_budget = int(payload.get("budget_tokens", budget))
     if packed_tokens > budget or reported_budget != budget:
@@ -246,6 +260,7 @@ def retrieve_case(
         "packed_tokens": packed_tokens,
         "budget_tokens": budget,
         "source_checks": checks,
+        "conflicts": conflicts,
         "ranked_paths": [
             {
                 "rank": rank,
@@ -647,6 +662,13 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
             fixture / "docs" / "site" / "index.md",
             "# Existing documentation site\nDo not copy this into semantic claims.\n",
         )
+        _write(
+            fixture / "data" / "owners.csv",
+            "component,owner\npayments,platform-team\n",
+        )
+        malformed_csv = fixture / "data" / "malformed.csv"
+        malformed_csv.parent.mkdir(parents=True, exist_ok=True)
+        malformed_csv.write_bytes(b"component,owner\npayments,\xff\n")
         _write(fixture / "src" / "service.py", "def service():\n    return 'ok'\n")
         _write(fixture / "ignored-notes.md", "must remain ignored\n")
         _write(fixture / ".env", "EVALUATION_PLACEHOLDER=not-a-secret\n")
@@ -664,7 +686,7 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
             "tags: [existing]\ndomain: core\nsummary: Existing reviewed claim.\n"
             "nodes: []\nedges: []\nrelated: []\nagent:\n  priority: high\n"
             "  read_when: [existing]\n  maintain: []\n---\n\n# Existing knowledge\n"
-            "This content must not be overwritten.\n",
+            "Do not use domain events. This reviewed claim must not be overwritten.\n",
         )
 
         run(["git", "init", "-q"], cwd=fixture)
@@ -698,6 +720,8 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
                 "CONTEXT.md",
                 "docs/adr/0001-use-events.md",
                 "docs/site/index.md",
+                "data/owners.csv",
+                "data/malformed.csv",
                 "docs/wiki/core/existing-knowledge.md",
             ]
         }
@@ -710,6 +734,72 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
             ],
             cwd=fixture,
         )
+        convert = run(
+            [str(fixture / "repobrain"), "source", "convert"],
+            cwd=fixture,
+        )
+        manifest_path = paths_for(fixture).source_manifest
+        rescan = run(
+            [str(fixture / "repobrain"), "source", "scan"],
+            cwd=fixture,
+        )
+        manifest_before_rescan = (
+            manifest_path.read_bytes() if manifest_path.exists() else b""
+        )
+        rescan_again = run(
+            [str(fixture / "repobrain"), "source", "scan"],
+            cwd=fixture,
+        )
+        manifest_after_rescan = (
+            manifest_path.read_bytes() if manifest_path.exists() else b""
+        )
+        try:
+            manifest = json.loads(manifest_after_rescan)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            manifest = {}
+        entries = {
+            entry.get("path"): entry
+            for entry in manifest.get("entries") or []
+        }
+        raw_adr = run(
+            [
+                str(fixture / "repobrain"),
+                "retrieve",
+                "domain events architecture decision",
+                "--include-sources",
+                "--json",
+                "--no-log",
+            ],
+            cwd=fixture,
+        )
+        raw_docs = run(
+            [
+                str(fixture / "repobrain"),
+                "retrieve",
+                "existing documentation site copy semantic claims",
+                "--include-sources",
+                "--json",
+                "--no-log",
+            ],
+            cwd=fixture,
+        )
+        raw_csv = run(
+            [
+                str(fixture / "repobrain"),
+                "retrieve",
+                "payments platform team owner",
+                "--include-sources",
+                "--json",
+                "--no-log",
+            ],
+            cwd=fixture,
+        )
+        retrieval_payloads = []
+        for proc in (raw_adr, raw_docs, raw_csv):
+            try:
+                retrieval_payloads.append(json.loads(proc.stdout))
+            except json.JSONDecodeError:
+                retrieval_payloads.append({})
         after_semantic = {
             path.relative_to(fixture).as_posix(): _sha256(path)
             for path in semantic_dir.glob("*.md")
@@ -735,9 +825,73 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
                 "data/large-reference.txt" in tracked
                 and large.stat().st_size >= 250_000
             ),
+            "source_manifest": manifest_path.exists(),
+            "inventory_adr": "docs/adr/0001-use-events.md" in entries,
+            "inventory_context": "CONTEXT.md" in entries,
+            "inventory_docs_site": "docs/site/index.md" in entries,
+            "inventory_excludes_compiled_corpus": (
+                "docs/wiki/core/existing-knowledge.md" not in entries
+            ),
+            "code_delegates_graphify": (
+                (entries.get("src/service.py") or {})
+                .get("conversion", {})
+                .get("state")
+                == "graphify-delegate"
+            ),
+            "manifest_stable_after_unchanged_scan": (
+                bool(manifest_before_rescan)
+                and manifest_before_rescan == manifest_after_rescan
+            ),
+            "grouped_raw_pointers": all(
+                (fixture / "docs" / "wiki" / "raw" / name).exists()
+                for name in (
+                    "source-adrs.md",
+                    "source-context.md",
+                    "source-documentation.md",
+                )
+            ),
+            "conversion_success": (
+                (entries.get("data/owners.csv") or {})
+                .get("conversion", {})
+                .get("state")
+                in {"cached", "converted"}
+            ),
+            "conversion_failure_visible": (
+                (entries.get("data/malformed.csv") or {})
+                .get("conversion", {})
+                .get("state")
+                == "failed"
+            ),
+            "raw_retrieval_paths": all(
+                expected
+                in {
+                    hit.get("path")
+                    for hit in payload.get("hits") or []
+                }
+                for expected, payload in zip(
+                    (
+                        "docs/adr/0001-use-events.md",
+                        "docs/site/index.md",
+                        "data/owners.csv",
+                    ),
+                    retrieval_payloads,
+                    strict=True,
+                )
+            ),
+            "raw_results_non_authoritative": all(
+                any(
+                    (hit.get("provenance") or {}).get("kind") == "raw"
+                    and (hit.get("provenance") or {}).get("authority")
+                    == "non-authoritative"
+                    for hit in payload.get("hits") or []
+                )
+                for payload in retrieval_payloads
+            ),
         }
         safety_checks = {
             "setup_exit_zero": setup.returncode == 0,
+            "conversion_non_strict_exit_zero": convert.returncode == 0,
+            "rescan_exit_zero": rescan.returncode == 0 and rescan_again.returncode == 0,
             "existing_content_unchanged": protected == protected_after,
             "existing_agent_instructions_preserved": agents_before in agents_after,
             "semantic_file_set_unchanged": before_semantic == after_semantic,
@@ -774,10 +928,14 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
                 "setup_output": display_text(
                     (setup.stdout or setup.stderr)[-1600:], fixture
                 ).strip(),
+                "conversion_output": display_text(
+                    (convert.stdout or convert.stderr)[-1200:], fixture
+                ).strip(),
                 "safety_checks": safety_checks,
                 "baseline_observation": (
-                    "Current setup detection reports only its existing narrow raw-source "
-                    "set; later source-inventory tickets must add ADR/docs-site discovery."
+                    "Setup inventories Git-tracked ADRs, context maps, and docs-site "
+                    "sources into a deterministic manifest and grouped raw pointers "
+                    "without copying them into semantic folders."
                 ),
                 "failures": failures,
             }

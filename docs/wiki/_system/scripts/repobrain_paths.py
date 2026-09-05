@@ -97,8 +97,23 @@ class RepoBrainPaths:
 
     @property
     def source_manifest(self) -> Path:
-        """Reserved manifest location for the source-inventory slice."""
-        return self.generated / "sources" / "manifest.json"
+        """Committed manifest for Git-tracked repository sources."""
+        return self.sources_dir / "manifest.json"
+
+    @property
+    def sources_dir(self) -> Path:
+        """Generated source-inventory state."""
+        return self.generated / "sources"
+
+    @property
+    def source_cache_dir(self) -> Path:
+        """Ignored derived Markdown cache."""
+        return self.sources_dir / "cache"
+
+    @property
+    def source_provenance(self) -> Path:
+        """Local scan provenance stored beside the source manifest."""
+        return self.sources_dir / ".repobrain-provenance.json"
 
     @property
     def dashboard_dir(self) -> Path:

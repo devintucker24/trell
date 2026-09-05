@@ -1,0 +1,4810 @@
+{
+  "changes": {
+    "added": [],
+    "deleted": [],
+    "modified": []
+  },
+  "config": {
+    "conversion": {
+      "enabled": true,
+      "format": "csv",
+      "requirement": "markitdown==0.1.7",
+      "strict": false
+    },
+    "deny_globs": [
+      "**/.env",
+      "**/.env.*",
+      "**/*credentials*",
+      "**/*secret*",
+      "**/*id_rsa*",
+      "**/*.pem"
+    ],
+    "exclude": [
+      "docs/wiki/**",
+      "**/target/**",
+      "**/node_modules/**",
+      "**/vendor/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/generated/**",
+      "graphify-out/**"
+    ],
+    "include": [],
+    "max_excerpt_chars": 1200,
+    "max_index_bytes": 262144,
+    "mode": "git-tracked"
+  },
+  "denied": [],
+  "entries": [
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/ask-matt/PHASE-BOUNDARIES.md",
+      "sha256": "a8aa20158609ef39e2b308b6ba0660c91066838d07a867202e63a7744a88a3ed",
+      "size": 4249
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/ask-matt/SKILL.md",
+      "sha256": "b25d86fb36b1d294eeead5d7db529f86135f9671f2afcd607579a63bb2213769",
+      "size": 11417
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/ask-matt/agents/openai.yaml",
+      "sha256": "bdffbc5a0a99ed1b6ef3253d251d755fd18162b9845972e380007f844b09b05c",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/claude-handoff/SKILL.md",
+      "sha256": "6738e8b7c7899ea0038fb7a5c859ca1b90c7b1eb40123dcdbe94c51b5b119f12",
+      "size": 1301
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/claude-handoff/agents/openai.yaml",
+      "sha256": "2308a672978864633286fb9f0792b08657e501426b3f7883fc418d5d2eac5eb0",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/code-review/SKILL.md",
+      "sha256": "47f4e52c21694def9c7c11cbfbf891ca35eac7a93e395797515be3c8a409ae50",
+      "size": 6589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/code-review/agents/openai.yaml",
+      "sha256": "8229ca854e11dc8e6aef2131ee03f31fb1561cf905fab9ccc325180cf3331352",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/codebase-design/DEEPENING.md",
+      "sha256": "f3dd099ce99289bd213914d8ee3e2429b78309c3957ca4583f7659551b1d53c1",
+      "size": 2553
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/codebase-design/DESIGN-IT-TWICE.md",
+      "sha256": "8e740bf98446dbd4dfdc132ac4346d9a7eedaf93de6a495889171cf7f99f16bd",
+      "size": 2664
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/codebase-design/SKILL.md",
+      "sha256": "2c20617f87ec8af6a434859f381b2f061a69b530444e74eb39e78bb016a6d1e2",
+      "size": 6446
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/codebase-design/agents/openai.yaml",
+      "sha256": "edebc9e4fcfe102114012575eaa9600b9b5fd08c311664f389c36e7bc717740f",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/diagnosing-bugs/SKILL.md",
+      "sha256": "77f3cf31bc99b2f49af943222526531fcc9fc41d047626d3640e875e85af3e84",
+      "size": 8529
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/diagnosing-bugs/agents/openai.yaml",
+      "sha256": "3e430dbe4334a87597488c060cb3dc3786bb00c9182877d6f5ec41f62490e90b",
+      "size": 103
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/diagnosing-bugs/scripts/hitl-loop.template.sh",
+      "sha256": "35103539fc36873eea36074769ad454f9379d6fc8b2dc0e26ce987fd3bfe5503",
+      "size": 1316
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/domain-modeling/ADR-FORMAT.md",
+      "sha256": "944c92aa790e8fbdc9199640b170979abb8a34ba8d0fe18c2a01a63bce140ca0",
+      "size": 2733
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/domain-modeling/CONTEXT-FORMAT.md",
+      "sha256": "17ab16ce783e4d2801ee52fd9acdf550cbf44de65ae76797a93943bbedf22a13",
+      "size": 2290
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/domain-modeling/SKILL.md",
+      "sha256": "327a2b50620e2fd70abc6893cd6965e76b20f8d0adb0dc2c8d5eb3845efb643e",
+      "size": 3331
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/domain-modeling/agents/openai.yaml",
+      "sha256": "f6bf2aa996c6e6f53fdd0708e18a0d16a56aed8322cca59fedbe3c0d2c75f06b",
+      "size": 101
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/git-guardrails-claude-code/SKILL.md",
+      "sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764",
+      "size": 2313
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/git-guardrails-claude-code/agents/openai.yaml",
+      "sha256": "d53cd783fc0ac208dec9a4c267989284384785aab6422dccdaed42f9e40243ec",
+      "size": 112
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+      "sha256": "234922b83c0a1737ee7300806c21ac0f389b07aaeb65c2d71ccedafbc5e1ea4b",
+      "size": 507
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grill-me/SKILL.md",
+      "sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "size": 157
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grill-me/agents/openai.yaml",
+      "sha256": "c061e39c3e0f9d865fb1b97556d485704af2a8a58f4b8221a8917a5c2074a32b",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grill-with-docs/SKILL.md",
+      "sha256": "7de372c13488f1ee96cc11cd8907b56b6809cc93eef776eeddd37de6b6cbe3fe",
+      "size": 247
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grill-with-docs/agents/openai.yaml",
+      "sha256": "94cd0ab161fb468a836349f5ed482ba58ce8e709a05c57ce533d739dbd35cca9",
+      "size": 145
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grilling/SKILL.md",
+      "sha256": "10ff989e7498b23b5acb49d5048f11dcd906757d2f79c5cdf8a00001381296f2",
+      "size": 1987
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/grilling/agents/openai.yaml",
+      "sha256": "1411d7df7d99b7e621a1ff8283c8133cc2464be63d064e52d8ce169c6800ee9b",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/handoff/SKILL.md",
+      "sha256": "c8f30ae09bd6e17c0e28b91569d44512e8fdc8fb37bffa6a81d2e2544bd0d37e",
+      "size": 1807
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/handoff/agents/openai.yaml",
+      "sha256": "5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/implement-spec/SKILL.md",
+      "sha256": "f703b5f41df9c2202e19540d203e0d5fc32613572a838a070136cc22e712b129",
+      "size": 2043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/implement-spec/agents/openai.yaml",
+      "sha256": "d457ae78ff282b8798380b0c2e393c9798bc2bf5ee7dfe9ca31607714c6cd7d3",
+      "size": 143
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/implement/SKILL.md",
+      "sha256": "6d3fd9e83b8f36e5213854779db49b256a457a7ebb4a503e53fa7dcff696adc3",
+      "size": 433
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/implement/agents/openai.yaml",
+      "sha256": "8970a8596ade0c28ab427f41a4ea242d6bdf6186c59ebf55e1238dbecaab79dc",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/improve-codebase-architecture/HTML-REPORT.md",
+      "sha256": "581e8bb5a521e46bbda8ca7e19b15948bed882187108092ebb90c62513b77528",
+      "size": 6641
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/improve-codebase-architecture/SKILL.md",
+      "sha256": "d1ac25511a936ff4250a48dbcefda363837d6bb9321b3cba73df99fa37270a75",
+      "size": 5993
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/improve-codebase-architecture/agents/openai.yaml",
+      "sha256": "c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/loop-me/SKILL.md",
+      "sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7",
+      "size": 2522
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/loop-me/agents/openai.yaml",
+      "sha256": "b66fa10079957051be6a812f45e55b67ac394b71d5ba88349962b4c9205802c3",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/migrate-to-shoehorn/SKILL.md",
+      "sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72",
+      "size": 2795
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/migrate-to-shoehorn/agents/openai.yaml",
+      "sha256": "395c2db852e66a199f1cd07f7ed92d66cb6f0787460c5475926f1a5e778b699d",
+      "size": 110
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/prototype/LOGIC.md",
+      "sha256": "f61c7d249e786a79ef289018901c348271e1798dd0b0bc5607b5c6f4d4a01ab9",
+      "size": 6036
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/prototype/SKILL.md",
+      "sha256": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3",
+      "size": 2931
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/prototype/UI.md",
+      "sha256": "723211e878acbc7b6ff09755263f3295cde724ba902ff0064da41eed51d45ad3",
+      "size": 6913
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/prototype/agents/openai.yaml",
+      "sha256": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/read-handoff/SKILL.md",
+      "sha256": "2bd8e21555ab443e28918ffdc3a88c8c6baa2379493b90dafd6cbe6beebc547d",
+      "size": 1254
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/read-handoff/agents/openai.yaml",
+      "sha256": "ebae0c7b9e3da35972dc55e81830ec51eafffa334c6dd3ef562aeef6070299f7",
+      "size": 153
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-brain/SKILL.md",
+      "sha256": "9bda9b1eca7bfbc96422c3e2303e51455de6a5c3881906be3faebff300288a93",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-doctor/SKILL.md",
+      "sha256": "b074c31810d0d8e1dd3a0fb860200d7df34264d1bf7f6cdabbe6eac8bb7fa4d9",
+      "size": 374
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-heal/SKILL.md",
+      "sha256": "51854aa7f0011fbb779710035c43a8ba974da30f055867aafb38a529b1ff14c2",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-ingest/SKILL.md",
+      "sha256": "97d4c23466efd8bf92ad06378d5ca54d09a80da7f1544aae9bc851e4f30fa45e",
+      "size": 382
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-label/SKILL.md",
+      "sha256": "326b11f8be36b1353515639cb1299509cc9126d20c7b3bc8791e0ffa8d555d4b",
+      "size": 364
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-lint/SKILL.md",
+      "sha256": "1cc86b01958bc967aea2421d0f56297ab37761e0453e4fbb225a31931fcdfb2d",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-maintain/SKILL.md",
+      "sha256": "249e1833c5b7e8eff8b8d819b1c2efd247b79d27d93d66e782d707746707de7a",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-navigate/SKILL.md",
+      "sha256": "6e09917a2c17036d2fbe12f469a0ac92c681a060fdd1f6dd389cb8a0aaf562f9",
+      "size": 386
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-query/SKILL.md",
+      "sha256": "6368ad500e1856e78f973e1170cc018026c8a9f9b9c18ee5563b0ca9b849ca60",
+      "size": 385
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-retrieve/SKILL.md",
+      "sha256": "4febf230480a5f2c27d5cf9cfbd0495defff7975ff41566a75aae2f7cad898e2",
+      "size": 387
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-setup/SKILL.md",
+      "sha256": "13b8375157839c2ac612422dc27bc8c9e8b8873303156e80a8767872093f27d4",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-triage/SKILL.md",
+      "sha256": "ea5bb46b4138723e83d6577cd245acd2cff3a2a9b233d3dc6a3b141d5c67a3c8",
+      "size": 381
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/repobrain-usage/SKILL.md",
+      "sha256": "dfb839758e8da3ed28e12f91bef7dd53503b2a27876e5276d6699001602632ed",
+      "size": 378
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/research/SKILL.md",
+      "sha256": "985569f15739c713d6784887c3d186d4ef9ac85bec5ad9c068d25bf0739928e4",
+      "size": 794
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/research/agents/openai.yaml",
+      "sha256": "9b4c470d63221c1f68f22df70b83e2f12401b317babe0d1b7b5f24a974474d0d",
+      "size": 94
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/resolving-merge-conflicts/SKILL.md",
+      "sha256": "9d8114f8ef0b31f535a265fc05c364bd8cf2e2895a830040e06c22acb11f54b0",
+      "size": 918
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/resolving-merge-conflicts/agents/openai.yaml",
+      "sha256": "a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/retro/SKILL.md",
+      "sha256": "264f3330f1e2382af89610ed048ba0ed6d08883eb69f596a8f1df3f1e1a4c6a1",
+      "size": 3388
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/retro/agents/openai.yaml",
+      "sha256": "cb6fb9d7e6b4be5975f41f6def1dd00a1255bad5d9b02696b124c924a8b8745c",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/scaffold-exercises/SKILL.md",
+      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
+      "size": 3589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/scaffold-exercises/agents/openai.yaml",
+      "sha256": "525b33913340bea7947ad2de17f2a7c5fb94be543345fe80ae753b9a44ba601d",
+      "size": 108
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/SKILL.md",
+      "sha256": "2bcd89e97777cdb705914424e39c97d5db524c8eb4eafac8120778a07774f0ec",
+      "size": 6841
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/agents/openai.yaml",
+      "sha256": "9527de0110541c45712319025155aeab8dc7d77c6ed6e5e83271bab1851ab939",
+      "size": 152
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/domain.md",
+      "sha256": "edc6d6131fdffc4b7135704f5262124fc43355c95f61b7399dc5a4db643e28ca",
+      "size": 2033
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/issue-tracker-github.md",
+      "sha256": "afd6852a80185217bd28aa5cbe456bef1e85be25be7bd1fba382d5b8ee428325",
+      "size": 3731
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/issue-tracker-gitlab.md",
+      "sha256": "ea175f73d193b3f55819c0ed9bbccf6ee0e70ad8f928e3d7607596c53380acd6",
+      "size": 3809
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+      "sha256": "7dcda20a2eb4bdc89b95d1143423c0691309921cadae3132e6424f371030506e",
+      "size": 1810
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-matt-pocock-skills/triage-labels.md",
+      "sha256": "4f53c9b40ce2651e3611aa090eaedbd6dbc9b71ef8c5f7e65eac0d8263190d0d",
+      "size": 1045
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-pre-commit/SKILL.md",
+      "sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98",
+      "size": 2258
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-pre-commit/agents/openai.yaml",
+      "sha256": "acf41db398c5c43afe504008bb7d615a97b6498b0f1f6c5b2395254c0bfb57d1",
+      "size": 99
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-ts-deep-modules/SKILL.md",
+      "sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7",
+      "size": 7546
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-ts-deep-modules/agents/openai.yaml",
+      "sha256": "159f680217d50747702620c05fd65734a152185b3219a8ca5ee4630878a354fa",
+      "size": 149
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+      "sha256": "3c4973bec69f73b2117654abf9e666a7c28665b213be20e6d39869e29842428e",
+      "size": 3712
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/tdd/SKILL.md",
+      "sha256": "cb01f66bebfaa25fa1f88e6b7e769cd9fd9f35b1120b8563749820738814c927",
+      "size": 3549
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/tdd/agents/openai.yaml",
+      "sha256": "ea6f01cf1b8c06a4b0f5b649d74b1b8ce8685e72af1b38d70d877693e092af0b",
+      "size": 87
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/tdd/mocking.md",
+      "sha256": "3ceb807fdf4a47d6a93d4d9a891e5ba6d362a6247bd08adc451feebfc17361ef",
+      "size": 1481
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/tdd/tests.md",
+      "sha256": "859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a",
+      "size": 2214
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/GLOSSARY-FORMAT.md",
+      "sha256": "9b99859ec28437668130d8f2ce5a342938970f8a1ed4fd38c3eab4f4b5fff210",
+      "size": 2122
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/LEARNING-RECORD-FORMAT.md",
+      "sha256": "701fa34b6748aa89e6c960ffb815257f481a7d77fb2900f9028f7edf3fdd6052",
+      "size": 2747
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/MISSION-FORMAT.md",
+      "sha256": "8cacbb3c0644d3ae0ea4965564797099401a6930a23f7cf462918576587f2418",
+      "size": 1540
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/RESOURCES-FORMAT.md",
+      "sha256": "e9cacf34026e11a8d1c8f9de88abe5bcbf654f4ebdb25cae8c0de0d5f48f44ec",
+      "size": 1924
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/SKILL.md",
+      "sha256": "a32df9dcdfc0c4fdc1c98e1ed3940c5f56b84c1aa90ff60346f32b8b53915b43",
+      "size": 9506
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/teach/agents/openai.yaml",
+      "sha256": "5856f3ae8aec742f1499c640aecdd5f1d6af5fa210a7c6ec794de8263a6f733f",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-questionnaire/SKILL.md",
+      "sha256": "b5eb929842ee0e93d867c5e906d183d350f2f2d149eaeaa86967d94d8eda1d3b",
+      "size": 2904
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-questionnaire/agents/openai.yaml",
+      "sha256": "9e8a06c38c8842eea8d4922cb9d1ead8e3ace647bab259b943c994a1b4742bc2",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-spec/SKILL.md",
+      "sha256": "43ad9cf318e5e7d3d1fa360253a37021796dc87a0c2e595ad262661a10f85088",
+      "size": 3043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-spec/agents/openai.yaml",
+      "sha256": "1c5b4d1e3d8e52287ef19cc2742fdbbfae1914ac75d33af3e4c8174f08cc55bb",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-tickets/SKILL.md",
+      "sha256": "5c9fba69845c2519b9b35b9af42ae5142c21f8ca15ac2123dc2722002c8058ae",
+      "size": 5671
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/to-tickets/agents/openai.yaml",
+      "sha256": "21bc6215fffcd7614e9f772bb1760e87cc5fc7dcc707e7d282bc9414267a6090",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/triage/AGENT-BRIEF.md",
+      "sha256": "7f5f87fed3033df1b06e083c480f3e847b1fbb0647746b8a4c6a50f9f26ef44f",
+      "size": 7942
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/triage/OUT-OF-SCOPE.md",
+      "sha256": "1fbf9b432130c6380aa65813b55553cfda150309b27c595e183f8e335b8a190d",
+      "size": 4667
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/triage/SKILL.md",
+      "sha256": "623a2ed692bdc77d2090e2a3dea3b627dd722ad3bbaca0be83aada75292c8fc4",
+      "size": 6557
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/triage/agents/openai.yaml",
+      "sha256": "2e683717720cf456d165d0bb1a68bb600d0b6a8ccb61841c172e50d26f95351c",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wait-what/SKILL.md",
+      "sha256": "e3f44e3ccbc0e7b62f20ba70b295fc9c9f4aa3f96c77168faee1c71bacbf4215",
+      "size": 394
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wait-what/agents/openai.yaml",
+      "sha256": "b41faadf741d51e4ea184148b2d1854d93f947aaf754c7844f70a00f04194999",
+      "size": 158
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wayfinder/SKILL.md",
+      "sha256": "fee6e1d0c50f0e736b4ef8a599060c959afae904c9a97d82c97f049fcc3aa0f1",
+      "size": 11908
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wayfinder/agents/openai.yaml",
+      "sha256": "88bc81a11a6d52ac67aeaa76b8b619e387020d47c5133a4dd4927fd15c4ad073",
+      "size": 144
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-brain/SKILL.md",
+      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-doctor/SKILL.md",
+      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-heal/SKILL.md",
+      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-ingest/SKILL.md",
+      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-label/SKILL.md",
+      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-lint/SKILL.md",
+      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-maintain/SKILL.md",
+      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-navigate/SKILL.md",
+      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-query/SKILL.md",
+      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-retrieve/SKILL.md",
+      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-setup/SKILL.md",
+      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-triage/SKILL.md",
+      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wiki-usage/SKILL.md",
+      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wizard/SKILL.md",
+      "sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1",
+      "size": 4123
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wizard/agents/openai.yaml",
+      "sha256": "98f44d682d58e262f160dc59a8befc365e0aa65820dd0261864af26aa8e59d83",
+      "size": 96
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/wizard/template.sh",
+      "sha256": "33cbe9dfb1d0e9185b60248a52aabed14bc64785a00cac695e302e739dd6c153",
+      "size": 8567
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-beats/SKILL.md",
+      "sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e",
+      "size": 4855
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-beats/agents/openai.yaml",
+      "sha256": "ddaef01da61d8e3c5f482c4403033c20cf5823f08a1dbf1d4c871670831d01e2",
+      "size": 142
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-for-agents/SKILL-MECHANICS.md",
+      "sha256": "c768e6307c7c10728c401c213f2c4ba71c542127eeb7ad2956aabd15a0fa0059",
+      "size": 2629
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-for-agents/SKILL.md",
+      "sha256": "551adca942227b44192edba88acd4e8db911f0121ce58ad16944ccf6a896a74a",
+      "size": 10886
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-for-agents/agents/openai.yaml",
+      "sha256": "eacb24b2a618cfb81dacb0416f4fdd75ddf3a8060f8ddb99aae1b1e301907e4b",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-fragments/SKILL.md",
+      "sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea",
+      "size": 3558
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-fragments/agents/openai.yaml",
+      "sha256": "81167f25ee8ea1bb4b4958f12b6702ea972ad31b05e03ec91e39fa4bae0c2641",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-shape/SKILL.md",
+      "sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72",
+      "size": 5922
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".agents/skills/writing-shape/agents/openai.yaml",
+      "sha256": "56de45430e23104ff178415f5ecf7821d51a9cfabd8814b1607ebf39da2ef5cd",
+      "size": 144
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cargo/config.toml",
+      "sha256": "f690ca073e3976ff37161dd327d250955e3355d294c6c2be95f60a3dff9f9431",
+      "size": 723
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/ask-matt/PHASE-BOUNDARIES.md",
+      "sha256": "a8aa20158609ef39e2b308b6ba0660c91066838d07a867202e63a7744a88a3ed",
+      "size": 4249
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/ask-matt/SKILL.md",
+      "sha256": "b25d86fb36b1d294eeead5d7db529f86135f9671f2afcd607579a63bb2213769",
+      "size": 11417
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/ask-matt/agents/openai.yaml",
+      "sha256": "bdffbc5a0a99ed1b6ef3253d251d755fd18162b9845972e380007f844b09b05c",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/cargo-verify/SKILL.md",
+      "sha256": "f0754ffedf350db4cfd8d71ef0c85754bad303cec8eb576ad3bded8a8742ac85",
+      "size": 551
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/claude-handoff/SKILL.md",
+      "sha256": "6738e8b7c7899ea0038fb7a5c859ca1b90c7b1eb40123dcdbe94c51b5b119f12",
+      "size": 1301
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/claude-handoff/agents/openai.yaml",
+      "sha256": "2308a672978864633286fb9f0792b08657e501426b3f7883fc418d5d2eac5eb0",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/code-review/SKILL.md",
+      "sha256": "47f4e52c21694def9c7c11cbfbf891ca35eac7a93e395797515be3c8a409ae50",
+      "size": 6589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/code-review/agents/openai.yaml",
+      "sha256": "8229ca854e11dc8e6aef2131ee03f31fb1561cf905fab9ccc325180cf3331352",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/codebase-design/DEEPENING.md",
+      "sha256": "f3dd099ce99289bd213914d8ee3e2429b78309c3957ca4583f7659551b1d53c1",
+      "size": 2553
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/codebase-design/DESIGN-IT-TWICE.md",
+      "sha256": "8e740bf98446dbd4dfdc132ac4346d9a7eedaf93de6a495889171cf7f99f16bd",
+      "size": 2664
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/codebase-design/SKILL.md",
+      "sha256": "2c20617f87ec8af6a434859f381b2f061a69b530444e74eb39e78bb016a6d1e2",
+      "size": 6446
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/codebase-design/agents/openai.yaml",
+      "sha256": "edebc9e4fcfe102114012575eaa9600b9b5fd08c311664f389c36e7bc717740f",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/diagnosing-bugs/SKILL.md",
+      "sha256": "77f3cf31bc99b2f49af943222526531fcc9fc41d047626d3640e875e85af3e84",
+      "size": 8529
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/diagnosing-bugs/agents/openai.yaml",
+      "sha256": "3e430dbe4334a87597488c060cb3dc3786bb00c9182877d6f5ec41f62490e90b",
+      "size": 103
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/diagnosing-bugs/scripts/hitl-loop.template.sh",
+      "sha256": "35103539fc36873eea36074769ad454f9379d6fc8b2dc0e26ce987fd3bfe5503",
+      "size": 1316
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/domain-modeling/ADR-FORMAT.md",
+      "sha256": "944c92aa790e8fbdc9199640b170979abb8a34ba8d0fe18c2a01a63bce140ca0",
+      "size": 2733
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/domain-modeling/CONTEXT-FORMAT.md",
+      "sha256": "17ab16ce783e4d2801ee52fd9acdf550cbf44de65ae76797a93943bbedf22a13",
+      "size": 2290
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/domain-modeling/SKILL.md",
+      "sha256": "327a2b50620e2fd70abc6893cd6965e76b20f8d0adb0dc2c8d5eb3845efb643e",
+      "size": 3331
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/domain-modeling/agents/openai.yaml",
+      "sha256": "f6bf2aa996c6e6f53fdd0708e18a0d16a56aed8322cca59fedbe3c0d2c75f06b",
+      "size": 101
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/git-guardrails-claude-code/SKILL.md",
+      "sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764",
+      "size": 2313
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/git-guardrails-claude-code/agents/openai.yaml",
+      "sha256": "d53cd783fc0ac208dec9a4c267989284384785aab6422dccdaed42f9e40243ec",
+      "size": 112
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+      "sha256": "234922b83c0a1737ee7300806c21ac0f389b07aaeb65c2d71ccedafbc5e1ea4b",
+      "size": 507
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grill-me/SKILL.md",
+      "sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "size": 157
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grill-me/agents/openai.yaml",
+      "sha256": "c061e39c3e0f9d865fb1b97556d485704af2a8a58f4b8221a8917a5c2074a32b",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grill-with-docs/SKILL.md",
+      "sha256": "7de372c13488f1ee96cc11cd8907b56b6809cc93eef776eeddd37de6b6cbe3fe",
+      "size": 247
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grill-with-docs/agents/openai.yaml",
+      "sha256": "94cd0ab161fb468a836349f5ed482ba58ce8e709a05c57ce533d739dbd35cca9",
+      "size": 145
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grilling/SKILL.md",
+      "sha256": "10ff989e7498b23b5acb49d5048f11dcd906757d2f79c5cdf8a00001381296f2",
+      "size": 1987
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/grilling/agents/openai.yaml",
+      "sha256": "1411d7df7d99b7e621a1ff8283c8133cc2464be63d064e52d8ce169c6800ee9b",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/handoff/SKILL.md",
+      "sha256": "c8f30ae09bd6e17c0e28b91569d44512e8fdc8fb37bffa6a81d2e2544bd0d37e",
+      "size": 1807
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/handoff/agents/openai.yaml",
+      "sha256": "5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/implement-spec/SKILL.md",
+      "sha256": "f703b5f41df9c2202e19540d203e0d5fc32613572a838a070136cc22e712b129",
+      "size": 2043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/implement-spec/agents/openai.yaml",
+      "sha256": "d457ae78ff282b8798380b0c2e393c9798bc2bf5ee7dfe9ca31607714c6cd7d3",
+      "size": 143
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/implement/SKILL.md",
+      "sha256": "6d3fd9e83b8f36e5213854779db49b256a457a7ebb4a503e53fa7dcff696adc3",
+      "size": 433
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/implement/agents/openai.yaml",
+      "sha256": "8970a8596ade0c28ab427f41a4ea242d6bdf6186c59ebf55e1238dbecaab79dc",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/improve-codebase-architecture/HTML-REPORT.md",
+      "sha256": "581e8bb5a521e46bbda8ca7e19b15948bed882187108092ebb90c62513b77528",
+      "size": 6641
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/improve-codebase-architecture/SKILL.md",
+      "sha256": "d1ac25511a936ff4250a48dbcefda363837d6bb9321b3cba73df99fa37270a75",
+      "size": 5993
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/improve-codebase-architecture/agents/openai.yaml",
+      "sha256": "c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/loop-me/SKILL.md",
+      "sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7",
+      "size": 2522
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/loop-me/agents/openai.yaml",
+      "sha256": "b66fa10079957051be6a812f45e55b67ac394b71d5ba88349962b4c9205802c3",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/migrate-to-shoehorn/SKILL.md",
+      "sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72",
+      "size": 2795
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/migrate-to-shoehorn/agents/openai.yaml",
+      "sha256": "395c2db852e66a199f1cd07f7ed92d66cb6f0787460c5475926f1a5e778b699d",
+      "size": 110
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/prototype/LOGIC.md",
+      "sha256": "f61c7d249e786a79ef289018901c348271e1798dd0b0bc5607b5c6f4d4a01ab9",
+      "size": 6036
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/prototype/SKILL.md",
+      "sha256": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3",
+      "size": 2931
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/prototype/UI.md",
+      "sha256": "723211e878acbc7b6ff09755263f3295cde724ba902ff0064da41eed51d45ad3",
+      "size": 6913
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/prototype/agents/openai.yaml",
+      "sha256": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/read-handoff/SKILL.md",
+      "sha256": "2bd8e21555ab443e28918ffdc3a88c8c6baa2379493b90dafd6cbe6beebc547d",
+      "size": 1254
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-brain/SKILL.md",
+      "sha256": "9bda9b1eca7bfbc96422c3e2303e51455de6a5c3881906be3faebff300288a93",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-doctor/SKILL.md",
+      "sha256": "b074c31810d0d8e1dd3a0fb860200d7df34264d1bf7f6cdabbe6eac8bb7fa4d9",
+      "size": 374
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-heal/SKILL.md",
+      "sha256": "51854aa7f0011fbb779710035c43a8ba974da30f055867aafb38a529b1ff14c2",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-ingest/SKILL.md",
+      "sha256": "97d4c23466efd8bf92ad06378d5ca54d09a80da7f1544aae9bc851e4f30fa45e",
+      "size": 382
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-label/SKILL.md",
+      "sha256": "326b11f8be36b1353515639cb1299509cc9126d20c7b3bc8791e0ffa8d555d4b",
+      "size": 364
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-lint/SKILL.md",
+      "sha256": "1cc86b01958bc967aea2421d0f56297ab37761e0453e4fbb225a31931fcdfb2d",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-maintain/SKILL.md",
+      "sha256": "249e1833c5b7e8eff8b8d819b1c2efd247b79d27d93d66e782d707746707de7a",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-navigate/SKILL.md",
+      "sha256": "6e09917a2c17036d2fbe12f469a0ac92c681a060fdd1f6dd389cb8a0aaf562f9",
+      "size": 386
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-query/SKILL.md",
+      "sha256": "6368ad500e1856e78f973e1170cc018026c8a9f9b9c18ee5563b0ca9b849ca60",
+      "size": 385
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-retrieve/SKILL.md",
+      "sha256": "4febf230480a5f2c27d5cf9cfbd0495defff7975ff41566a75aae2f7cad898e2",
+      "size": 387
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-setup/SKILL.md",
+      "sha256": "13b8375157839c2ac612422dc27bc8c9e8b8873303156e80a8767872093f27d4",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-triage/SKILL.md",
+      "sha256": "ea5bb46b4138723e83d6577cd245acd2cff3a2a9b233d3dc6a3b141d5c67a3c8",
+      "size": 381
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/repobrain-usage/SKILL.md",
+      "sha256": "dfb839758e8da3ed28e12f91bef7dd53503b2a27876e5276d6699001602632ed",
+      "size": 378
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/research/SKILL.md",
+      "sha256": "985569f15739c713d6784887c3d186d4ef9ac85bec5ad9c068d25bf0739928e4",
+      "size": 794
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/research/agents/openai.yaml",
+      "sha256": "9b4c470d63221c1f68f22df70b83e2f12401b317babe0d1b7b5f24a974474d0d",
+      "size": 94
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/resolving-merge-conflicts/SKILL.md",
+      "sha256": "9d8114f8ef0b31f535a265fc05c364bd8cf2e2895a830040e06c22acb11f54b0",
+      "size": 918
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/resolving-merge-conflicts/agents/openai.yaml",
+      "sha256": "a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/retro/SKILL.md",
+      "sha256": "264f3330f1e2382af89610ed048ba0ed6d08883eb69f596a8f1df3f1e1a4c6a1",
+      "size": 3388
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/retro/agents/openai.yaml",
+      "sha256": "cb6fb9d7e6b4be5975f41f6def1dd00a1255bad5d9b02696b124c924a8b8745c",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/scaffold-exercises/SKILL.md",
+      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
+      "size": 3589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/scaffold-exercises/agents/openai.yaml",
+      "sha256": "525b33913340bea7947ad2de17f2a7c5fb94be543345fe80ae753b9a44ba601d",
+      "size": 108
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/SKILL.md",
+      "sha256": "2bcd89e97777cdb705914424e39c97d5db524c8eb4eafac8120778a07774f0ec",
+      "size": 6841
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/agents/openai.yaml",
+      "sha256": "9527de0110541c45712319025155aeab8dc7d77c6ed6e5e83271bab1851ab939",
+      "size": 152
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/domain.md",
+      "sha256": "edc6d6131fdffc4b7135704f5262124fc43355c95f61b7399dc5a4db643e28ca",
+      "size": 2033
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/issue-tracker-github.md",
+      "sha256": "afd6852a80185217bd28aa5cbe456bef1e85be25be7bd1fba382d5b8ee428325",
+      "size": 3731
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/issue-tracker-gitlab.md",
+      "sha256": "ea175f73d193b3f55819c0ed9bbccf6ee0e70ad8f928e3d7607596c53380acd6",
+      "size": 3809
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+      "sha256": "7dcda20a2eb4bdc89b95d1143423c0691309921cadae3132e6424f371030506e",
+      "size": 1810
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-matt-pocock-skills/triage-labels.md",
+      "sha256": "4f53c9b40ce2651e3611aa090eaedbd6dbc9b71ef8c5f7e65eac0d8263190d0d",
+      "size": 1045
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-pre-commit/SKILL.md",
+      "sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98",
+      "size": 2258
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-pre-commit/agents/openai.yaml",
+      "sha256": "acf41db398c5c43afe504008bb7d615a97b6498b0f1f6c5b2395254c0bfb57d1",
+      "size": 99
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-ts-deep-modules/SKILL.md",
+      "sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7",
+      "size": 7546
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-ts-deep-modules/agents/openai.yaml",
+      "sha256": "159f680217d50747702620c05fd65734a152185b3219a8ca5ee4630878a354fa",
+      "size": 149
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+      "sha256": "3c4973bec69f73b2117654abf9e666a7c28665b213be20e6d39869e29842428e",
+      "size": 3712
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/tdd/SKILL.md",
+      "sha256": "cb01f66bebfaa25fa1f88e6b7e769cd9fd9f35b1120b8563749820738814c927",
+      "size": 3549
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/tdd/agents/openai.yaml",
+      "sha256": "ea6f01cf1b8c06a4b0f5b649d74b1b8ce8685e72af1b38d70d877693e092af0b",
+      "size": 87
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/tdd/mocking.md",
+      "sha256": "3ceb807fdf4a47d6a93d4d9a891e5ba6d362a6247bd08adc451feebfc17361ef",
+      "size": 1481
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/tdd/tests.md",
+      "sha256": "859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a",
+      "size": 2214
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/GLOSSARY-FORMAT.md",
+      "sha256": "9b99859ec28437668130d8f2ce5a342938970f8a1ed4fd38c3eab4f4b5fff210",
+      "size": 2122
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/LEARNING-RECORD-FORMAT.md",
+      "sha256": "701fa34b6748aa89e6c960ffb815257f481a7d77fb2900f9028f7edf3fdd6052",
+      "size": 2747
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/MISSION-FORMAT.md",
+      "sha256": "8cacbb3c0644d3ae0ea4965564797099401a6930a23f7cf462918576587f2418",
+      "size": 1540
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/RESOURCES-FORMAT.md",
+      "sha256": "e9cacf34026e11a8d1c8f9de88abe5bcbf654f4ebdb25cae8c0de0d5f48f44ec",
+      "size": 1924
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/SKILL.md",
+      "sha256": "a32df9dcdfc0c4fdc1c98e1ed3940c5f56b84c1aa90ff60346f32b8b53915b43",
+      "size": 9506
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/teach/agents/openai.yaml",
+      "sha256": "5856f3ae8aec742f1499c640aecdd5f1d6af5fa210a7c6ec794de8263a6f733f",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-questionnaire/SKILL.md",
+      "sha256": "b5eb929842ee0e93d867c5e906d183d350f2f2d149eaeaa86967d94d8eda1d3b",
+      "size": 2904
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-questionnaire/agents/openai.yaml",
+      "sha256": "9e8a06c38c8842eea8d4922cb9d1ead8e3ace647bab259b943c994a1b4742bc2",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-spec/SKILL.md",
+      "sha256": "43ad9cf318e5e7d3d1fa360253a37021796dc87a0c2e595ad262661a10f85088",
+      "size": 3043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-spec/agents/openai.yaml",
+      "sha256": "1c5b4d1e3d8e52287ef19cc2742fdbbfae1914ac75d33af3e4c8174f08cc55bb",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-tickets/SKILL.md",
+      "sha256": "5c9fba69845c2519b9b35b9af42ae5142c21f8ca15ac2123dc2722002c8058ae",
+      "size": 5671
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/to-tickets/agents/openai.yaml",
+      "sha256": "21bc6215fffcd7614e9f772bb1760e87cc5fc7dcc707e7d282bc9414267a6090",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/triage/AGENT-BRIEF.md",
+      "sha256": "7f5f87fed3033df1b06e083c480f3e847b1fbb0647746b8a4c6a50f9f26ef44f",
+      "size": 7942
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/triage/OUT-OF-SCOPE.md",
+      "sha256": "1fbf9b432130c6380aa65813b55553cfda150309b27c595e183f8e335b8a190d",
+      "size": 4667
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/triage/SKILL.md",
+      "sha256": "623a2ed692bdc77d2090e2a3dea3b627dd722ad3bbaca0be83aada75292c8fc4",
+      "size": 6557
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/triage/agents/openai.yaml",
+      "sha256": "2e683717720cf456d165d0bb1a68bb600d0b6a8ccb61841c172e50d26f95351c",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wait-what/SKILL.md",
+      "sha256": "e3f44e3ccbc0e7b62f20ba70b295fc9c9f4aa3f96c77168faee1c71bacbf4215",
+      "size": 394
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wait-what/agents/openai.yaml",
+      "sha256": "b41faadf741d51e4ea184148b2d1854d93f947aaf754c7844f70a00f04194999",
+      "size": 158
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wayfinder/SKILL.md",
+      "sha256": "fee6e1d0c50f0e736b4ef8a599060c959afae904c9a97d82c97f049fcc3aa0f1",
+      "size": 11908
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wayfinder/agents/openai.yaml",
+      "sha256": "88bc81a11a6d52ac67aeaa76b8b619e387020d47c5133a4dd4927fd15c4ad073",
+      "size": 144
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-brain/SKILL.md",
+      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-doctor/SKILL.md",
+      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-heal/SKILL.md",
+      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-ingest/SKILL.md",
+      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-label/SKILL.md",
+      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-lint/SKILL.md",
+      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-maintain/SKILL.md",
+      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-navigate/SKILL.md",
+      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-query/SKILL.md",
+      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-retrieve/SKILL.md",
+      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-setup/SKILL.md",
+      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-triage/SKILL.md",
+      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wiki-usage/SKILL.md",
+      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wizard/SKILL.md",
+      "sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1",
+      "size": 4123
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wizard/agents/openai.yaml",
+      "sha256": "98f44d682d58e262f160dc59a8befc365e0aa65820dd0261864af26aa8e59d83",
+      "size": 96
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/wizard/template.sh",
+      "sha256": "33cbe9dfb1d0e9185b60248a52aabed14bc64785a00cac695e302e739dd6c153",
+      "size": 8567
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-beats/SKILL.md",
+      "sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e",
+      "size": 4855
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-beats/agents/openai.yaml",
+      "sha256": "ddaef01da61d8e3c5f482c4403033c20cf5823f08a1dbf1d4c871670831d01e2",
+      "size": 142
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-for-agents/SKILL-MECHANICS.md",
+      "sha256": "c768e6307c7c10728c401c213f2c4ba71c542127eeb7ad2956aabd15a0fa0059",
+      "size": 2629
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-for-agents/SKILL.md",
+      "sha256": "551adca942227b44192edba88acd4e8db911f0121ce58ad16944ccf6a896a74a",
+      "size": 10886
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-for-agents/agents/openai.yaml",
+      "sha256": "eacb24b2a618cfb81dacb0416f4fdd75ddf3a8060f8ddb99aae1b1e301907e4b",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-fragments/SKILL.md",
+      "sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea",
+      "size": 3558
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-fragments/agents/openai.yaml",
+      "sha256": "81167f25ee8ea1bb4b4958f12b6702ea972ad31b05e03ec91e39fa4bae0c2641",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-shape/SKILL.md",
+      "sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72",
+      "size": 5922
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".claude/skills/writing-shape/agents/openai.yaml",
+      "sha256": "56de45430e23104ff178415f5ecf7821d51a9cfabd8814b1607ebf39da2ef5cd",
+      "size": 144
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/environment.json",
+      "sha256": "cccb4bb7a726b6eb99ca3936152f80a9218781717fbfea699ff1c9cb16c19319",
+      "size": 186
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/rules/trell-core.mdc",
+      "sha256": "72dac8d641017385d973672102a428214ef52f335c14ef03ce48bedecc82a5f3",
+      "size": 2127
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/rules/trell-rust.mdc",
+      "sha256": "d3684cc6c61e8bfd6024d07c9a2edba822752b125a36ea557ac1ba11cf72e323",
+      "size": 555
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/rules/trell-wiki.mdc",
+      "sha256": "9bb9255d4c5a810048f49cfe2667133a70b2530af9c664acd9204fcb664de193",
+      "size": 1411
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/ask-matt/PHASE-BOUNDARIES.md",
+      "sha256": "a8aa20158609ef39e2b308b6ba0660c91066838d07a867202e63a7744a88a3ed",
+      "size": 4249
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/ask-matt/SKILL.md",
+      "sha256": "b25d86fb36b1d294eeead5d7db529f86135f9671f2afcd607579a63bb2213769",
+      "size": 11417
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/ask-matt/agents/openai.yaml",
+      "sha256": "bdffbc5a0a99ed1b6ef3253d251d755fd18162b9845972e380007f844b09b05c",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/cargo-verify/SKILL.md",
+      "sha256": "f0754ffedf350db4cfd8d71ef0c85754bad303cec8eb576ad3bded8a8742ac85",
+      "size": 551
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/claude-handoff/SKILL.md",
+      "sha256": "6738e8b7c7899ea0038fb7a5c859ca1b90c7b1eb40123dcdbe94c51b5b119f12",
+      "size": 1301
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/claude-handoff/agents/openai.yaml",
+      "sha256": "2308a672978864633286fb9f0792b08657e501426b3f7883fc418d5d2eac5eb0",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/code-review/SKILL.md",
+      "sha256": "47f4e52c21694def9c7c11cbfbf891ca35eac7a93e395797515be3c8a409ae50",
+      "size": 6589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/code-review/agents/openai.yaml",
+      "sha256": "8229ca854e11dc8e6aef2131ee03f31fb1561cf905fab9ccc325180cf3331352",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/codebase-design/DEEPENING.md",
+      "sha256": "f3dd099ce99289bd213914d8ee3e2429b78309c3957ca4583f7659551b1d53c1",
+      "size": 2553
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/codebase-design/DESIGN-IT-TWICE.md",
+      "sha256": "8e740bf98446dbd4dfdc132ac4346d9a7eedaf93de6a495889171cf7f99f16bd",
+      "size": 2664
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/codebase-design/SKILL.md",
+      "sha256": "2c20617f87ec8af6a434859f381b2f061a69b530444e74eb39e78bb016a6d1e2",
+      "size": 6446
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/codebase-design/agents/openai.yaml",
+      "sha256": "edebc9e4fcfe102114012575eaa9600b9b5fd08c311664f389c36e7bc717740f",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/diagnosing-bugs/SKILL.md",
+      "sha256": "77f3cf31bc99b2f49af943222526531fcc9fc41d047626d3640e875e85af3e84",
+      "size": 8529
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/diagnosing-bugs/agents/openai.yaml",
+      "sha256": "3e430dbe4334a87597488c060cb3dc3786bb00c9182877d6f5ec41f62490e90b",
+      "size": 103
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/diagnosing-bugs/scripts/hitl-loop.template.sh",
+      "sha256": "35103539fc36873eea36074769ad454f9379d6fc8b2dc0e26ce987fd3bfe5503",
+      "size": 1316
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/domain-modeling/ADR-FORMAT.md",
+      "sha256": "944c92aa790e8fbdc9199640b170979abb8a34ba8d0fe18c2a01a63bce140ca0",
+      "size": 2733
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/domain-modeling/CONTEXT-FORMAT.md",
+      "sha256": "17ab16ce783e4d2801ee52fd9acdf550cbf44de65ae76797a93943bbedf22a13",
+      "size": 2290
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/domain-modeling/SKILL.md",
+      "sha256": "327a2b50620e2fd70abc6893cd6965e76b20f8d0adb0dc2c8d5eb3845efb643e",
+      "size": 3331
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/domain-modeling/agents/openai.yaml",
+      "sha256": "f6bf2aa996c6e6f53fdd0708e18a0d16a56aed8322cca59fedbe3c0d2c75f06b",
+      "size": 101
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/git-guardrails-claude-code/SKILL.md",
+      "sha256": "69b291d655626a01602b998a1836fcb93c058ede68dfafddfd71e87f17074764",
+      "size": 2313
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/git-guardrails-claude-code/agents/openai.yaml",
+      "sha256": "d53cd783fc0ac208dec9a4c267989284384785aab6422dccdaed42f9e40243ec",
+      "size": 112
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+      "sha256": "234922b83c0a1737ee7300806c21ac0f389b07aaeb65c2d71ccedafbc5e1ea4b",
+      "size": 507
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grill-me/SKILL.md",
+      "sha256": "caaf8b8de1684f96e26b28f3c29189db5c89cce4b73e1c93d86164f66ef88637",
+      "size": 157
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grill-me/agents/openai.yaml",
+      "sha256": "c061e39c3e0f9d865fb1b97556d485704af2a8a58f4b8221a8917a5c2074a32b",
+      "size": 137
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grill-with-docs/SKILL.md",
+      "sha256": "7de372c13488f1ee96cc11cd8907b56b6809cc93eef776eeddd37de6b6cbe3fe",
+      "size": 247
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grill-with-docs/agents/openai.yaml",
+      "sha256": "94cd0ab161fb468a836349f5ed482ba58ce8e709a05c57ce533d739dbd35cca9",
+      "size": 145
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grilling/SKILL.md",
+      "sha256": "10ff989e7498b23b5acb49d5048f11dcd906757d2f79c5cdf8a00001381296f2",
+      "size": 1987
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/grilling/agents/openai.yaml",
+      "sha256": "1411d7df7d99b7e621a1ff8283c8133cc2464be63d064e52d8ce169c6800ee9b",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/handoff/SKILL.md",
+      "sha256": "c8f30ae09bd6e17c0e28b91569d44512e8fdc8fb37bffa6a81d2e2544bd0d37e",
+      "size": 1807
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/handoff/agents/openai.yaml",
+      "sha256": "5c479fd562c691851690e8b18c8501045bef0943c10743d636b2fae26add1d28",
+      "size": 141
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/implement-spec/SKILL.md",
+      "sha256": "f703b5f41df9c2202e19540d203e0d5fc32613572a838a070136cc22e712b129",
+      "size": 2043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/implement-spec/agents/openai.yaml",
+      "sha256": "d457ae78ff282b8798380b0c2e393c9798bc2bf5ee7dfe9ca31607714c6cd7d3",
+      "size": 143
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/implement/SKILL.md",
+      "sha256": "6d3fd9e83b8f36e5213854779db49b256a457a7ebb4a503e53fa7dcff696adc3",
+      "size": 433
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/implement/agents/openai.yaml",
+      "sha256": "8970a8596ade0c28ab427f41a4ea242d6bdf6186c59ebf55e1238dbecaab79dc",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/improve-codebase-architecture/HTML-REPORT.md",
+      "sha256": "581e8bb5a521e46bbda8ca7e19b15948bed882187108092ebb90c62513b77528",
+      "size": 6641
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/improve-codebase-architecture/SKILL.md",
+      "sha256": "d1ac25511a936ff4250a48dbcefda363837d6bb9321b3cba73df99fa37270a75",
+      "size": 5993
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/improve-codebase-architecture/agents/openai.yaml",
+      "sha256": "c8cb20f68ebf0edb4e497bc11ae5fcaa196004e661cd189015b04f4109ced7f1",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/loop-me/SKILL.md",
+      "sha256": "e44d1cc3e760fb86ac42964c2a5f1fcac511715db50fb375f3f7be814de1eaa7",
+      "size": 2522
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/loop-me/agents/openai.yaml",
+      "sha256": "b66fa10079957051be6a812f45e55b67ac394b71d5ba88349962b4c9205802c3",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/migrate-to-shoehorn/SKILL.md",
+      "sha256": "de4da4c11d924fac79c924b2ee3d2db4a5cb98386eb490a599119463d036ae72",
+      "size": 2795
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/migrate-to-shoehorn/agents/openai.yaml",
+      "sha256": "395c2db852e66a199f1cd07f7ed92d66cb6f0787460c5475926f1a5e778b699d",
+      "size": 110
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/prototype/LOGIC.md",
+      "sha256": "f61c7d249e786a79ef289018901c348271e1798dd0b0bc5607b5c6f4d4a01ab9",
+      "size": 6036
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/prototype/SKILL.md",
+      "sha256": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3",
+      "size": 2931
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/prototype/UI.md",
+      "sha256": "723211e878acbc7b6ff09755263f3295cde724ba902ff0064da41eed51d45ad3",
+      "size": 6913
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/prototype/agents/openai.yaml",
+      "sha256": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc",
+      "size": 100
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/read-handoff/SKILL.md",
+      "sha256": "2bd8e21555ab443e28918ffdc3a88c8c6baa2379493b90dafd6cbe6beebc547d",
+      "size": 1254
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-brain/SKILL.md",
+      "sha256": "9bda9b1eca7bfbc96422c3e2303e51455de6a5c3881906be3faebff300288a93",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-doctor/SKILL.md",
+      "sha256": "b074c31810d0d8e1dd3a0fb860200d7df34264d1bf7f6cdabbe6eac8bb7fa4d9",
+      "size": 374
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-heal/SKILL.md",
+      "sha256": "51854aa7f0011fbb779710035c43a8ba974da30f055867aafb38a529b1ff14c2",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-ingest/SKILL.md",
+      "sha256": "97d4c23466efd8bf92ad06378d5ca54d09a80da7f1544aae9bc851e4f30fa45e",
+      "size": 382
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-label/SKILL.md",
+      "sha256": "326b11f8be36b1353515639cb1299509cc9126d20c7b3bc8791e0ffa8d555d4b",
+      "size": 364
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-lint/SKILL.md",
+      "sha256": "1cc86b01958bc967aea2421d0f56297ab37761e0453e4fbb225a31931fcdfb2d",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-maintain/SKILL.md",
+      "sha256": "249e1833c5b7e8eff8b8d819b1c2efd247b79d27d93d66e782d707746707de7a",
+      "size": 377
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-navigate/SKILL.md",
+      "sha256": "6e09917a2c17036d2fbe12f469a0ac92c681a060fdd1f6dd389cb8a0aaf562f9",
+      "size": 386
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-query/SKILL.md",
+      "sha256": "6368ad500e1856e78f973e1170cc018026c8a9f9b9c18ee5563b0ca9b849ca60",
+      "size": 385
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-retrieve/SKILL.md",
+      "sha256": "4febf230480a5f2c27d5cf9cfbd0495defff7975ff41566a75aae2f7cad898e2",
+      "size": 387
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-setup/SKILL.md",
+      "sha256": "13b8375157839c2ac612422dc27bc8c9e8b8873303156e80a8767872093f27d4",
+      "size": 371
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-triage/SKILL.md",
+      "sha256": "ea5bb46b4138723e83d6577cd245acd2cff3a2a9b233d3dc6a3b141d5c67a3c8",
+      "size": 381
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/repobrain-usage/SKILL.md",
+      "sha256": "dfb839758e8da3ed28e12f91bef7dd53503b2a27876e5276d6699001602632ed",
+      "size": 378
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/research/SKILL.md",
+      "sha256": "985569f15739c713d6784887c3d186d4ef9ac85bec5ad9c068d25bf0739928e4",
+      "size": 794
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/research/agents/openai.yaml",
+      "sha256": "9b4c470d63221c1f68f22df70b83e2f12401b317babe0d1b7b5f24a974474d0d",
+      "size": 94
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/resolving-merge-conflicts/SKILL.md",
+      "sha256": "9d8114f8ef0b31f535a265fc05c364bd8cf2e2895a830040e06c22acb11f54b0",
+      "size": 918
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/resolving-merge-conflicts/agents/openai.yaml",
+      "sha256": "a1f4f96838f2ed6282eb28abbbf99029cb8fadce552baf53da90a025b8bffddf",
+      "size": 113
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/retro/SKILL.md",
+      "sha256": "264f3330f1e2382af89610ed048ba0ed6d08883eb69f596a8f1df3f1e1a4c6a1",
+      "size": 3388
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/retro/agents/openai.yaml",
+      "sha256": "cb6fb9d7e6b4be5975f41f6def1dd00a1255bad5d9b02696b124c924a8b8745c",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/scaffold-exercises/SKILL.md",
+      "sha256": "75f5c9d771606fb9762f16522efc954df11c324f87148d8ff069bce166257de9",
+      "size": 3589
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/scaffold-exercises/agents/openai.yaml",
+      "sha256": "525b33913340bea7947ad2de17f2a7c5fb94be543345fe80ae753b9a44ba601d",
+      "size": 108
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/SKILL.md",
+      "sha256": "2bcd89e97777cdb705914424e39c97d5db524c8eb4eafac8120778a07774f0ec",
+      "size": 6841
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/agents/openai.yaml",
+      "sha256": "9527de0110541c45712319025155aeab8dc7d77c6ed6e5e83271bab1851ab939",
+      "size": 152
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/domain.md",
+      "sha256": "edc6d6131fdffc4b7135704f5262124fc43355c95f61b7399dc5a4db643e28ca",
+      "size": 2033
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/issue-tracker-github.md",
+      "sha256": "afd6852a80185217bd28aa5cbe456bef1e85be25be7bd1fba382d5b8ee428325",
+      "size": 3731
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/issue-tracker-gitlab.md",
+      "sha256": "ea175f73d193b3f55819c0ed9bbccf6ee0e70ad8f928e3d7607596c53380acd6",
+      "size": 3809
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+      "sha256": "7dcda20a2eb4bdc89b95d1143423c0691309921cadae3132e6424f371030506e",
+      "size": 1810
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-matt-pocock-skills/triage-labels.md",
+      "sha256": "4f53c9b40ce2651e3611aa090eaedbd6dbc9b71ef8c5f7e65eac0d8263190d0d",
+      "size": 1045
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-pre-commit/SKILL.md",
+      "sha256": "c9819d7f1e3b198064edc1faa3154224ed67395e9f07f5d3cea4b67cf0a11a98",
+      "size": 2258
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-pre-commit/agents/openai.yaml",
+      "sha256": "acf41db398c5c43afe504008bb7d615a97b6498b0f1f6c5b2395254c0bfb57d1",
+      "size": 99
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-ts-deep-modules/SKILL.md",
+      "sha256": "29acca66ac99d4532e2a6f0370d8125d7cba1e87c9ac66573203c75189d3e6c7",
+      "size": 7546
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-ts-deep-modules/agents/openai.yaml",
+      "sha256": "159f680217d50747702620c05fd65734a152185b3219a8ca5ee4630878a354fa",
+      "size": 149
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/setup-ts-deep-modules/dependency-cruiser.config.cjs",
+      "sha256": "3c4973bec69f73b2117654abf9e666a7c28665b213be20e6d39869e29842428e",
+      "size": 3712
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/tdd/SKILL.md",
+      "sha256": "cb01f66bebfaa25fa1f88e6b7e769cd9fd9f35b1120b8563749820738814c927",
+      "size": 3549
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/tdd/agents/openai.yaml",
+      "sha256": "ea6f01cf1b8c06a4b0f5b649d74b1b8ce8685e72af1b38d70d877693e092af0b",
+      "size": 87
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/tdd/mocking.md",
+      "sha256": "3ceb807fdf4a47d6a93d4d9a891e5ba6d362a6247bd08adc451feebfc17361ef",
+      "size": 1481
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/tdd/tests.md",
+      "sha256": "859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a",
+      "size": 2214
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/GLOSSARY-FORMAT.md",
+      "sha256": "9b99859ec28437668130d8f2ce5a342938970f8a1ed4fd38c3eab4f4b5fff210",
+      "size": 2122
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/LEARNING-RECORD-FORMAT.md",
+      "sha256": "701fa34b6748aa89e6c960ffb815257f481a7d77fb2900f9028f7edf3fdd6052",
+      "size": 2747
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/MISSION-FORMAT.md",
+      "sha256": "8cacbb3c0644d3ae0ea4965564797099401a6930a23f7cf462918576587f2418",
+      "size": 1540
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/RESOURCES-FORMAT.md",
+      "sha256": "e9cacf34026e11a8d1c8f9de88abe5bcbf654f4ebdb25cae8c0de0d5f48f44ec",
+      "size": 1924
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/SKILL.md",
+      "sha256": "a32df9dcdfc0c4fdc1c98e1ed3940c5f56b84c1aa90ff60346f32b8b53915b43",
+      "size": 9506
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/teach/agents/openai.yaml",
+      "sha256": "5856f3ae8aec742f1499c640aecdd5f1d6af5fa210a7c6ec794de8263a6f733f",
+      "size": 139
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-questionnaire/SKILL.md",
+      "sha256": "b5eb929842ee0e93d867c5e906d183d350f2f2d149eaeaa86967d94d8eda1d3b",
+      "size": 2904
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-questionnaire/agents/openai.yaml",
+      "sha256": "9e8a06c38c8842eea8d4922cb9d1ead8e3ace647bab259b943c994a1b4742bc2",
+      "size": 166
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-spec/SKILL.md",
+      "sha256": "43ad9cf318e5e7d3d1fa360253a37021796dc87a0c2e595ad262661a10f85088",
+      "size": 3043
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-spec/agents/openai.yaml",
+      "sha256": "1c5b4d1e3d8e52287ef19cc2742fdbbfae1914ac75d33af3e4c8174f08cc55bb",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-tickets/SKILL.md",
+      "sha256": "5c9fba69845c2519b9b35b9af42ae5142c21f8ca15ac2123dc2722002c8058ae",
+      "size": 5671
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/to-tickets/agents/openai.yaml",
+      "sha256": "21bc6215fffcd7614e9f772bb1760e87cc5fc7dcc707e7d282bc9414267a6090",
+      "size": 146
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/triage/AGENT-BRIEF.md",
+      "sha256": "7f5f87fed3033df1b06e083c480f3e847b1fbb0647746b8a4c6a50f9f26ef44f",
+      "size": 7942
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/triage/OUT-OF-SCOPE.md",
+      "sha256": "1fbf9b432130c6380aa65813b55553cfda150309b27c595e183f8e335b8a190d",
+      "size": 4667
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/triage/SKILL.md",
+      "sha256": "623a2ed692bdc77d2090e2a3dea3b627dd722ad3bbaca0be83aada75292c8fc4",
+      "size": 6557
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/triage/agents/openai.yaml",
+      "sha256": "2e683717720cf456d165d0bb1a68bb600d0b6a8ccb61841c172e50d26f95351c",
+      "size": 135
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wait-what/SKILL.md",
+      "sha256": "e3f44e3ccbc0e7b62f20ba70b295fc9c9f4aa3f96c77168faee1c71bacbf4215",
+      "size": 394
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wait-what/agents/openai.yaml",
+      "sha256": "b41faadf741d51e4ea184148b2d1854d93f947aaf754c7844f70a00f04194999",
+      "size": 158
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wayfinder/SKILL.md",
+      "sha256": "fee6e1d0c50f0e736b4ef8a599060c959afae904c9a97d82c97f049fcc3aa0f1",
+      "size": 11908
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wayfinder/agents/openai.yaml",
+      "sha256": "88bc81a11a6d52ac67aeaa76b8b619e387020d47c5133a4dd4927fd15c4ad073",
+      "size": 144
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-brain/SKILL.md",
+      "sha256": "d21bea29bf37bf7aea0df70ec901c081167ef7e40469a82b915b51e389627bdf",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-doctor/SKILL.md",
+      "sha256": "b40b41b33bfd819b0c218f87cd5c37e89d99bdf91eebeb6b5afb6303cbbb1346",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-heal/SKILL.md",
+      "sha256": "45f51a0823ad308fa2640fa7e92940a219eeccd09a2486133e5cb9954985cfd4",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-ingest/SKILL.md",
+      "sha256": "aa9fdf242c6a1072e88ea4dab50b68b59f1c1dbc5a63359587abc2f2c9506b35",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-label/SKILL.md",
+      "sha256": "068b987555e67381237641a74733adbbafa12e0c5bc1e7bc2d56fed0aa80a3c7",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-lint/SKILL.md",
+      "sha256": "e2cba55bb0174b6fbf13d2e922274d16d6c5f05a38644394197de2ee27e3fe68",
+      "size": 260
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-maintain/SKILL.md",
+      "sha256": "46d1a1a9f19c398867148db38477b609d42870faf7db00d28bc8be38248a3d4c",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-navigate/SKILL.md",
+      "sha256": "1a309118c095ded4000eb0c9bb087550430132cb6c890f382ffb8a0eee0a00f6",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-query/SKILL.md",
+      "sha256": "481e74e994547fb3774be9aa9c6a919ed3831e1f26f8d00f891b08a04bac97a4",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-retrieve/SKILL.md",
+      "sha256": "0a41a70b9ebcce5065f7a1e53a67b1612719749115af8aaf0d758dc9f1f46f29",
+      "size": 280
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-setup/SKILL.md",
+      "sha256": "99c09b8864dc7bfb4e02fe415f5602e4f36ab12f7d1a5f5ebd9cffd557649156",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-triage/SKILL.md",
+      "sha256": "c7688f167dc00d4389875a90dde5694e2ebc8caef2b155b70403aea4c6321302",
+      "size": 270
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wiki-usage/SKILL.md",
+      "sha256": "f6fb77ae05cf3166f18ba6e821551bd7db16901b4daffc526f35165b55bb498b",
+      "size": 265
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wizard/SKILL.md",
+      "sha256": "bdf31d48211ea559878f95a4f344aeabf8d85897488ba564382bab0b000daac1",
+      "size": 4123
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wizard/agents/openai.yaml",
+      "sha256": "98f44d682d58e262f160dc59a8befc365e0aa65820dd0261864af26aa8e59d83",
+      "size": 96
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/wizard/template.sh",
+      "sha256": "33cbe9dfb1d0e9185b60248a52aabed14bc64785a00cac695e302e739dd6c153",
+      "size": 8567
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-beats/SKILL.md",
+      "sha256": "a96abafa2372eede8267d770138b322d6125da8adaa7ccf0a5e08e4ee13ee71e",
+      "size": 4855
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-beats/agents/openai.yaml",
+      "sha256": "ddaef01da61d8e3c5f482c4403033c20cf5823f08a1dbf1d4c871670831d01e2",
+      "size": 142
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-for-agents/SKILL-MECHANICS.md",
+      "sha256": "c768e6307c7c10728c401c213f2c4ba71c542127eeb7ad2956aabd15a0fa0059",
+      "size": 2629
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-for-agents/SKILL.md",
+      "sha256": "551adca942227b44192edba88acd4e8db911f0121ce58ad16944ccf6a896a74a",
+      "size": 10886
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-for-agents/agents/openai.yaml",
+      "sha256": "eacb24b2a618cfb81dacb0416f4fdd75ddf3a8060f8ddb99aae1b1e301907e4b",
+      "size": 102
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-fragments/SKILL.md",
+      "sha256": "298b0edd23df229183630de592ed8aa4289233560f2040691f6eb77caeaad4ea",
+      "size": 3558
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-fragments/agents/openai.yaml",
+      "sha256": "81167f25ee8ea1bb4b4958f12b6702ea972ad31b05e03ec91e39fa4bae0c2641",
+      "size": 140
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-shape/SKILL.md",
+      "sha256": "f5e6c57bdd85178ace4a260c92f46da6b64ddee18215b461d875739c68976f72",
+      "size": 5922
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".cursor/skills/writing-shape/agents/openai.yaml",
+      "sha256": "56de45430e23104ff178415f5ecf7821d51a9cfabd8814b1607ebf39da2ef5cd",
+      "size": 144
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".gitignore",
+      "sha256": "32190ae4b57a7eccb8e0189fcb6bbe63a12b0f034c5669385984435a862facba",
+      "size": 1247
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".handoffs/.gitignore",
+      "sha256": "4911fae498933af824451befe6d6016bae4b7a646f080b43b79e3a0ceda1f980",
+      "size": 143
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": ".handoffs/README.md",
+      "sha256": "e6020f45ee5f5f0195a8c1ebcc9f020fac4f43ac9c4eea312d7271ae37176566",
+      "size": 663
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "AGENTS.md",
+      "sha256": "b1737679f4c23fa841c5912dff58fb1845de9ff3d9e9209072f97aaa71521c31",
+      "size": 2506
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "CLAUDE.md",
+      "sha256": "b921eb07993ee53db0ae6885f625b0e76c94c4879cec730c61249ac858ad3293",
+      "size": 2785
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "Cargo.lock",
+      "sha256": "ede15c786a8b2df197725784f8eac3cbb0ddc8bdf718573cb4a90040886c477f",
+      "size": 2865
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "Cargo.toml",
+      "sha256": "a551d9461fc78969732b79f37a34f2bf1a234b5beb529826c824f4a76ebd9d29",
+      "size": 172
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "README.md",
+      "sha256": "82588c71a89093be6a5e243d5c7715ca4082f6b41cd7bf4552ed6ec2105efda9",
+      "size": 11634
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "THESIS.md",
+      "sha256": "67560852a4b35bc8fe09a45b7b14fd104ddb00b342cd1115e8f27407f4251b13",
+      "size": 9277
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "docs/agents/domain.md",
+      "sha256": "edc6d6131fdffc4b7135704f5262124fc43355c95f61b7399dc5a4db643e28ca",
+      "size": 2033
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "docs/agents/issue-tracker.md",
+      "sha256": "afd6852a80185217bd28aa5cbe456bef1e85be25be7bd1fba382d5b8ee428325",
+      "size": 3731
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "docs/agents/triage-labels.md",
+      "sha256": "4f53c9b40ce2651e3611aa090eaedbd6dbc9b71ef8c5f7e65eac0d8263190d0d",
+      "size": 1045
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "docs/research/2026-09-03-agent-language-market.md",
+      "sha256": "dbb7e551f2604cc14d95537932f65721c4c3928dbcf95d198e1cff5450f08014",
+      "size": 21808
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "env.zsh",
+      "sha256": "0f7de467f7a4d1f72ec3675641a82f066c4fc1aa7dcb5670253e4154b9939448",
+      "size": 103
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/42.trell",
+      "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "size": 3
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/arithmetic.trell",
+      "sha256": "5ab617a748aafdbdd85111c7a39ef989fb9c5223cca24141333c0fb371785660",
+      "size": 12
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/autonomous_ship.trell",
+      "sha256": "c6430fd63af31a66ae05a3cfe1ed5123f37a3170a5f81ba6a0ffe9f1793c7443",
+      "size": 2036
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/bank_transfer.trell",
+      "sha256": "6ed99247894214fbae808383b2e4658b5315366e8e85827122fd703bf9a9c968",
+      "size": 1953
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/code_synth_guard.trell",
+      "sha256": "11371ad99ca9bca7182886101c6eefd13993dec63977daac742aed83c26e15df",
+      "size": 1532
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/deterministic_math.trell",
+      "sha256": "cef269b3394cccabd4c3d0d9c06602943f805b0dfcfb909390267e71f66646bc",
+      "size": 703
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/division.trell",
+      "sha256": "e85a992b8bd623c3632cc2b14877847148f587ce36cae44ba4bae9f290665818",
+      "size": 12
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/financial_settlement.trell",
+      "sha256": "dcd6990aff7c355e64a0c816a707d0fd586a56e84c48bdaddc236a63035db648",
+      "size": 1929
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/medical_diagnosis.trell",
+      "sha256": "4c8534fd004fb385f2f4cec669c687c8d47012ab4806a45044b3b9361d34a67c",
+      "size": 2107
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/parentheses.trell",
+      "sha256": "c74fee12c5c10161fc68e2d0cb7d8fb4a955f362354934edb831107d56554cc0",
+      "size": 14
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/precedence.trell",
+      "sha256": "5ab617a748aafdbdd85111c7a39ef989fb9c5223cca24141333c0fb371785660",
+      "size": 12
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "examples/scenarios/enterprise_clean.json",
+      "sha256": "4108e779d760809aa5c6265ce323b19b99c4b2c58bc52feabb2c8c7f474b3d7a",
+      "size": 619
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "examples/scenarios/risk_alert.json",
+      "sha256": "6eea2f3c83f7c1703af1fddd07e40a1d34a1fea61045cdb11f44e3d2d75d1d9c",
+      "size": 569
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "examples/subtraction.trell",
+      "sha256": "b7ca10bcccf8f6af44fa70d3e9c4c38b239ab17d58e1a841900dfb5a31df8f2e",
+      "size": 13
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "notes/command to compile trell.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "notes/toolchain arrangement.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "repobrain",
+      "sha256": "d380e77fda46e610cd60105b95861a43abdc0ebee29cba4d9c4dbcf94195e531",
+      "size": 436
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "run-trell.sh",
+      "sha256": "b0da30e54c855e538cf40dd1e78539740c8e14559a2347abe3fe3c7c2597a6e9",
+      "size": 50
+    },
+    {
+      "classification": "docs",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "run-trell.zsh",
+      "sha256": "f07412e0095ce96a9b67352ada06d90e9e6e57ff29abe4c86810705643c753eb",
+      "size": 219
+    },
+    {
+      "classification": "config",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "skills-lock.json",
+      "sha256": "7dd366f3b1f66396b5c559c48e7379e6dc2840eb5c6afc9e7456b639b7052e8c",
+      "size": 9133
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/ast.rs",
+      "sha256": "14f14655af98a1e53295bd3e2bbbe900eb80ce10ec8c12af7633ff6ae477391a",
+      "size": 4107
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/codegen.rs",
+      "sha256": "545c005cc0d2c7456e116a73184c4525e29885c39430a1b1551fb8a5e3156ea6",
+      "size": 710
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/interpreter.rs",
+      "sha256": "fd06d554f9174ef9cf0211076154cc0ddb8c4e7f8dfb19b09e48167953b0ee01",
+      "size": 23847
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/lexer.rs",
+      "sha256": "6b0cb02a11c1dc7056ff8a9c401aaada9403f79df8a20d32793e87745722d328",
+      "size": 11224
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/lib.rs",
+      "sha256": "bdd3307c59dc29b26bf0eeb23912b4d9a5dc5097d605f8f054522c62ed83e5ca",
+      "size": 117
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/main.rs",
+      "sha256": "62366f14553aa37d65d49c4967c12af1a4c59e856ac0e074c63d7024da3476a6",
+      "size": 7419
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/oracle.rs",
+      "sha256": "5696033529d00d6f3cdf1b588101be4806ecb6a62c3e822009c95e2233b2cba1",
+      "size": 5052
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/parser.rs",
+      "sha256": "3c80e436a980b70a79d9a12ba961b435c5a6420fccf108d8ae97be60513bb473",
+      "size": 44307
+    },
+    {
+      "classification": "code",
+      "conversion": {
+        "retryable": false,
+        "state": "graphify-delegate"
+      },
+      "freshness": "unchanged",
+      "path": "src/typecheck.rs",
+      "sha256": "b096b78f375f3e7932c76c8abff4325f86f5098491463c7aac7dfebb72856aab",
+      "size": 18636
+    },
+    {
+      "classification": "tests",
+      "conversion": {
+        "retryable": false,
+        "state": "native"
+      },
+      "freshness": "unchanged",
+      "path": "tests/epistemic_tests.rs",
+      "sha256": "f97ab283459e67cc93691f493341f10bbe822d631a604d01c7ce86c7fd7a1826",
+      "size": 8823
+    }
+  ],
+  "generated_at": "2026-09-05T13:29:45Z",
+  "schema_version": 1,
+  "structures": {
+    "adr": [],
+    "context": [],
+    "docs_sites": []
+  }
+}

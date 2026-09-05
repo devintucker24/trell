@@ -50,6 +50,38 @@ graphify:
   emit_html: false
 """
 
+SOURCES_BLOCK = """
+sources:
+  enabled: true
+  scan_on_setup: true
+  roots:
+    - .
+  includes: []
+  excludes:
+    - docs/wiki/**
+    - '**/target/**'
+    - '**/node_modules/**'
+    - '**/vendor/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/generated/**'
+    - graphify-out/**
+  deny_globs:
+    - '**/.env'
+    - '**/.env.*'
+    - '**/*credentials*'
+    - '**/*secret*'
+    - '**/*id_rsa*'
+    - '**/*.pem'
+  max_index_bytes: 262144
+  max_excerpt_chars: 1200
+  conversion:
+    enabled: true
+    requirement: markitdown==0.1.7
+    format: csv
+    strict: false
+"""
+
 INDEX_STUB = """---
 id: wiki-index
 title: {name} Knowledge Base Index
@@ -188,6 +220,7 @@ def ensure_dirs(host: dict, dry: bool) -> list[str]:
         PATHS.doctor_dir,
         PATHS.eval_dir,
         PATHS.usage_dir,
+        PATHS.sources_dir,
     ]
     for d in host.get("semantic_dirs") or []:
         dirs.append(WIKI / d)
@@ -213,14 +246,29 @@ def _host_is_template(text: str) -> bool:
 def write_host_if_missing(detected: dict, dry: bool) -> str:
     if HOST_PATH.exists() and not _host_is_template(HOST_PATH.read_text(encoding="utf-8")):
         text = HOST_PATH.read_text(encoding="utf-8")
+        additions = []
         if "graphify:" not in text:
-            if not dry:
-                roots = "\n".join(
-                    f"    - {t.rstrip('/')}" for t in (detected["code_roots"][:3] or ["src"])
-                )
-                block = GRAPHIFY_BLOCK.replace("    - src", roots or "    - src")
-                HOST_PATH.write_text(text.rstrip() + "\n" + block, encoding="utf-8")
-            return "appended graphify block"
+            roots = "\n".join(
+                f"    - {t.rstrip('/')}"
+                for t in (detected["code_roots"][:3] or ["src"])
+            )
+            additions.append(
+                GRAPHIFY_BLOCK.replace("    - src", roots or "    - src")
+            )
+        if "sources:" not in text:
+            additions.append(SOURCES_BLOCK)
+        if additions and not dry:
+            HOST_PATH.write_text(
+                text.rstrip() + "\n" + "\n".join(additions),
+                encoding="utf-8",
+            )
+        if additions:
+            names = []
+            if "graphify:" not in text:
+                names.append("graphify")
+            if "sources:" not in text:
+                names.append("sources")
+            return "appended " + " and ".join(names) + " block(s)"
         return "kept existing HOST.yaml"
     template = PATHS.templates / "HOST.template.yaml"
     data = yaml.safe_load(template.read_text(encoding="utf-8")) if template.exists() else {}
@@ -381,10 +429,28 @@ def gitignore_graphify(dry: bool) -> str:
     return "gitignore graphify-out/"
 
 
+def gitignore_source_cache(dry: bool) -> str:
+    gi = ROOT / ".gitignore"
+    marker = "docs/wiki/_system/generated/sources/cache/"
+    if gi.exists() and marker in gi.read_text(encoding="utf-8"):
+        return "gitignore already has source cache"
+    if not dry:
+        prev = gi.read_text(encoding="utf-8") if gi.exists() else ""
+        gi.write_text(
+            prev.rstrip()
+            + "\n\n# RepoBrain derived source conversion cache\n"
+            + marker
+            + "\n",
+            encoding="utf-8",
+        )
+    return "gitignore source cache"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Set up RepoBrain in this repository")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--no-graphify", action="store_true")
+    ap.add_argument("--no-sources", action="store_true")
     ap.add_argument("--seed-pages", action="store_true", help="write draft concept pages from Graphify god nodes if the corpus is empty")
     ap.add_argument("--force-seed", action="store_true")
     args = ap.parse_args()
@@ -414,6 +480,7 @@ def main() -> None:
     if stubs:
         print("stubs: " + ", ".join(stubs))
     print("gitignore: " + gitignore_graphify(dry))
+    print("gitignore: " + gitignore_source_cache(dry))
     print("AGENTS.md: " + maybe_patch_agents(dry))
     if not dry:
         install_launchers(dry)
@@ -436,6 +503,17 @@ def main() -> None:
             print(f"graphify: failed ({e})")
     elif args.no_graphify:
         print("graphify: skipped (--no-graphify)")
+
+    if not args.no_sources and not dry:
+        try:
+            from source_pipeline import cmd_scan
+
+            status = cmd_scan([])
+            print("sources: scanned" if status == 0 else f"sources: scan exited {status}")
+        except Exception as e:  # noqa: BLE001
+            print(f"sources: failed ({e})")
+    elif args.no_sources:
+        print("sources: skipped (--no-sources)")
 
     seeded = []
     if args.seed_pages and not dry and graphify_ok:

@@ -281,6 +281,11 @@ def main() -> None:
         action="store_true",
         help="also query Graphify graph.json (AST/call graph) after wiki hits",
     )
+    ap.add_argument(
+        "--include-sources",
+        action="store_true",
+        help="include bounded non-authoritative excerpts from the source manifest",
+    )
     args = ap.parse_args()
 
     t0 = time.perf_counter()
@@ -379,6 +384,59 @@ def main() -> None:
                 "why": _why(lex, g_eff, tscore, fboost),
             })
 
+    if args.include_sources and not _is_code_query(args.query):
+        try:
+            import json
+
+            from source_pipeline import search_raw_sources
+
+            if PATHS.source_manifest.exists():
+                source_manifest = json.loads(
+                    PATHS.source_manifest.read_text(encoding="utf-8")
+                )
+                raw_results = search_raw_sources(
+                    args.query,
+                    source_manifest,
+                    repo_root=ROOT,
+                    token_budget=min(args.budget_tokens, 1200),
+                    per_result_tokens=240,
+                    max_results=max(args.k, 1),
+                )
+                max_raw_score = max(
+                    (float(item.get("score", 0)) for item in raw_results),
+                    default=1.0,
+                )
+                for item in raw_results:
+                    provenance = dict(item["provenance"])
+                    path = str(provenance["source_path"])
+                    normalized = float(item.get("score", 0)) / max_raw_score
+                    candidates.append(
+                        {
+                            "score": round(0.08 + 0.24 * normalized, 4),
+                            "lex": round(normalized, 4),
+                            "graph": 0.0,
+                            "temporal": 0.0,
+                            "frontmatter": 0.0,
+                            "path": path,
+                            "id": f"raw:{path}",
+                            "title": path,
+                            "type": "raw-source",
+                            "tags": ["raw", item.get("classification", "source")],
+                            "anchor": "source-excerpt",
+                            "heading": "",
+                            "excerpt": item["excerpt"],
+                            "provenance": {
+                                "kind": "raw",
+                                "path": path,
+                                "authority": "non-authoritative",
+                                "content": provenance.get("content", "native"),
+                            },
+                            "why": "raw-source+lexical",
+                        }
+                    )
+        except Exception as exc:  # noqa: BLE001
+            print(f"source inventory unavailable: {exc}", file=sys.stderr)
+
     candidates.sort(key=lambda x: x["score"], reverse=True)
     # de-dupe same path+anchor keeping best
     seen = set()
@@ -401,6 +459,26 @@ def main() -> None:
             break
         packed.append(c)
         used += cost
+
+    conflicts: list[dict] = []
+    if args.include_sources:
+        try:
+            from source_pipeline import detect_and_emit_conflicts
+
+            conflicts = detect_and_emit_conflicts(
+                args.query,
+                packed,
+                repo_root=ROOT,
+                wiki_root=WIKI,
+            )
+            by_compiled = defaultdict(list)
+            for conflict in conflicts:
+                by_compiled[conflict["compiled_path"]].append(conflict)
+            for hit in packed:
+                if hit["path"] in by_compiled:
+                    hit["conflicts"] = by_compiled[hit["path"]]
+        except Exception as exc:  # noqa: BLE001
+            print(f"source conflict triage unavailable: {exc}", file=sys.stderr)
 
     duration_ms = int((time.perf_counter() - t0) * 1000)
     if not args.no_log:
@@ -429,6 +507,7 @@ def main() -> None:
             "packed_tokens": used,
             "budget_tokens": args.budget_tokens,
             "hits": packed,
+            "conflicts": conflicts,
         }
         if code_note:
             payload["code_graph"] = code_note
@@ -445,6 +524,14 @@ def main() -> None:
         print(f"{i}. [{c['score']:.3f}] {c['path']}{heading}")
         print(f"   id={c['id']} type={c['type']} lex={c['lex']} graph={c['graph']} temporal={c['temporal']}")
         print(f"   why: {c['why']}")
+        if c["provenance"]["kind"] == "raw":
+            print("   provenance: raw (non-authoritative)")
+        for conflict in c.get("conflicts") or []:
+            print(
+                "   conflict: raw "
+                f"{conflict['raw_path']} disagrees; "
+                f"triage={conflict['triage_path']}"
+            )
         print(f"   {c['excerpt'][:220]}…")
         print()
     if args.code and code_note.get("query_output"):
@@ -457,12 +544,22 @@ def _provenance_kind(rel: str, semantic_dirs: tuple[str, ...]) -> str:
     if top in semantic_dirs:
         return "compiled"
     if top == "raw":
-        return "raw"
+        return "raw-pointer"
     if top == "episodic":
         return "episodic"
     if top == "temporal":
         return "temporal"
     return "meta"
+
+
+def _is_code_query(query: str) -> bool:
+    tokens = set(tokenize(query))
+    if tokens & {
+        "caller", "callers", "calls", "class", "enum", "function", "import",
+        "implements", "method", "module", "struct", "symbol", "trait",
+    }:
+        return True
+    return bool(re.search(r"\b[A-Z][A-Za-z0-9_]{2,}\b", query))
 
 
 def _code_graph_note(query: str, run: bool = False) -> dict:
