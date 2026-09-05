@@ -23,6 +23,12 @@ queries:
       - path: applications/autonomous-physical-systems.md
         max_rank: 3
         provenance: compiled
+      - path: applications/overview-and-safety-patterns.md
+        max_rank: 8
+        provenance: compiled
+      - path: core/epistemic-foundations.md
+        max_rank: 8
+        provenance: compiled
   - id: belief-certain
     q: "What is belief vs certain and how does verify work?"
     expect_sources:

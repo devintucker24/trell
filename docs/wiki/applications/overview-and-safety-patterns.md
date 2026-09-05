@@ -9,6 +9,7 @@ tags:
 - pattern
 - three-beat
 - safety
+- maritime
 domain: applications
 summary: The three-beat ask → require → when pattern used across all niches.
 nodes:
@@ -32,6 +33,8 @@ agent:
   read_when:
   - how Trell is used in industry
   - teaching pattern
+  - maritime safety under COLREGs
+  - autonomous ship safety
   maintain: []
 ---
 
