@@ -827,7 +827,7 @@ def write_reports(
     report = {
         "schema_version": 1,
         "generated_at": now.isoformat(),
-        "repository": root.name,
+        "repository": (load_host().get("name") if root == ROOT else None) or root.name,
         "commit": _git_output(root, ["rev-parse", "HEAD"]) or None,
         "config": displayed_config,
         "status": "pass" if not required_failures else "fail",
