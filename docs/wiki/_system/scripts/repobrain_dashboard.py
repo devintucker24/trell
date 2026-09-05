@@ -28,18 +28,23 @@ SKILL_SUFFIXES = (
     "setup",
 )
 
-SKILL_COMMANDS = {
-    "brain": "./repobrain --help",
+PLAYBOOK_ONLY = frozenset(
+    {
+        "brain",
+        "query",
+        "navigate",
+        "triage",
+        "ingest",
+        "heal",
+        "lint",
+        "label",
+        "maintain",
+    }
+)
+
+SKILL_CLI = {
     "retrieve": './repobrain retrieve "<question>" --budget-tokens 3500',
-    "query": './repobrain retrieve "<question>" --budget-tokens 3500',
-    "navigate": './repobrain retrieve "<question>" --budget-tokens 1500',
-    "triage": "ls docs/wiki/inbox && ./repobrain retrieve \"inbox triage\" --lane meta",
-    "ingest": "Read docs/wiki/_system/skills/repobrain-ingest/SKILL.md",
     "doctor": "./repobrain doctor",
-    "heal": "Read docs/wiki/_system/skills/repobrain-heal/SKILL.md",
-    "lint": "./repobrain doctor",
-    "label": "Read docs/wiki/_system/skills/repobrain-label/SKILL.md",
-    "maintain": "Read docs/wiki/_system/skills/repobrain-maintain/SKILL.md",
     "usage": "./repobrain usage report",
     "setup": "./repobrain setup",
 }
@@ -47,8 +52,14 @@ SKILL_COMMANDS = {
 SKILL_PROMPTS = {
     "brain": "Operate RepoBrain with the public CLI. Do not dump the wiki.",
     "retrieve": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
-    "query": "Answer from cited RepoBrain retrieve hits. Do not invent compiled claims.",
-    "navigate": "Navigate the corpus with retrieve and one-hop frontmatter edges.",
+    "query": (
+        "Answer from cited RepoBrain retrieve hits. Do not invent compiled claims. "
+        "There is no ./repobrain query."
+    ),
+    "navigate": (
+        "Return wikilinks and one-line summaries after retrieve. "
+        "For code wiring use ./repobrain graph query. There is no ./repobrain navigate."
+    ),
     "triage": "Classify inbox material. Do not ingest until a human or skill says to.",
     "ingest": "Promote reviewed inbox pages into the compiled corpus without inventing taxonomy.",
     "doctor": "Run RepoBrain doctor and remediate critical/high findings.",
@@ -60,11 +71,39 @@ SKILL_PROMPTS = {
     "setup": "Install or refresh RepoBrain in this repository with ./repobrain setup.",
 }
 
-EXTRA_COMMANDS = (
+CLI_COMMANDS = (
+    {
+        "id": "cli-setup",
+        "name": "setup",
+        "description": "Initialize or refresh RepoBrain in this repository.",
+        "command": "./repobrain setup",
+        "prompt": "Install or refresh RepoBrain with ./repobrain setup. Do not dump the wiki.",
+    },
+    {
+        "id": "cli-retrieve",
+        "name": "retrieve",
+        "description": "Rank compiled wiki evidence. This is the only corpus lookup verb.",
+        "command": './repobrain retrieve "<question>" --budget-tokens 3500',
+        "prompt": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
+    },
+    {
+        "id": "cli-doctor",
+        "name": "doctor",
+        "description": "Audit corpus structure and knowledge health.",
+        "command": "./repobrain doctor",
+        "prompt": "Run RepoBrain doctor and remediate critical/high findings.",
+    },
+    {
+        "id": "cli-usage",
+        "name": "usage",
+        "description": "Report retrieval usefulness and token cost.",
+        "command": "./repobrain usage report",
+        "prompt": "Generate the usage report and say if retrieve is expensive or weakly hitting.",
+    },
     {
         "id": "graph",
-        "name": "Graphify",
-        "description": "Sync and query the Graphify code graph.",
+        "name": "graph",
+        "description": "Sync and query the Graphify code graph (not wiki claims).",
         "command": "./repobrain graph query \"<symbol>\"",
         "prompt": "Query Graphify for how … is wired. Do not treat graph HTML as compiled claims.",
     },
@@ -127,17 +166,27 @@ def _skill_description(suffix: str) -> str:
 
 def command_catalog() -> list[dict[str, str]]:
     catalog = []
+    for item in CLI_COMMANDS:
+        catalog.append({**item, "group": "command", "kind": "cli"})
     for suffix in SKILL_SUFFIXES:
+        playbook = suffix in PLAYBOOK_ONLY
+        related = SKILL_CLI.get(suffix, "")
         catalog.append(
             {
                 "id": f"repobrain-{suffix}",
                 "name": f"repobrain-{suffix}",
+                "group": "skill",
+                "kind": "playbook" if playbook else "wraps-cli",
                 "description": _skill_description(suffix),
-                "command": SKILL_COMMANDS[suffix],
+                "command": "" if playbook else related,
+                "note": (
+                    f"Playbook — no ./repobrain {suffix} verb."
+                    if playbook
+                    else f"Wraps {related}."
+                ),
                 "prompt": SKILL_PROMPTS[suffix],
             }
         )
-    catalog.extend(EXTRA_COMMANDS)
     return catalog
 
 
@@ -230,11 +279,19 @@ def _metric_card(label: str, value: Any, note: str, tone: str = "ok") -> str:
 
 
 def _copy_pair(command: str, prompt: str) -> str:
-    return (
-        f'<pre><code>{_escape(command)}</code></pre>'
-        f'<button type="button" class="copy" data-copy="{_escape(command)}">Copy command</button> '
-        f'<button type="button" class="copy" data-copy="{_escape(prompt)}">Copy agent prompt</button>'
-    )
+    parts: list[str] = []
+    if command:
+        parts.append(f"<pre><code>{_escape(command)}</code></pre>")
+        parts.append(
+            f'<button type="button" class="copy" data-copy="{_escape(command)}">'
+            "Copy command</button> "
+        )
+    if prompt:
+        parts.append(
+            f'<button type="button" class="copy" data-copy="{_escape(prompt)}">'
+            "Copy agent prompt</button>"
+        )
+    return "".join(parts)
 
 
 def _warnings(data: dict[str, Any]) -> list[tuple[str, str, str]]:
@@ -364,15 +421,33 @@ def render_html(data: dict[str, Any]) -> str:
         f"<li><code>{_escape(path)}</code></li>" for path in (data.get("unused_pages") or [])
     ) or "<li>Usage data does not identify unused pages.</li>"
     commands = data.get("commands") or command_catalog()
-    command_html = "".join(
-        (
-            '<article class="panel command">'
-            f"<h3>{_escape(item.get('name'))}</h3>"
-            f"<p>{_escape(item.get('description'))}</p>"
-            + _copy_pair(str(item.get("command") or ""), str(item.get("prompt") or ""))
-            + "</article>"
+    cli_items = [item for item in commands if item.get("group", "command") != "skill"]
+    skill_items = [item for item in commands if item.get("group") == "skill"]
+
+    def _catalog_articles(items: list[dict[str, str]]) -> str:
+        return "".join(
+            (
+                '<article class="panel command">'
+                f"<h3>{_escape(item.get('name'))}</h3>"
+                f"<p>{_escape(item.get('description'))}</p>"
+                + (
+                    f'<p class="meta">{_escape(item.get("note"))}</p>'
+                    if item.get("note")
+                    else ""
+                )
+                + _copy_pair(str(item.get("command") or ""), str(item.get("prompt") or ""))
+                + "</article>"
+            )
+            for item in items
         )
-        for item in commands
+
+    command_html = (
+        '<p class="meta">Commands are <code>./repobrain</code> verbs. '
+        "Skills are agent playbooks. Query and navigate have no CLI.</p>"
+        '<h3 id="dash-commands">Commands</h3>'
+        + (_catalog_articles(cli_items) or '<p class="ok">No commands in this snapshot.</p>')
+        + '<h3 id="dash-skills">Skills</h3>'
+        + (_catalog_articles(skill_items) or '<p class="ok">No skills in this snapshot.</p>')
     )
     graph_src = data.get("graph_src")
     graph_open = data.get("graph_open") or ""
