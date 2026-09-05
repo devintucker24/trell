@@ -191,7 +191,9 @@ Skill: `docs/wiki/_system/skills/repobrain-ingest/SKILL.md`
 5. Append `## [YYYY-MM-DD] ingest | <title>` to `docs/wiki/log.md`.
 
 ### 6.3 Query (answer from wiki)
-1. Prefer `repobrain-retrieve` (scored top-k) over skimming all of INDEX.
+Skill: `docs/wiki/_system/skills/repobrain-query/SKILL.md` (`/repobrain-query`).
+There is no `./repobrain query` CLI command.
+1. Prefer `./repobrain retrieve` (scored top-k) over skimming all of INDEX.
 2. For time questions: consult `temporal/TIMELINE.md` and/or `retrieve --as-of`.
 3. Read 2–6 relevant pages (not the whole wiki); cite with wikilinks.
 4. Prefer filing valuable answers back as new wiki pages (`type: synthesis` or expand existing).
@@ -199,8 +201,8 @@ Skill: `docs/wiki/_system/skills/repobrain-ingest/SKILL.md`
 6. Pending `inbox/` items and unconsolidated episodes are not settled knowledge.
 
 ### 6.3b Retrieve (file RAG)
-Skill: `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md`
-`python3 docs/wiki/_system/scripts/wiki_retrieve.py "<q>" --budget-tokens 3500`
+Skill: `docs/wiki/_system/skills/repobrain-retrieve/SKILL.md` (`/repobrain-retrieve`)
+`./repobrain retrieve "<q>" --budget-tokens 3500`
 Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 
 ### 6.3c Episodic / temporal write path
@@ -212,7 +214,7 @@ Hybrid lexical + graph + **temporal** rerank + MMR diversity.
 
 ### 6.4 Wiki Doctor (diagnose only)
 Skill: `docs/wiki/_system/skills/repobrain-doctor/SKILL.md`
-Run `python3 docs/wiki/_system/scripts/wiki_doctor.py`.
+Run `./repobrain doctor`.
 **No wiki content edits.**
 
 ### 6.5 Wiki Heal (apply safe fixes)
@@ -266,18 +268,19 @@ If a wiki edit weakens this thesis without evidence, reject it in lint.
 | Read handoff | `.cursor/skills/read-handoff/SKILL.md` | Fresh chat: load newest handoff, then delete it (`/read-handoff`) |
 | Grill me | `.cursor/skills/grill-me/SKILL.md` | User-invoked front door → runs `grilling` |
 | Grilling | `.cursor/skills/grilling/SKILL.md` | Relentless design-tree interview (rounds / frontier) |
-| RepoBrain (parent) | `_system/skills/repobrain-brain/SKILL.md` | Portable operator kit |
-| Retrieve | `_system/skills/repobrain-retrieve/SKILL.md` | File RAG |
+| RepoBrain (parent) | `_system/skills/repobrain-brain/SKILL.md` | Portable operator kit (`/repobrain-brain`) |
+| Retrieve | `_system/skills/repobrain-retrieve/SKILL.md` | File RAG (`./repobrain retrieve`) |
+| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers (`/repobrain-query`; no CLI verb) |
 | Navigate | `_system/skills/repobrain-navigate/SKILL.md` | Finding pages / graph traversal |
 | Triage | `_system/skills/repobrain-triage/SKILL.md` | Classify inbox |
 | Ingest | `_system/skills/repobrain-ingest/SKILL.md` | Promote reviewed knowledge |
-| Doctor | `_system/skills/repobrain-doctor/SKILL.md` | Diagnose corpus health |
+| Doctor | `_system/skills/repobrain-doctor/SKILL.md` | Diagnose corpus health (`./repobrain doctor`) |
 | Heal | `_system/skills/repobrain-heal/SKILL.md` | Apply doctor-driven fixes |
 | Lint | `_system/skills/repobrain-lint/SKILL.md` | Doctor → heal → doctor |
-| Query | `_system/skills/repobrain-query/SKILL.md` | Cited answers |
 | Label | `_system/skills/repobrain-label/SKILL.md` | Frontmatter normalization |
 | Maintain | `_system/skills/repobrain-maintain/SKILL.md` | Code/corpus synchronization |
-| Usage | `_system/skills/repobrain-usage/SKILL.md` | Telemetry + dashboard |
+| Usage | `_system/skills/repobrain-usage/SKILL.md` | Telemetry (`./repobrain usage report`) |
+| Setup | `_system/skills/repobrain-setup/SKILL.md` | Install/export (`./repobrain setup`) |
 
 ---
 

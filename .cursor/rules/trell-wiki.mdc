@@ -20,4 +20,4 @@ alwaysApply: false
 3. **Health & Linting**: Run `./repobrain doctor`; use `repobrain-heal` if needed.
 4. **Claim graph**: After frontmatter node/edge changes, run `python3 docs/wiki/_system/scripts/sync_graph.py`.
 5. **New repo / empty host**: use `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.
-6. **Canonical `repobrain-*` skills** live in `docs/wiki/_system/skills/`; harness `wiki-*` paths are deprecated aliases.
+6. Canonical `repobrain-*` skills live in `docs/wiki/_system/skills/`; `wiki-*` launchers were removed.

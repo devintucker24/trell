@@ -2,134 +2,26 @@
 
 from __future__ import annotations
 
+import argparse
 import html
+import http.server
 import json
 import os
 import sys
+import threading
+import webbrowser
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from repobrain_catalog import (
+    CLI_COMMANDS,
+    PLAYBOOK_ONLY,
+    SKILL_CLI,
+    SKILL_PROMPTS,
+    SKILL_SUFFIXES,
+)
 from repobrain_paths import PATHS, ROOT, is_wiki_content_page, load_host
-
-
-SKILL_SUFFIXES = (
-    "brain",
-    "retrieve",
-    "query",
-    "navigate",
-    "triage",
-    "ingest",
-    "doctor",
-    "heal",
-    "lint",
-    "label",
-    "maintain",
-    "usage",
-    "setup",
-)
-
-PLAYBOOK_ONLY = frozenset(
-    {
-        "brain",
-        "query",
-        "navigate",
-        "triage",
-        "ingest",
-        "heal",
-        "lint",
-        "label",
-        "maintain",
-    }
-)
-
-SKILL_CLI = {
-    "retrieve": './repobrain retrieve "<question>" --budget-tokens 3500',
-    "doctor": "./repobrain doctor",
-    "usage": "./repobrain usage report",
-    "setup": "./repobrain setup",
-}
-
-SKILL_PROMPTS = {
-    "brain": "Operate RepoBrain with the public CLI. Do not dump the wiki.",
-    "retrieve": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
-    "query": (
-        "Answer from cited RepoBrain retrieve hits. Do not invent compiled claims. "
-        "There is no ./repobrain query."
-    ),
-    "navigate": (
-        "Return wikilinks and one-line summaries after retrieve. "
-        "For code wiring use ./repobrain graph query. There is no ./repobrain navigate."
-    ),
-    "triage": "Classify inbox material. Do not ingest until a human or skill says to.",
-    "ingest": "Promote reviewed inbox pages into the compiled corpus without inventing taxonomy.",
-    "doctor": "Run RepoBrain doctor and remediate critical/high findings.",
-    "heal": "Repair the latest doctor findings without rewriting authority rules.",
-    "lint": "Run doctor, heal if needed, then doctor again.",
-    "label": "Normalize page frontmatter to SCHEMA.md.",
-    "maintain": "Synchronize code and RepoBrain knowledge after semantic changes.",
-    "usage": "Report retrieval usefulness and token cost from local telemetry.",
-    "setup": "Install or refresh RepoBrain in this repository with ./repobrain setup.",
-}
-
-CLI_COMMANDS = (
-    {
-        "id": "cli-setup",
-        "name": "setup",
-        "description": "Initialize or refresh RepoBrain in this repository.",
-        "command": "./repobrain setup",
-        "prompt": "Install or refresh RepoBrain with ./repobrain setup. Do not dump the wiki.",
-    },
-    {
-        "id": "cli-retrieve",
-        "name": "retrieve",
-        "description": "Rank compiled wiki evidence. This is the only corpus lookup verb.",
-        "command": './repobrain retrieve "<question>" --budget-tokens 3500',
-        "prompt": "Retrieve evidence for: … Use ./repobrain retrieve within Router budgets. Cite paths.",
-    },
-    {
-        "id": "cli-doctor",
-        "name": "doctor",
-        "description": "Audit corpus structure and knowledge health.",
-        "command": "./repobrain doctor",
-        "prompt": "Run RepoBrain doctor and remediate critical/high findings.",
-    },
-    {
-        "id": "cli-usage",
-        "name": "usage",
-        "description": "Report retrieval usefulness and token cost.",
-        "command": "./repobrain usage report",
-        "prompt": "Generate the usage report and say if retrieve is expensive or weakly hitting.",
-    },
-    {
-        "id": "graph",
-        "name": "graph",
-        "description": "Sync and query the Graphify code graph (not wiki claims).",
-        "command": "./repobrain graph query \"<symbol>\"",
-        "prompt": "Query Graphify for how … is wired. Do not treat graph HTML as compiled claims.",
-    },
-    {
-        "id": "source",
-        "name": "Sources",
-        "description": "Scan Git-tracked sources and convert configured local formats.",
-        "command": "./repobrain source convert",
-        "prompt": "Scan and convert local sources. Keep derived Markdown non-authoritative.",
-    },
-    {
-        "id": "eval",
-        "name": "Evaluation",
-        "description": "Run the end-to-end RepoBrain baseline.",
-        "command": "./repobrain eval",
-        "prompt": "Run ./repobrain eval and explain any failed category.",
-    },
-    {
-        "id": "dashboard",
-        "name": "Dashboard",
-        "description": "Generate the local read-only HTML dashboard.",
-        "command": "./repobrain dashboard html",
-        "prompt": "Generate the local HTML dashboard, then open the printed file:// URL in the system browser.",
-    },
-)
 
 
 def _escape(value: Any) -> str:
@@ -181,7 +73,7 @@ def command_catalog() -> list[dict[str, str]]:
                 "description": _skill_description(suffix),
                 "command": "" if playbook else related,
                 "note": (
-                    f"Playbook — no ./repobrain {suffix} verb."
+                    f"Skill /repobrain-{suffix} — playbook, not a ./repobrain {suffix} command."
                     if playbook
                     else f"Wraps {related}."
                 ),
@@ -444,7 +336,8 @@ def render_html(data: dict[str, Any]) -> str:
 
     command_html = (
         '<p class="meta">Commands are <code>./repobrain</code> verbs. '
-        "Skills are agent playbooks. Query and navigate have no CLI.</p>"
+        "Skills are agent playbooks such as /repobrain-query. "
+        "Those names are not ./repobrain CLI commands.</p>"
         '<h3 id="dash-commands">Commands</h3>'
         + (_catalog_articles(cli_items) or '<p class="ok">No commands in this snapshot.</p>')
         + '<h3 id="dash-skills">Skills</h3>'
@@ -533,7 +426,7 @@ def render_html(data: dict[str, Any]) -> str:
     </div>
     <h1>Health and exploration</h1>
     <p class="meta">Generated {_escape(data.get("generated_at"))}. No mutation API, queue, credentials, or command server.</p>
-    <p class="meta">Open via file:// in Chrome, Safari, or Finder. Cursor Simple Browser turns /Users/... into https://users/... and fails with ERR_NAME_NOT_RESOLVED.</p>
+    <p class="meta">Clickable preview: ./repobrain dashboard html --serve then open the printed http://127.0.0.1 URL. Cursor Simple Browser cannot open file:// (/Users/... becomes https://users/... → ERR_NAME_NOT_RESOLVED).</p>
     <p class="meta">Cheat sheet: docs/wiki/_system/docs/CHEATSHEET.md</p>
   </header>
   <nav aria-label="Dashboard views">
@@ -639,14 +532,54 @@ def dashboard_file_uri(path: Path) -> str:
     return path.resolve().as_uri()
 
 
-def print_dashboard_location(path: Path) -> None:
+def dashboard_http_url(path: Path, port: int, host: str = "127.0.0.1") -> str:
+    """Return a clickable localhost URL (Cursor Simple Browser can open http)."""
+    relative = path.resolve().relative_to(ROOT.resolve()).as_posix()
+    return f"http://{host}:{port}/{relative}"
+
+
+class _DashboardHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def log_message(self, format: str, *args: object) -> None:
+        del format, args
+
+
+def bind_dashboard_server(
+    port: int = 0,
+) -> tuple[http.server.ThreadingHTTPServer, int]:
+    httpd = http.server.ThreadingHTTPServer(("127.0.0.1", port), _DashboardHandler)
+    return httpd, int(httpd.server_address[1])
+
+
+def start_dashboard_server(
+    port: int = 0,
+) -> tuple[http.server.ThreadingHTTPServer, int]:
+    httpd, bound = bind_dashboard_server(port=port)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    return httpd, bound
+
+
+def print_dashboard_location(path: Path, http_url: str | None = None) -> None:
+    if http_url:
+        print(http_url, flush=True)
+        print(f"path: {path}", file=sys.stderr, flush=True)
+        print(
+            "Click the http:// URL — Cursor can open localhost. "
+            "Leave this process running until you close the preview.",
+            file=sys.stderr,
+            flush=True,
+        )
+        return
     uri = dashboard_file_uri(path)
     print(uri, flush=True)
     print(f"path: {path}", file=sys.stderr, flush=True)
     print(
-        "Open the file:// URL in the system browser (Finder, Chrome, or Safari). "
-        "Cursor Simple Browser rewrites /Users/... to https://users/... and fails "
-        "with ERR_NAME_NOT_RESOLVED.",
+        "file:// is not clickable in Cursor Simple Browser (it becomes "
+        "https://users/... and ERR_NAME_NOT_RESOLVED). "
+        "For a clickable preview run: ./repobrain dashboard html --serve",
         file=sys.stderr,
         flush=True,
     )
@@ -661,7 +594,33 @@ def write_dashboard(data: dict[str, Any] | None = None) -> Path:
 
 
 def cmd_html(argv: list[str] | None = None) -> int:
-    del argv
+    parser = argparse.ArgumentParser(prog="repobrain dashboard html")
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        help="serve over http://127.0.0.1 so the printed URL is clickable in Cursor",
+    )
+    parser.add_argument("--port", type=int, default=0, help="bind port (0 = ephemeral)")
+    parser.add_argument(
+        "--open",
+        action="store_true",
+        help="open the preview URL with the system webbrowser module",
+    )
+    args = parser.parse_args([] if argv is None else argv)
     path = write_dashboard()
-    print_dashboard_location(path)
+    if not args.serve and not args.open:
+        print_dashboard_location(path)
+        return 0
+    httpd, port = bind_dashboard_server(port=args.port)
+    url = dashboard_http_url(path, port)
+    print_dashboard_location(path, http_url=url)
+    if args.open:
+        webbrowser.open(url)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        return 0
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
     return 0

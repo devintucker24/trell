@@ -130,6 +130,13 @@ Append-only chronological record for agents. Prefix contract: `## [YYYY-MM-DD] <
 - Claim index remains `_meta/GRAPH.yaml` (frontmatter only) — not a second AST graph
 - Protocol: `docs/wiki/_meta/GRAPH.md` · pack: `FRAMEWORK.md`
 
+## [2026-09-05] query | query-skill-vs-cli-verb
+
+- Dashboard pasteable prompt said "There is no ./repobrain query" and hid `/repobrain-query`
+- Clarified: skill `/repobrain-query` exists; CLI verb `./repobrain query` does not
+- Lookup remains `./repobrain retrieve` ([[_system/docs/CHEATSHEET]], [[INDEX]])
+
+
 
 
 
