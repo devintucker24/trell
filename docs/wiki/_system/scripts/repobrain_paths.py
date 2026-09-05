@@ -95,6 +95,16 @@ class RepoBrainPaths:
     def usage_dashboard(self) -> Path:
         return self.usage_dir / "dashboard.md"
 
+    @property
+    def source_manifest(self) -> Path:
+        """Reserved manifest location for the source-inventory slice."""
+        return self.generated / "sources" / "manifest.json"
+
+    @property
+    def dashboard_dir(self) -> Path:
+        """Reserved local HTML dashboard location."""
+        return self.generated / "dashboard"
+
 
 PATHS = RepoBrainPaths.discover()
 

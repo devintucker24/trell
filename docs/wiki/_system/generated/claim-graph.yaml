@@ -1,15 +1,11 @@
 version: 1
-updated: '2026-09-04'
+updated: '2026-09-05'
 description: Wiki-brain knowledge graph — regenerated from page frontmatter
 nodes:
 - id: affine-cognitive-budget
   kind: concept
   page: theory/affine-cognitive-economics
   label: affine-cognitive-budget
-- id: agents-md
-  kind: concept
-  page: OPERATOR
-  label: AGENTS.md
 - id: app-aml-sar
   kind: application
   page: applications/security-cloud-and-governance
@@ -104,7 +100,7 @@ nodes:
   label: belief<T>
 - id: brain-gap-analysis
   kind: concept
-  page: _meta/brain-gap-analysis-2026-09-04
+  page: null
   label: brain-gap-analysis
 - id: branch-collapse
   kind: engine
@@ -144,8 +140,8 @@ nodes:
   label: competitive-analysis
 - id: context-protocol
   kind: concept
-  page: _meta/CONTEXT_PROTOCOL
-  label: Agent Context Protocol
+  page: null
+  label: context-protocol
 - id: distributional-types
   kind: type
   page: theory/bayesian-and-distributional-types
@@ -202,10 +198,6 @@ nodes:
   kind: technology
   page: theory/hardware-silicon-codesign
   label: hardware-rollback
-- id: host-router-seeds
-  kind: concept
-  page: host/router-seeds
-  label: Host router seeds
 - id: insurance-epistemic-bound
   kind: concept
   page: market/regulatory-and-insurance-drivers
@@ -226,18 +218,10 @@ nodes:
   kind: concept
   page: episodic/INDEX
   label: Episodic Memory
-- id: memory-semantic
-  kind: concept
-  page: _meta/brain-gap-analysis-2026-09-04
-  label: memory-semantic
 - id: memory-temporal
   kind: concept
   page: temporal/TIMELINE
   label: Temporal Memory
-- id: memory-working
-  kind: concept
-  page: _meta/brain-gap-analysis-2026-09-04
-  label: memory-working
 - id: model-contract
   kind: primitive
   page: core/contract-and-guard-system
@@ -310,10 +294,6 @@ nodes:
   kind: regulation
   page: market/regulatory-and-insurance-drivers
   label: reg-sr-11-7
-- id: retrieval-rerank
-  kind: technology
-  page: _meta/brain-gap-analysis-2026-09-04
-  label: retrieval-rerank
 - id: session-scratch
   kind: concept
   page: episodic/session-current
@@ -362,22 +342,10 @@ nodes:
   kind: primitive
   page: theory/affine-cognitive-economics
   label: token-budget
-- id: wiki-brain
-  kind: concept
-  page: FRAMEWORK
-  label: Wiki-brain
-- id: wiki-brain-pack
-  kind: concept
-  page: FRAMEWORK
-  label: Wiki-brain pack
-- id: wiki-graph-overview
-  kind: concept
-  page: _meta/GRAPH
-  label: wiki-graph-overview
 - id: wiki-graphify-bridge
   kind: concept
-  page: _meta/GRAPH
-  label: Graphify code-graph bridge
+  page: null
+  label: wiki-graphify-bridge
 - id: wiki-inbox
   kind: concept
   page: inbox/README
@@ -386,30 +354,18 @@ nodes:
   kind: concept
   page: INDEX
   label: Wiki Index
-- id: wiki-operator
-  kind: concept
-  page: OPERATOR
-  label: Wiki Operator Manual
 - id: wiki-router
   kind: concept
-  page: ROUTER
-  label: Wiki Context Router
+  page: null
+  label: wiki-router
 - id: wiki-schema
   kind: concept
-  page: SCHEMA
+  page: null
   label: wiki-schema
 - id: wiki-setup
   kind: concept
-  page: FRAMEWORK
-  label: Wiki setup
-- id: wiki-usage-dashboard
-  kind: concept
-  page: _meta/usage-dashboard
-  label: Wiki usage dashboard
-- id: wiki-usage-telemetry
-  kind: concept
-  page: _meta/usage-telemetry
-  label: Wiki usage telemetry
+  page: null
+  label: wiki-setup
 - id: zk-epistemic-proof
   kind: technology
   page: theory/cryptographic-model-provenance
@@ -424,10 +380,6 @@ edges:
   rel: related_to
   page: theory/affine-cognitive-economics
   note: 'heal: link hard orphan'
-- from: agents-md
-  to: wiki-operator
-  rel: related_to
-  page: OPERATOR
 - from: app-icu-sepsis
   to: reg-fda-samd
   rel: regulated_by
@@ -482,14 +434,6 @@ edges:
   to: raw-market-research-2026-09-03
   rel: depends_on
   page: raw/market-research-2026-09-03
-- from: context-protocol
-  to: memory-temporal
-  rel: depends_on
-  page: _meta/CONTEXT_PROTOCOL
-- from: context-protocol
-  to: wiki-router
-  rel: depends_on
-  page: _meta/CONTEXT_PROTOCOL
 - from: distributional-types
   to: belief-type
   rel: extends
@@ -558,10 +502,6 @@ edges:
   to: reg-eu-ai-act
   rel: implements
   page: market/regulatory-and-insurance-drivers
-- from: host-router-seeds
-  to: wiki-router
-  rel: depends_on
-  page: host/router-seeds
 - from: insurance-epistemic-bound
   to: epistemic-receipt
   rel: depends_on
@@ -583,17 +523,9 @@ edges:
   rel: related_to
   page: episodic/INDEX
 - from: memory-episodic
-  to: wiki-inbox
-  rel: related_to
-  page: _meta/brain-gap-analysis-2026-09-04
-- from: memory-episodic
   to: wiki-router
   rel: depends_on
   page: episodic/INDEX
-- from: memory-semantic
-  to: wiki-index
-  rel: implements
-  page: _meta/brain-gap-analysis-2026-09-04
 - from: memory-temporal
   to: context-protocol
   rel: depends_on
@@ -601,19 +533,11 @@ edges:
 - from: memory-temporal
   to: memory-episodic
   rel: related_to
-  page: _meta/CONTEXT_PROTOCOL
+  page: temporal/TIMELINE
 - from: memory-temporal
   to: wiki-router
   rel: related_to
   page: temporal/TIMELINE
-- from: memory-working
-  to: agents-md
-  rel: depends_on
-  page: _meta/brain-gap-analysis-2026-09-04
-- from: memory-working
-  to: wiki-router
-  rel: depends_on
-  page: _meta/CONTEXT_PROTOCOL
 - from: model-contract
   to: affine-cognitive-budget
   rel: depends_on
@@ -711,10 +635,6 @@ edges:
   to: belief-type
   rel: extends
   page: core/contract-and-guard-system
-- from: retrieval-rerank
-  to: brain-gap-analysis
-  rel: depends_on
-  page: _meta/brain-gap-analysis-2026-09-04
 - from: session-scratch
   to: memory-episodic
   rel: related_to
@@ -860,38 +780,6 @@ edges:
   to: speculative-execution
   rel: depends_on
   page: applications/overview-and-safety-patterns
-- from: wiki-brain
-  to: wiki-brain-pack
-  rel: implements
-  page: FRAMEWORK
-- from: wiki-brain-pack
-  to: wiki-router
-  rel: depends_on
-  page: FRAMEWORK
-- from: wiki-brain-pack
-  to: wiki-schema
-  rel: depends_on
-  page: FRAMEWORK
-- from: wiki-brain-pack
-  to: wiki-setup
-  rel: depends_on
-  page: FRAMEWORK
-- from: wiki-brain-pack
-  to: wiki-usage-telemetry
-  rel: related_to
-  page: FRAMEWORK
-- from: wiki-graph-overview
-  to: wiki-index
-  rel: depends_on
-  page: _meta/GRAPH
-- from: wiki-graphify-bridge
-  to: wiki-brain-pack
-  rel: implements
-  page: FRAMEWORK
-- from: wiki-graphify-bridge
-  to: wiki-graph-overview
-  rel: implements
-  page: _meta/GRAPH
 - from: wiki-inbox
   to: wiki-schema
   rel: depends_on
@@ -908,46 +796,6 @@ edges:
   to: three-beat-safety-pattern
   rel: related_to
   page: INDEX
-- from: wiki-operator
-  to: wiki-router
-  rel: depends_on
-  page: OPERATOR
-- from: wiki-operator
-  to: wiki-schema
-  rel: depends_on
-  page: OPERATOR
-- from: wiki-router
-  to: context-protocol
-  rel: depends_on
-  page: ROUTER
-- from: wiki-router
-  to: memory-temporal
-  rel: depends_on
-  page: ROUTER
-- from: wiki-router
-  to: wiki-index
-  rel: related_to
-  page: ROUTER
-- from: wiki-schema
-  to: agents-md
-  rel: depends_on
-  page: SCHEMA
-- from: wiki-schema
-  to: memory-temporal
-  rel: related_to
-  page: SCHEMA
-- from: wiki-usage-dashboard
-  to: wiki-usage-telemetry
-  rel: implements
-  page: _meta/usage-dashboard
-- from: wiki-usage-telemetry
-  to: wiki-brain-pack
-  rel: depends_on
-  page: _meta/usage-telemetry
-- from: wiki-usage-telemetry
-  to: wiki-router
-  rel: related_to
-  page: _meta/usage-telemetry
 - from: zk-epistemic-proof
   to: app-aml-sar
   rel: applies_to

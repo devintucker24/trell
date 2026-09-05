@@ -68,7 +68,7 @@ Example: `- 14:00 | episode | brain upgrade | router+temporal | episodic/2026-09
 
 - — | schema | wiki brain bootstrap | AGENTS + INDEX + SCHEMA + GRAPH | [[SCHEMA]]
 - — | ingest | raw pointers | thesis/examples/market research | [[raw/thesis]]
-- — | health | doctor→heal | score 72.8 → 100; orphan links | [[_meta/heal-2026-09-04]]
+- — | health | doctor→heal | score 72.8 → 100; orphan links | [[_system/generated/doctor/heal-2026-09-04]]
 - — | schema | inbox+triage | taxonomy gate | [[inbox/README]]
 - — | decision | memory architecture | file RAG; progressive disclosure; no required vectors yet | [[_meta/brain-gap-analysis-2026-09-04]]
 - — | episode | brain memory upgrade | router + episodic + temporal + retrieve | [[episodic/2026-09-04-brain-memory-upgrade]]

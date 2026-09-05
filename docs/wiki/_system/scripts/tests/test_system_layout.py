@@ -24,6 +24,14 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
         self.assertEqual(PATHS.logs, PATHS.system / "logs")
         self.assertEqual(PATHS.generated, PATHS.system / "generated")
         self.assertEqual(PATHS.graphify, ROOT / "graphify-out")
+        self.assertEqual(
+            PATHS.source_manifest,
+            PATHS.generated / "sources" / "manifest.json",
+        )
+        self.assertEqual(
+            PATHS.dashboard_dir,
+            PATHS.generated / "dashboard",
+        )
 
     def test_corpus_filter_excludes_engine_and_compatibility_pointers(self) -> None:
         self.assertTrue(is_wiki_content_page("INDEX.md", "INDEX.md"))
@@ -75,6 +83,17 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                 launcher,
             )
             self.assertIn("Deprecated", launcher)
+
+        for skill_dir in PATHS.skills.iterdir():
+            if not (skill_dir / "SKILL.md").exists():
+                continue
+            compatibility = (
+                PATHS.corpus / "skills" / skill_dir.name / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn(
+                f"docs/wiki/_system/skills/{skill_dir.name}/SKILL.md",
+                compatibility,
+            )
 
     def test_export_resolves_from_arbitrary_destination(self) -> None:
         with tempfile.TemporaryDirectory(prefix="repobrain-layout-") as tmp:
