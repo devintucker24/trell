@@ -184,7 +184,8 @@ agent:
 Generated `{today}` from local `docs/wiki/_system/generated/usage/events.jsonl` (last **{days}** days).
 Raw events are gitignored; this page is the shareable snapshot.
 
-**Usefulness index:** {stats['usefulness_index']}/100  
+**Usefulness index:** {stats['usefulness_index']}/100
+
 (heuristic: retrieval hit quality + last doctor score + activity − INDEX-dump admissions)
 
 | Metric | Value |

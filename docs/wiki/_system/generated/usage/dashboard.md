@@ -4,7 +4,7 @@ title: Wiki-brain usage dashboard
 type: meta
 status: active
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-05
 tags: [usage, telemetry, context-cost]
 domain: meta
 summary: "Generated usage snapshot — retrieve tokens, hit quality, doctor score, usefulness index."
@@ -17,39 +17,40 @@ edges:
     to: wiki-usage-telemetry
     rel: implements
 related:
-  - "[[_meta/usage-telemetry]]"
-  - "[[ROUTER]]"
+  - "[[_system/docs/usage-telemetry]]"
+  - "[[_system/docs/ROUTER]]"
 agent:
   priority: medium
   read_when:
     - "checking whether the wiki brain is earning its context cost"
     - "tuning retrieve budgets"
   maintain:
-    - "regenerate via python3 docs/wiki/scripts/wiki_usage.py report"
+    - "regenerate via python3 docs/wiki/_system/scripts/wiki_usage.py report"
 ---
 
 # Wiki-brain usage dashboard
 
-Generated `2026-09-04` from local `docs/wiki/_meta/usage/events.jsonl` (last **30** days).
+Generated `2026-09-05` from local `docs/wiki/_system/generated/usage/events.jsonl` (last **30** days).
 Raw events are gitignored; this page is the shareable snapshot.
 
-**Usefulness index:** 82.5/100  
+**Usefulness index:** 56.0/100
+
 (heuristic: retrieval hit quality + last doctor score + activity − INDEX-dump admissions)
 
 | Metric | Value |
 |--------|------:|
-| Events | 5 |
-| Retrieves | 2 |
-| Est. retrieve tokens (sum) | 2257 |
-| Est. tokens / event with tokens | 1128.5 |
-| Budget utilization | 45.4% |
-| Mean top hit score | 0.845 |
+| Events | 3 |
+| Retrieves | 3 |
+| Est. retrieve tokens (sum) | 3426 |
+| Est. tokens / event with tokens | 1142 |
+| Budget utilization | 37.2% |
+| Mean top hit score | 0.479 |
 | Weak-hit rate (top < 0.25) | 0.0 |
-| Strong-hit rate (top ≥ 0.45) | 1.0 |
-| Last doctor score | 100.0 |
+| Strong-hit rate (top ≥ 0.45) | 0.667 |
+| Last doctor score | — |
 | Repeat-query groups (≥3) | 0 |
 | Dump admissions | 0 |
-| Mean latency (ms) | 102.5 |
+| Mean latency (ms) | 106.3 |
 | Pages opened / cited | 0 / 0 |
 | Citation overlap (cited ∩ opened / opened) | — |
 
@@ -57,21 +58,20 @@ Raw events are gitignored; this page is the shareable snapshot.
 
 | op | count |
 |----|------:|
-| `doctor` | 3 |
-| `retrieve` | 2 |
+| `retrieve` | 3 |
 
 ## Hottest retrieve pages
 
 | path | hits |
 |------|-----:|
-| `FRAMEWORK.md` | 5 |
-| `INDEX.md` | 2 |
-| `OPERATOR.md` | 2 |
-| `_meta/usage-telemetry.md` | 2 |
+| `FRAMEWORK.md` | 3 |
+| `core/contract-and-guard-system.md` | 3 |
+| `episodic/2026-09-04-graphify-machine-graph.md` | 2 |
+| `ROUTER.md` | 2 |
+| `_meta/brain-gap-analysis-2026-09-04.md` | 2 |
+| `core/epistemic-foundations.md` | 2 |
+| `applications/autonomous-physical-systems.md` | 2 |
 | `_meta/CONTEXT_PROTOCOL.md` | 1 |
-| `host/router-seeds.md` | 1 |
-| `temporal/TIMELINE.md` | 1 |
-| `inbox/README.md` | 1 |
 
 ## How to read this
 
@@ -80,4 +80,4 @@ Raw events are gitignored; this page is the shareable snapshot.
 - **Dump admissions** → agents skipped retrieve; tighten always-on rules.
 - **Doctor score** → structural health, not usefulness. Both are needed.
 
-See [[_meta/usage-telemetry]] for the metric catalog and agent logging protocol.
+See [[_system/docs/usage-telemetry]] for the metric catalog and agent logging protocol.
