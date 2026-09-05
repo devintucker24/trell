@@ -50,7 +50,7 @@ Load only:
 2. This file (`docs/wiki/_system/docs/ROUTER.md`)
 3. Current task intent (user message / issue)
 
-Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or concept folders.
+Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, the human cheat sheet (`CHEATSHEET.md`), or concept folders.
 
 ## Tier 1 — Intent → seed pages
 
@@ -59,6 +59,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, or c
 | Intent signal | Seed pages (open these first) |
 |---|---|
 | wiki / memory / RAG / retrieval / context / pack / export / setup / graphify | `FRAMEWORK.md`, `GRAPH.md`, `CONTEXT_PROTOCOL.md` |
+| human operator / CLI how-to / cheat sheet | `CHEATSHEET.md` (on demand; never Tier-0) |
 | ingest / triage / inbox | `inbox/README.md` → run triage/ingest skills |
 | health / orphans / doctor / heal | run `repobrain-doctor` (then `repobrain-heal` if score < 95) |
 | usage / tokens / context cost / telemetry | `usage-telemetry.md` + `wiki_usage.py report` |
@@ -109,6 +110,7 @@ Edit with frontmatter discipline; update `log.md`; prefer doctor/heal over ad-ho
 ## Anti-patterns
 
 - Loading `INDEX.md` “just in case”
+- Auto-loading `CHEATSHEET.md` into every agent session
 - Dumping a whole domain folder
 - Pasting full `GRAPH.yaml` or `graph.json`
 - Treating source-inventory excerpts as authoritative compiled claims

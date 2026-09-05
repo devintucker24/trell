@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 SCRIPTS = Path(__file__).resolve().parents[1]
@@ -469,6 +470,394 @@ class ConversionCacheTests(SourceFixture):
         self.assertEqual(first[0]["triage_path"], second[0]["triage_path"])
         inbox = list((self.wiki / "inbox").glob("*source-conflict*.md"))
         self.assertEqual(len(inbox), 1)
+
+
+class ConversionPolicyTests(SourceFixture):
+    def test_enabled_formats_honor_legacy_format_and_allowlist(self) -> None:
+        self.assertEqual(
+            pipeline.enabled_formats({"enabled": True, "format": "csv"}),
+            ("csv",),
+        )
+        self.assertEqual(
+            pipeline.enabled_formats({"enabled": True, "formats": ["CSV", "html"]}),
+            ("csv", "html"),
+        )
+        self.assertEqual(
+            pipeline.enabled_formats({"enabled": True}),
+            pipeline.SAFE_LOCAL_FORMATS,
+        )
+
+    def test_disabled_formats_are_skipped_and_binaries_stay_inventoried(self) -> None:
+        self.write("docs/keep.csv", "a,b\n1,2\n")
+        self.write("docs/skip.pdf", b"%PDF-1.4\n")
+        self.write("docs/blob.bin", b"\x00\x01\x02\x03")
+        self.track("docs/keep.csv", "docs/skip.pdf", "docs/blob.bin")
+        manifest = self.scan(
+            host={
+                "sources": {
+                    "conversion": {"enabled": True, "formats": ["csv"]},
+                }
+            },
+            converter=MockConverter(),
+        )
+        by_path = {entry["path"]: entry for entry in manifest["entries"]}
+        self.assertEqual(by_path["docs/keep.csv"]["conversion"]["state"], "converted")
+        self.assertEqual(by_path["docs/skip.pdf"]["conversion"]["state"], "skipped")
+        self.assertEqual(by_path["docs/blob.bin"]["conversion"]["state"], "unsupported")
+
+    def test_external_flags_block_conversion_without_allow_external(self) -> None:
+        self.write("docs/keep.csv", "a,b\n1,2\n")
+        self.track("docs/keep.csv")
+        manifest = self.scan(
+            host={
+                "sources": {
+                    "conversion": {
+                        "enabled": True,
+                        "formats": ["csv"],
+                        "allow_urls": True,
+                    }
+                }
+            },
+            converter=MockConverter(),
+        )
+        conversion = manifest["entries"][0]["conversion"]
+        self.assertEqual(conversion["state"], "blocked")
+        self.assertFalse(conversion["retryable"])
+        self.assertIn("allow_external", conversion["diagnostic"])
+
+    def test_allow_external_is_required_before_external_flags(self) -> None:
+        self.assertIsNotNone(
+            pipeline.external_conversion_blocked({"allow_plugins": True})
+        )
+        self.assertIsNone(
+            pipeline.external_conversion_blocked(
+                {"allow_external": True, "allow_plugins": True}
+            )
+        )
+
+    def test_commit_groups_copy_derived_markdown(self) -> None:
+        self.write("docs/keep.csv", "a,b\n1,2\n")
+        self.track("docs/keep.csv")
+        manifest = self.scan(
+            host={
+                "sources": {
+                    "conversion": {
+                        "enabled": True,
+                        "formats": ["csv"],
+                        "commit_groups": ["data"],
+                    }
+                }
+            },
+            converter=MockConverter(),
+        )
+        committed = (
+            self.root
+            / "docs/wiki/_system/generated/sources/committed/docs/keep.csv.md"
+        )
+        self.assertTrue(committed.is_file())
+        self.assertIn("Converted:", committed.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["entries"][0]["conversion"]["state"], "converted")
+
+    def test_missing_format_extra_is_pending_and_retryable(self) -> None:
+        self.write("docs/spec.pdf", b"%PDF-1.4\n")
+        self.track("docs/spec.pdf")
+        with mock.patch.object(
+            pipeline,
+            "format_extra_missing",
+            return_value="MarkItDown extra `pdf` is not installed",
+        ):
+            manifest = self.scan(
+                host={
+                    "sources": {
+                        "conversion": {"enabled": True, "formats": ["pdf"]},
+                    }
+                }
+            )
+        conversion = manifest["entries"][0]["conversion"]
+        self.assertEqual(conversion["state"], "pending")
+        self.assertTrue(conversion["retryable"])
+        self.assertIn("pdf", conversion["diagnostic"])
+
+
+def _minimal_pdf(text: str) -> bytes:
+    stream = f"BT /F1 12 Tf 72 720 Td ({text}) Tj ET".encode("ascii")
+    objects = [
+        b"1 0 obj<< /Type /Catalog /Pages 2 0 R >>endobj\n",
+        b"2 0 obj<< /Type /Pages /Kids [3 0 R] /Count 1 >>endobj\n",
+        b"3 0 obj<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+        b"/Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>endobj\n",
+        b"4 0 obj<< /Length %d >>stream\n" % len(stream) + stream + b"\nendstream\nendobj\n",
+        b"5 0 obj<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>endobj\n",
+    ]
+    body = b"".join(objects)
+    offsets = []
+    cursor = len(b"%PDF-1.4\n")
+    for obj in objects:
+        offsets.append(cursor)
+        cursor += len(obj)
+    xref = ["xref", "0 6", "0000000000 65535 f "]
+    xref.extend(f"{offset:010d} 00000 n " for offset in offsets)
+    startxref = len(b"%PDF-1.4\n") + len(body)
+    return (
+        b"%PDF-1.4\n"
+        + body
+        + ("\n".join(xref) + "\n").encode("ascii")
+        + b"trailer<< /Size 6 /Root 1 0 R >>\nstartxref\n"
+        + str(startxref).encode("ascii")
+        + b"\n%%EOF\n"
+    )
+
+
+def _ooxml_zip(parts: dict[str, str]) -> bytes:
+    import io
+    import zipfile
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        for name, content in parts.items():
+            archive.writestr(name, content)
+    return buffer.getvalue()
+
+
+def _minimal_docx(text: str) -> bytes:
+    document = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        f"<w:body><w:p><w:r><w:t>{text}</w:t></w:r></w:p></w:body></w:document>"
+    )
+    return _ooxml_zip(
+        {
+            "[Content_Types].xml": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                '<Default Extension="xml" ContentType="application/xml"/>'
+                '<Override PartName="/word/document.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+                "</Types>"
+            ),
+            "_rels/.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+                "</Relationships>"
+            ),
+            "word/_rels/document.xml.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>'
+            ),
+            "word/document.xml": document,
+        }
+    )
+
+
+def _minimal_pptx(text: str) -> bytes:
+    slide = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+        'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
+        "<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id=\"1\" name=\"\"/>"
+        "<p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/>"
+        f"<p:sp><p:nvSpPr><p:cNvPr id=\"2\" name=\"Title\"/><p:cNvSpPr/><p:nvPr/>"
+        f"</p:nvSpPr><p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>{text}</a:t></a:r></a:p>"
+        "</p:txBody></p:sp></p:spTree></p:cSld></p:sld>"
+    )
+    return _ooxml_zip(
+        {
+            "[Content_Types].xml": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                '<Default Extension="xml" ContentType="application/xml"/>'
+                '<Override PartName="/ppt/presentation.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
+                '<Override PartName="/ppt/slides/slide1.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
+                "</Types>"
+            ),
+            "_rels/.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>'
+                "</Relationships>"
+            ),
+            "ppt/presentation.xml": (
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<p:presentation xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
+                '<p:sldIdLst><p:sldId id="256" r:id="rId1" '
+                'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>'
+                "</p:sldIdLst></p:presentation>"
+            ),
+            "ppt/_rels/presentation.xml.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide1.xml"/>'
+                "</Relationships>"
+            ),
+            "ppt/slides/slide1.xml": slide,
+        }
+    )
+
+
+def _minimal_xlsx(text: str) -> bytes:
+    return _ooxml_zip(
+        {
+            "[Content_Types].xml": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                '<Default Extension="xml" ContentType="application/xml"/>'
+                '<Override PartName="/xl/workbook.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+                '<Override PartName="/xl/worksheets/sheet1.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+                '<Override PartName="/xl/sharedStrings.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
+                "</Types>"
+            ),
+            "_rels/.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+                "</Relationships>"
+            ),
+            "xl/workbook.xml": (
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+                'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+                '<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>'
+            ),
+            "xl/_rels/workbook.xml.rels": (
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+                '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
+                "</Relationships>"
+            ),
+            "xl/worksheets/sheet1.xml": (
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+                '<sheetData><row r="1"><c r="A1" t="s"><v>0</v></c></row></sheetData></worksheet>'
+            ),
+            "xl/sharedStrings.xml": (
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="1" uniqueCount="1">'
+                f"<si><t>{text}</t></si></sst>"
+            ),
+        }
+    )
+
+
+def _minimal_epub(text: str) -> bytes:
+    import io
+    import zipfile
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("mimetype", "application/epub+zip", compress_type=zipfile.ZIP_STORED)
+        archive.writestr(
+            "META-INF/container.xml",
+            '<?xml version="1.0"?><container version="1.0" '
+            'xmlns="urn:oasis:names:tc:opendocument:xmlns:container">'
+            "<rootfiles><rootfile full-path=\"OEBPS/content.opf\" "
+            'media-type="application/oebps-package+xml"/></rootfiles></container>',
+        )
+        archive.writestr(
+            "OEBPS/content.opf",
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0">'
+            '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'
+            "<dc:identifier id=\"bookid\">repobrain-sample</dc:identifier>"
+            "<dc:title>Sample</dc:title><dc:language>en</dc:language></metadata>"
+            '<manifest><item id="n1" href="chapter.xhtml" media-type="application/xhtml+xml"/>'
+            "</manifest><spine><itemref idref=\"n1\"/></spine></package>",
+        )
+        archive.writestr(
+            "OEBPS/chapter.xhtml",
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Sample</title></head>'
+            f"<body><p>{text}</p></body></html>",
+        )
+    return buffer.getvalue()
+
+
+@unittest.skipUnless(
+    pipeline.markitdown_info().get("compatible"),
+    "markitdown==0.1.7 is required for live format tests",
+)
+class LiveMarkItDownFormatTests(SourceFixture):
+    def test_live_local_formats_convert_and_keep_attribution(self) -> None:
+        files: dict[str, str | bytes] = {
+            "docs/sample.csv": "name,note\nlive-csv-token,ok\n",
+            "docs/sample.html": "<html><body><p>live-html-token</p></body></html>",
+            "docs/sample.epub": _minimal_epub("live-epub-token"),
+            "docs/sample.pdf": _minimal_pdf("live-pdf-token"),
+            "docs/sample.docx": _minimal_docx("live-docx-token"),
+            "docs/sample.xlsx": _minimal_xlsx("live-xlsx-token"),
+        }
+        try:
+            from pptx import Presentation
+
+            pptx_path = self.root / "docs/sample.pptx"
+            pptx_path.parent.mkdir(parents=True, exist_ok=True)
+            presentation = Presentation()
+            slide = presentation.slides.add_slide(presentation.slide_layouts[5])
+            if slide.shapes.title:
+                slide.shapes.title.text = "live-pptx-token"
+            else:
+                box = slide.shapes.add_textbox(0, 0, 1_000_000, 200_000)
+                box.text_frame.text = "live-pptx-token"
+            presentation.save(pptx_path)
+            files["docs/sample.pptx"] = pptx_path.read_bytes()
+        except ImportError:
+            files["docs/sample.pptx"] = _minimal_pptx("live-pptx-token")
+        for relative, content in files.items():
+            self.write(relative, content)
+        self.track(*files)
+        converter = pipeline.live_converter()
+        self.assertIsNotNone(converter)
+        host = {
+            "sources": {
+                "conversion": {
+                    "enabled": True,
+                    "formats": list(pipeline.SAFE_LOCAL_FORMATS),
+                }
+            }
+        }
+        manifest = self.scan(host=host, converter=converter)
+        by_path = {entry["path"]: entry for entry in manifest["entries"]}
+        converted = 0
+        for relative, token in (
+            ("docs/sample.csv", "live-csv-token"),
+            ("docs/sample.html", "live-html-token"),
+            ("docs/sample.epub", "live-epub-token"),
+            ("docs/sample.pdf", "live-pdf-token"),
+            ("docs/sample.docx", "live-docx-token"),
+            ("docs/sample.pptx", "live-pptx-token"),
+            ("docs/sample.xlsx", "live-xlsx-token"),
+        ):
+            fmt = pipeline.format_for_suffix(Path(relative).suffix)
+            extra = pipeline.format_extra_missing(fmt)
+            conversion = by_path[relative]["conversion"]
+            if extra:
+                self.assertIn(conversion["state"], {"failed", "pending"}, relative)
+                continue
+            self.assertIn(
+                conversion["state"],
+                {"converted", "cached"},
+                f"{relative}: {conversion.get('diagnostic')}",
+            )
+            converted += 1
+            hits = pipeline.search_raw_sources(
+                token,
+                manifest,
+                repo_root=self.root,
+            )
+            self.assertTrue(hits, relative)
+            self.assertEqual(hits[0]["provenance"]["source_path"], relative)
+            self.assertEqual(hits[0]["provenance"]["authority"], "non-authoritative")
+        self.assertGreaterEqual(converted, 3)
 
 
 if __name__ == "__main__":

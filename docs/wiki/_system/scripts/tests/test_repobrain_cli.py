@@ -110,6 +110,16 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertIn("DEPRECATED:", proc.stderr)
         self.assertIn("manifest.json", proc.stdout)
 
+    def test_dashboard_html_is_health_overview_not_graph_export(self) -> None:
+        help_dash = run_cli("dashboard", "--help")
+        generated = run_cli("dashboard", "html")
+
+        self.assertEqual(help_dash.returncode, 0, help_dash.stderr)
+        self.assertIn("health overview", help_dash.stdout.lower())
+        self.assertIn("html", help_dash.stdout.lower())
+        self.assertEqual(generated.returncode, 0, generated.stderr)
+        self.assertIn("generated/dashboard/index.html", generated.stdout.replace("\\", "/"))
+
     def test_dashboard_status_reports_owned_locations(self) -> None:
         proc = run_cli("dashboard", "status")
 
