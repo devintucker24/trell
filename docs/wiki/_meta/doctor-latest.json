@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-04",
+  "date": "2026-09-05",
   "score": 100.0,
   "counts": {},
   "graph": {
@@ -7,8 +7,8 @@
     "edges": 128,
     "hard_orphans": 0
   },
-  "pages_with_frontmatter": 44,
-  "pages_scanned": 44,
+  "pages_with_frontmatter": 45,
+  "pages_scanned": 45,
   "findings": [],
   "heal_recommended": false
 }
