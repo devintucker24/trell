@@ -1,8 +1,8 @@
-# RepoBrain baseline evaluation — 2026-09-05 11:32:47 UTC
+# RepoBrain baseline evaluation — 2026-09-05 11:34:45 UTC
 
 **Overall:** FAIL
 
-Commit: `c69462c129cd6f217cce0f7b752deb390b9116ef`
+Commit: `f8e196a0abfe38fe5ba32e5dc70865d75f6f9c3d`
 
 | Category | Required | Result | Summary |
 |---|---:|---:|---|
@@ -55,7 +55,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "applications/autonomous-physical-systems.md",
         "max_rank": 3,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
@@ -66,7 +66,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "applications/overview-and-safety-patterns.md",
         "max_rank": 8,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": false
@@ -74,7 +74,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "core/epistemic-foundations.md",
         "max_rank": 8,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": false
@@ -146,7 +146,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "core/epistemic-foundations.md",
         "max_rank": 3,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
@@ -157,7 +157,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "core/contract-and-guard-system.md",
         "max_rank": 5,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
@@ -230,7 +230,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
         "path": "core/natural-syntax-specification.md",
         "max_rank": 3,
         "minimum_score_class": "strong",
-        "minimum_score": 0.7,
+        "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
         "rank": 1,
@@ -302,7 +302,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
         "path": "market/competitive-analysis.md",
         "max_rank": 3,
         "minimum_score_class": "strong",
-        "minimum_score": 0.7,
+        "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
         "rank": 1,
@@ -374,7 +374,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
         "path": "roadmap/ten-year-vision.md",
         "max_rank": 3,
         "minimum_score_class": "strong",
-        "minimum_score": 0.7,
+        "minimum_score": 0.45,
         "expected_provenance": "compiled",
         "found": true,
         "rank": 1,
@@ -445,7 +445,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "episodic/2026-09-04-brain-memory-upgrade.md",
         "max_rank": 3,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "episodic",
         "found": true,
@@ -456,7 +456,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "_meta/brain-gap-analysis-2026-09-04.md",
         "max_rank": 8,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "meta",
         "found": false
@@ -527,7 +527,7 @@ Doctor score 100.0/100 with 0 blocking finding(s).
       {
         "path": "temporal/TIMELINE.md",
         "max_rank": 3,
-        "minimum_score_class": "relevant",
+        "minimum_score_class": "strong",
         "minimum_score": 0.45,
         "expected_provenance": "temporal",
         "found": true,
@@ -861,7 +861,7 @@ Graphify resolved Parser to parser.rs; freshness=fresh.
       "fresh": true,
       "method": "no configured code-target changes since built_at_commit",
       "built_at_commit": "b359fa5de67e5d93b72777caf7786718a9bb3e53",
-      "current_commit": "c69462c129cd6f217cce0f7b752deb390b9116ef",
+      "current_commit": "f8e196a0abfe38fe5ba32e5dc70865d75f6f9c3d",
       "changed_targets": []
     },
     "failures": []
@@ -948,7 +948,7 @@ Realistic Git fixture passed setup non-overwrite and no-semantic-copy safety che
     "setup_command": "python3 docs/wiki/scripts/wiki_setup.py --no-graphify",
     "setup_exit_code": 0,
     "setup_detection": "detected name=busy-docs-repo code_roots=['src/'] raw=['README.md']",
-    "setup_output": "l-755_j9pl/busy-docs-repo/.claude/skills/wiki-doctor/SKILL.md\nwrote ./.claude/skills/wiki-heal/SKILL.md\nwrote ./.claude/skills/wiki-lint/SKILL.md\nwrote ./.claude/skills/wiki-label/SKILL.md\nwrote ./.claude/skills/wiki-maintain/SKILL.md\nwrote ./.claude/skills/wiki-usage/SKILL.md\nwrote ./.claude/skills/wiki-setup/SKILL.md\nWrote ./docs/wiki/_meta/GRAPH.yaml (16 nodes, 20 edges)\nrepo: .\ndetected name=busy-docs-repo code_roots=['src/'] raw=['README.md']\nHOST.yaml: wrote HOST.yaml from detection\nmkdir: docs/wiki/inbox/archive, docs/wiki/temporal, docs/wiki/raw\nstubs: INDEX.md, log.md, temporal/TIMELINE.md\ngitignore: gitignore graphify-out/\nAGENTS.md: appended AGENTS.fragment.md\nlaunchers: installed .cursor/skills/wiki-* and .claude/skills/wiki-*\ngraphify: skipped (--no-graphify)\n\nSetup complete. Remaining human/agent steps (minimal):\n  1. Edit docs/wiki/HOST.yaml `anchor` \u2014 one paragraph the wiki must not dilute\n  2. Fill docs/wiki/host/router-seeds.md with your keywords \u2192 pages\n  3. If seed drafts exist, fill them from source (do not paste code into wiki pages)\n  4. pip install graphifyy   # if code graph was skipped\n  5. python3 docs/wiki/scripts/wiki_doctor.py\n  6. python3 docs/wiki/scripts/wiki_retrieve.py \"what is this repo\" --budget-tokens 1500",
+    "setup_output": "l-lh7l23gq/busy-docs-repo/.claude/skills/wiki-doctor/SKILL.md\nwrote ./.claude/skills/wiki-heal/SKILL.md\nwrote ./.claude/skills/wiki-lint/SKILL.md\nwrote ./.claude/skills/wiki-label/SKILL.md\nwrote ./.claude/skills/wiki-maintain/SKILL.md\nwrote ./.claude/skills/wiki-usage/SKILL.md\nwrote ./.claude/skills/wiki-setup/SKILL.md\nWrote ./docs/wiki/_meta/GRAPH.yaml (16 nodes, 20 edges)\nrepo: .\ndetected name=busy-docs-repo code_roots=['src/'] raw=['README.md']\nHOST.yaml: wrote HOST.yaml from detection\nmkdir: docs/wiki/inbox/archive, docs/wiki/temporal, docs/wiki/raw\nstubs: INDEX.md, log.md, temporal/TIMELINE.md\ngitignore: gitignore graphify-out/\nAGENTS.md: appended AGENTS.fragment.md\nlaunchers: installed .cursor/skills/wiki-* and .claude/skills/wiki-*\ngraphify: skipped (--no-graphify)\n\nSetup complete. Remaining human/agent steps (minimal):\n  1. Edit docs/wiki/HOST.yaml `anchor` \u2014 one paragraph the wiki must not dilute\n  2. Fill docs/wiki/host/router-seeds.md with your keywords \u2192 pages\n  3. If seed drafts exist, fill them from source (do not paste code into wiki pages)\n  4. pip install graphifyy   # if code graph was skipped\n  5. python3 docs/wiki/scripts/wiki_doctor.py\n  6. python3 docs/wiki/scripts/wiki_retrieve.py \"what is this repo\" --budget-tokens 1500",
     "safety_checks": {
       "setup_exit_zero": true,
       "existing_content_unchanged": true,
