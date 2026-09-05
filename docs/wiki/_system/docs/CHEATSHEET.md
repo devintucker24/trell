@@ -97,6 +97,10 @@ These are the public `./repobrain` verbs. There is no `./repobrain query` or
 ./repobrain dashboard html
 ```
 
+`dashboard html` prints the filesystem path and a `file://` URL. Open that URL
+in Chrome, Safari, or Finder. Do not paste the path into Cursor Simple Browser
+(`https://users/...` → `ERR_NAME_NOT_RESOLVED`).
+
 The HTML dashboard has Overview, Sources, Code graph (Graphify embed + full-page
 fallback), and Cheat sheet tabs.
 
@@ -137,7 +141,7 @@ with those hits** (essay vs map). They are not extra search backends.
 | Doctor | Run RepoBrain doctor and remediate critical/high findings without inventing taxonomy. |
 | Eval | Run `./repobrain eval` and explain any failed category from the latest report. |
 | Usage | Generate the usage report and tell me if retrieve is expensive or weakly hitting. |
-| Dashboard | Generate the local HTML health overview and summarize warnings with the printed path. |
+| Dashboard | Generate the local HTML health overview and open the printed `file://` URL in the system browser, not Cursor Simple Browser. |
 
 **Skill tasks** (paste when you want a playbook, not a fake CLI):
 
@@ -164,5 +168,8 @@ with those hits** (essay vs map). They are not extra search backends.
 - Raw vs compiled disagreement → inbox candidate; compiled stays authoritative.
 - Conversion `pending` → install the narrow MarkItDown extra for that format.
 - Conversion `blocked` → `allow_external` is required before URL/plugin/OCR flags.
+- Dashboard `https://users/...` / `ERR_NAME_NOT_RESOLVED` → the POSIX path was
+  opened as HTTPS. Run `./repobrain dashboard html` and open the printed
+  `file://` URL in the system browser (`open <path>` on macOS).
 - Stale Graphify → `./repobrain graph sync`.
 - Deep operator detail → `OPERATOR.md`, not this page.

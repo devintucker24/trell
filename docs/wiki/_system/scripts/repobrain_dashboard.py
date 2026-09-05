@@ -126,7 +126,7 @@ CLI_COMMANDS = (
         "name": "Dashboard",
         "description": "Generate the local read-only HTML dashboard.",
         "command": "./repobrain dashboard html",
-        "prompt": "Generate the local HTML dashboard and summarize each tab.",
+        "prompt": "Generate the local HTML dashboard, then open the printed file:// URL in the system browser.",
     },
 )
 
@@ -532,6 +532,7 @@ def render_html(data: dict[str, Any]) -> str:
     </div>
     <h1>Health and exploration</h1>
     <p class="meta">Generated {_escape(data.get("generated_at"))}. No mutation API, queue, credentials, or command server.</p>
+    <p class="meta">Open via file:// in Chrome, Safari, or Finder. Cursor Simple Browser turns /Users/... into https://users/... and fails with ERR_NAME_NOT_RESOLVED.</p>
     <p class="meta">Cheat sheet: docs/wiki/_system/docs/CHEATSHEET.md</p>
   </header>
   <nav aria-label="Dashboard views">
@@ -632,6 +633,21 @@ def render_html(data: dict[str, Any]) -> str:
 """
 
 
+def dashboard_file_uri(path: Path) -> str:
+    """Return a pasteable file:// URL for the system browser."""
+    return path.resolve().as_uri()
+
+
+def print_dashboard_location(path: Path) -> None:
+    print(path)
+    print(dashboard_file_uri(path))
+    print(
+        "Open the file:// URL in the system browser (Finder, Chrome, or Safari). "
+        "Cursor Simple Browser rewrites /Users/... to https://users/... and fails "
+        "with ERR_NAME_NOT_RESOLVED."
+    )
+
+
 def write_dashboard(data: dict[str, Any] | None = None) -> Path:
     payload = data or collect_dashboard_data()
     PATHS.dashboard_dir.mkdir(parents=True, exist_ok=True)
@@ -643,5 +659,5 @@ def write_dashboard(data: dict[str, Any] | None = None) -> Path:
 def cmd_html(argv: list[str] | None = None) -> int:
     del argv
     path = write_dashboard()
-    print(path)
+    print_dashboard_location(path)
     return 0

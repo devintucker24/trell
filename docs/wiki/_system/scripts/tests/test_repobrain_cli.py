@@ -119,6 +119,14 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertIn("html", help_dash.stdout.lower())
         self.assertEqual(generated.returncode, 0, generated.stderr)
         self.assertIn("generated/dashboard/index.html", generated.stdout.replace("\\", "/"))
+        self.assertIn("file://", generated.stdout)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", generated.stdout)
+        self.assertTrue(
+            any(
+                line.strip().startswith("file://")
+                for line in generated.stdout.splitlines()
+            )
+        )
 
     def test_dashboard_status_reports_owned_locations(self) -> None:
         proc = run_cli("dashboard", "status")

@@ -61,6 +61,7 @@ class DashboardHtmlTests(unittest.TestCase):
         for suffix in dashboard.SKILL_SUFFIXES:
             self.assertIn(f"repobrain-{suffix}", html)
         self.assertIn("./repobrain graph query", html)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", html)
 
     def test_missing_and_stale_states_include_copyable_remediation(self) -> None:
         html = dashboard.render_html(
@@ -181,8 +182,14 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("There is no `./repobrain query`", text)
         self.assertIn("playbook only", text)
         self.assertIn("wraps CLI", text)
+        self.assertIn("file://", text)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", text)
 
-    def test_cli_html_writes_local_dashboard(self) -> None:
+    def test_dashboard_file_uri_is_file_scheme(self) -> None:
+        uri = dashboard.dashboard_file_uri(Path("/Users/devintucker/code/trell/docs/wiki/_system/generated/dashboard/index.html"))
+        self.assertTrue(uri.startswith("file://"))
+        self.assertIn("index.html", uri)
+        self.assertNotIn("https://users/", uri)
         code = main(["dashboard", "html"])
         self.assertEqual(code, 0)
         path = dashboard.PATHS.dashboard_dir / "index.html"
@@ -191,6 +198,8 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("Health and exploration", text)
         self.assertIn("Doctor", text)
         self.assertIn("data-tab=\"graph\"", text)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", text)
+        self.assertIn("file://", text)
 
 
 if __name__ == "__main__":
