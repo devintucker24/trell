@@ -47,3 +47,32 @@ graphify:
     - '**/build/**'
     - '**/generated/**'
   emit_html: false
+sources:
+  enabled: true
+  scan_on_setup: true
+  roots:
+    - .
+  includes: []
+  excludes:
+    - docs/wiki/**
+    - '**/target/**'
+    - '**/node_modules/**'
+    - '**/vendor/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/generated/**'
+    - graphify-out/**
+  deny_globs:
+    - '**/.env'
+    - '**/.env.*'
+    - '**/*credentials*'
+    - '**/*secret*'
+    - '**/*id_rsa*'
+    - '**/*.pem'
+  max_index_bytes: 262144
+  max_excerpt_chars: 1200
+  conversion:
+    enabled: true
+    requirement: markitdown==0.1.7
+    format: csv
+    strict: false

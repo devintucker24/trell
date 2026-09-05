@@ -25,6 +25,8 @@ Useful flags:
 - `--as-of 2026-09-04` — validity-window filter + temporal scoring
 - `--json` — machine-readable hits
 - `--code` — also run Graphify `query` against `graphify-out/graph.json` (AST/call graph)
+- `--include-sources` — include bounded, non-authoritative excerpts from the
+  committed Git-tracked source inventory
 
 3. Open **only** the top 1–3 paths (or the matching `##` section).
 4. Claim-graph one-hop: frontmatter `edges` / `_system/generated/claim-graph.yaml`.
@@ -51,7 +53,11 @@ Useful flags:
 
 No embeddings required until corpus ≫ ~200 pages.
 
-RepoBrain retrieve ranks **compiled pages**. Graphify ranks **code symbols**. They are not interchangeable. `GRAPH.yaml` is only a dump of page frontmatter for claim proximity.
+RepoBrain retrieve ranks **compiled pages** above conflicting raw project
+sources. Raw results retain repository-path attribution and can only create an
+inbox triage candidate; they never rewrite a compiled claim. Graphify ranks
+**code symbols**. These evidence classes are not interchangeable.
+`GRAPH.yaml` is only a dump of page frontmatter for claim proximity.
 
 ## Temporal rules
 - Pages with `temporal.valid_until ≤ as_of` are down-ranked (unless query is historical).

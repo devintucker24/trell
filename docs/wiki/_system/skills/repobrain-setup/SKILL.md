@@ -44,6 +44,7 @@ python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo
 Flags:
 - `--dry-run` — detect + print, no writes
 - `--no-graphify` — skip code-graph extract
+- `--no-sources` — skip the Git-tracked source inventory scan
 - `--seed-pages` — write draft concept stubs from Graphify god nodes **only if** semantic dirs are almost empty
 - `--force-seed` — seed even if pages already exist (still skips colliding slugs)
 
@@ -57,8 +58,9 @@ Flags:
 6. Install `.cursor/skills/repobrain-*`, `.claude/skills/repobrain-*`, and `.agents/skills/repobrain-*` launchers
 7. Append `pack/AGENTS.fragment.md` only if `AGENTS.md` does not already mention retrieve
 8. `./repobrain graph sync` → `graphify extract --code-only` (no LLM)
-9. Optional seed pages from god nodes
-10. `sync_graph.py` (claim index from frontmatter)
+9. `./repobrain source scan` → deterministic manifest and grouped raw pointers
+10. Optional seed pages from god nodes
+11. `sync_graph.py` (claim index from frontmatter)
 
 ## Corpus: auto-generated or authored?
 
@@ -69,6 +71,8 @@ Flags:
 | Draft seed pages (`graphify-seed`) | **Once** at empty-repo setup | Setup script |
 | Compiled claim pages (`core/`, …) | **No** — agent-authored via inbox → ingest, then human-reviewed in the PR | Wiki |
 | `_system/generated/claim-graph.yaml` | **Yes** — compiled from corpus frontmatter | `sync_graph.py` |
+| `_system/generated/sources/manifest.json` | **Yes** — inventory of Git-tracked project sources | Source pipeline |
+| `_system/generated/sources/cache/` | **Yes, ignored** — local derived Markdown | MarkItDown adapter |
 
 Graphify cannot emit Trell-style `reduces_via` / `contradicts`. Do not treat god-node articles as the thesis.
 
@@ -85,6 +89,10 @@ Code questions: `./repobrain graph query "…"`
 Supported Graphify install:
 `python3 -m pip install --user 'graphifyy>=0.9.54,<0.10'`.
 
+Supported local CSV conversion install:
+`python3 -m pip install --user 'markitdown==0.1.7'`.
+
 Operator: `docs/wiki/_system/docs/FRAMEWORK.md`
 Claim vs code graphs: `docs/wiki/_system/docs/GRAPH.md`
 Adapter contract: `docs/wiki/_system/docs/GRAPHIFY.md`
+Source contract: `docs/wiki/_system/docs/SOURCES.md`

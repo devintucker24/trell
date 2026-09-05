@@ -183,7 +183,12 @@ def main() -> None:
             if p.name in ("README.md", "_TEMPLATE.md"):
                 continue
             meta = parse_fm(p.read_text(encoding="utf-8")) or {}
-            if meta.get("triage_status") == "pending" and "example" not in p.name:
+            if meta.get("origin") == "source-conflict":
+                add(findings, "medium", "source_conflict_pending",
+                    f"Raw/compiled conflict still pending: {p.name}",
+                    p.relative_to(WIKI).as_posix(),
+                    "Triage the inbox candidate; compiled claim remains authoritative")
+            elif meta.get("triage_status") == "pending" and "example" not in p.name:
                 add(findings, "high", "inbox_pending",
                     f"Inbox item still pending: {p.name}", p.relative_to(WIKI).as_posix(),
                     "Run triage skill")
@@ -257,6 +262,42 @@ def main() -> None:
                 "Graphify HTML visualization is requested but missing or stale",
                 graphify_status["html"]["path"], "./repobrain graph export-html")
 
+    sources_status = {}
+    scfg = host.get("sources") or {}
+    if isinstance(scfg, dict) and scfg.get("enabled", True):
+        from source_pipeline import status_data as sources_status_data
+
+        sources_status = sources_status_data()
+        if not sources_status["manifest"]["present"]:
+            add(
+                findings,
+                "medium",
+                "sources_manifest_missing",
+                "Source inventory is enabled but the manifest has not been generated",
+                str(PATHS.source_manifest.relative_to(ROOT)),
+                "./repobrain source scan",
+            )
+        failed = int((sources_status.get("conversion") or {}).get("failed") or 0)
+        if failed:
+            add(
+                findings,
+                "medium",
+                "source_conversion_failed",
+                f"{failed} source conversion(s) failed and remain retryable",
+                str(PATHS.source_manifest.relative_to(ROOT)),
+                "./repobrain source convert",
+            )
+        converter = sources_status.get("converter") or {}
+        if (scfg.get("conversion") or {}).get("enabled", True) and not converter.get("available"):
+            add(
+                findings,
+                "low",
+                "markitdown_missing",
+                converter.get("diagnostic") or "MarkItDown is not installed",
+                str(PATHS.source_manifest.relative_to(ROOT)),
+                converter.get("install_command"),
+            )
+
     # Temporal hygiene: active pages with expired valid_until
     today = date.today()
     for rel, meta in metas.items():
@@ -302,6 +343,7 @@ def main() -> None:
             "hard_orphans": len(hard_orphans),
         },
         "graphify": graphify_status,
+        "sources": sources_status,
         "pages_with_frontmatter": len(metas),
         "pages_scanned": len([p for p in md_files if p.name != "_TEMPLATE.md"]),
         "findings": findings,
@@ -366,6 +408,19 @@ def main() -> None:
                 f"({artifact['nodes'] or 0} nodes / {artifact['edges'] or 0} edges)",
                 f"- Source freshness: `{freshness['source']}`",
                 f"- Visualization: `{'fresh' if html['fresh'] else 'stale' if html['available'] else 'missing'}`",
+                "",
+            ]
+        )
+    if sources_status:
+        conversion = sources_status.get("conversion") or {}
+        converter = sources_status.get("converter") or {}
+        lines.extend(
+            [
+                "## Source inventory",
+                "",
+                f"- Manifest: `{sources_status['manifest']['entries']} entries`",
+                f"- Conversion: `{conversion}`",
+                f"- MarkItDown: `{converter.get('version') or 'unavailable'}`",
                 "",
             ]
         )

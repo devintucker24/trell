@@ -65,32 +65,31 @@ def _doctor(argv: list[str]) -> int:
 
 
 def _source(argv: list[str]) -> int:
+    from source_pipeline import cmd_convert, cmd_scan, cmd_status
+
     parser = argparse.ArgumentParser(
         prog="repobrain source",
         description=(
-            "Inspect RepoBrain source-inventory capabilities. Source scanning "
-            "and conversion are extension points for later operators."
+            "Scan Git-tracked repository sources, convert the local CSV tracer, "
+            "and inspect the committed source manifest."
         ),
     )
     commands = parser.add_subparsers(dest="source_command", metavar="COMMAND")
-    commands.add_parser("status", help="show the reserved source manifest")
-    commands.add_parser("scan", help="scan repository sources (not installed)")
-    commands.add_parser("convert", help="convert discovered sources (not installed)")
-    args = parser.parse_args(argv)
+    commands.add_parser("status", help="show the source inventory status", add_help=False)
+    commands.add_parser("scan", help="scan Git-tracked sources", add_help=False)
+    commands.add_parser("convert", help="convert the local CSV tracer", add_help=False)
+    args = parser.parse_known_args(argv)
 
-    if args.source_command is None:
+    command = args[0].source_command
+    remainder = args[1] if command else argv
+    if command is None:
         parser.print_help()
         return 0
-    if args.source_command == "status":
-        state = "present" if PATHS.source_manifest.exists() else "not generated"
-        print(f"Source manifest: {PATHS.source_manifest} ({state})")
-        return 0
-    print(
-        f"repobrain source {args.source_command}: operator not installed; "
-        f"reserved manifest is {PATHS.source_manifest}",
-        file=sys.stderr,
-    )
-    return 2
+    if command == "status":
+        return cmd_status(remainder)
+    if command == "scan":
+        return cmd_scan(remainder)
+    return cmd_convert(remainder)
 
 
 def _dashboard(argv: list[str]) -> int:

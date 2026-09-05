@@ -108,6 +108,12 @@ from `docs/wiki/_system/docs/ROUTER.md`, then retrieve.
 
 **Temporal spine:** `docs/wiki/temporal/TIMELINE.md` (`domain: temporal`) — knowledge chronology for as-of recall.
 
+Repository documentation outside the corpus is Layer 1 evidence. Run
+`./repobrain source scan` to build the deterministic source manifest and
+grouped raw pointers. Use retrieve with `--include-sources` for bounded excerpts.
+Raw excerpts are non-authoritative; an active compiled claim wins a disagreement
+and RepoBrain emits an inbox triage candidate. See [[_system/docs/SOURCES]].
+
 ---
 
 ## 4. Frontmatter Is Mandatory
@@ -159,6 +165,10 @@ Skill: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`
 Setup: `./repobrain setup`.
 Export: `python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo`.
 Human leftover: `HOST.yaml` `anchor` + review any `graphify-seed` drafts. Details: [[FRAMEWORK]].
+
+Setup also scans relevant Git-tracked source knowledge by default. Inspect it
+with `./repobrain source status`; skip only with `--no-sources`. Converted local
+HTML stays in an ignored cache and never becomes compiled doctrine.
 
 ### 6.0b Inbox drop (default on-ramp)
 1. Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md` from `inbox/_TEMPLATE.md`  

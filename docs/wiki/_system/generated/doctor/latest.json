@@ -49,7 +49,7 @@
     },
     "freshness": {
       "built_commit": "3b15cc6a224f72002bd365d9734f0c4adffd43b4",
-      "current_commit": "2e90d051733be1027ddd430dc03b04a28b9aac74",
+      "current_commit": "9c2da313b9589e5712899aad3bd207a506e368b2",
       "commit": "stale",
       "source": "fresh",
       "method": "git-diff",
@@ -61,8 +61,42 @@
       "fresh": true
     }
   },
-  "pages_with_frontmatter": 30,
-  "pages_scanned": 30,
+  "sources": {
+    "enabled": true,
+    "manifest": {
+      "path": "/workspace/docs/wiki/_system/generated/sources/manifest.json",
+      "present": true,
+      "generated_at": "2026-09-05T13:29:45Z",
+      "entries": 433
+    },
+    "changes": {
+      "added": [],
+      "deleted": [],
+      "modified": []
+    },
+    "conversion": {
+      "native": 402,
+      "graphify-delegate": 31
+    },
+    "converter": {
+      "name": "markitdown",
+      "available": true,
+      "version": "0.1.7",
+      "requirement": "markitdown==0.1.7",
+      "license": "MIT",
+      "install_command": "python3 -m pip install --user 'markitdown==0.1.7'",
+      "compatible": true,
+      "diagnostic": "MarkItDown 0.1.7 satisfies markitdown==0.1.7."
+    },
+    "structures": {
+      "adr": [],
+      "context": [],
+      "docs_sites": []
+    },
+    "denied": 0
+  },
+  "pages_with_frontmatter": 32,
+  "pages_scanned": 32,
   "findings": [],
   "heal_recommended": false
 }

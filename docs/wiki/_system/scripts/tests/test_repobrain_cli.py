@@ -93,14 +93,15 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertIn("--force", sync.stdout)
         self.assertIn("--html", sync.stdout)
 
-    def test_source_status_and_future_operator_statuses_are_explicit(self) -> None:
+    def test_source_status_and_scan_are_installed(self) -> None:
         status = run_cli("source", "status")
-        unavailable = run_cli("source", "scan")
+        help_scan = run_cli("source", "scan", "--help")
 
         self.assertEqual(status.returncode, 0, status.stderr)
         self.assertIn("manifest.json", status.stdout)
-        self.assertEqual(unavailable.returncode, 2)
-        self.assertIn("operator not installed", unavailable.stderr)
+        self.assertEqual(help_scan.returncode, 0, help_scan.stderr)
+        self.assertIn("usage:", help_scan.stdout.lower())
+        self.assertIn("--dry-run", help_scan.stdout)
 
     def test_sources_alias_is_deprecated_but_still_works(self) -> None:
         proc = run_cli("sources", "status")
