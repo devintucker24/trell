@@ -29,6 +29,7 @@ SKIP_PREFIXES = (
     "scripts/",
     "pack/",
     "_meta/usage/",
+    "_meta/eval/",
     "generated/",  # Graphify/export dumps if ever copied under the wiki
 )
 

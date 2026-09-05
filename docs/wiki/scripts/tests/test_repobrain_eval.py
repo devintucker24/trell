@@ -14,9 +14,18 @@ SCRIPTS = ROOT / "docs" / "wiki" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 from repobrain_eval import evaluate_answer_fidelity, evaluate_setup_fixture
+from wiki_paths import is_wiki_content_page
 
 
 class RepoBrainEvalTests(unittest.TestCase):
+    def test_generated_eval_reports_are_not_corpus_pages(self) -> None:
+        self.assertFalse(
+            is_wiki_content_page(
+                "_meta/eval/repobrain-eval-20260905T120000Z.md",
+                "repobrain-eval-20260905T120000Z.md",
+            )
+        )
+
     def test_retrieve_json_reports_provenance_and_packed_budget(self) -> None:
         proc = subprocess.run(
             [
