@@ -6,9 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -57,6 +55,10 @@ def run(
     )
 
 
+def display_text(text: str, root: Path) -> str:
+    return text.replace(str(root), ".")
+
+
 def category_enabled(only: set[str], name: str) -> bool:
     return not only or name in only
 
@@ -69,8 +71,8 @@ def evaluate_doctor(root: Path) -> CategoryResult:
         {
             "command": "python3 docs/wiki/scripts/wiki_doctor.py --no-log",
             "exit_code": proc.returncode,
-            "stdout": proc.stdout.strip(),
-            "stderr": proc.stderr.strip(),
+            "stdout": display_text(proc.stdout, root).strip(),
+            "stderr": display_text(proc.stderr, root).strip(),
         }
     ]
     if proc.returncode != 0 or not report_path.exists():
@@ -569,12 +571,14 @@ def evaluate_graphify(root: Path, config: dict[str, Any]) -> CategoryResult:
         {
             "status_command": "python3 docs/wiki/scripts/wiki_graphify.py status",
             "status_exit_code": status.returncode,
-            "status": status.stdout.strip() or status.stderr.strip(),
+            "status": display_text(status.stdout or status.stderr, root).strip(),
             "query_command": (
                 f"python3 docs/wiki/scripts/wiki_graphify.py query {symbol} --budget 800"
             ),
             "query_exit_code": query.returncode,
-            "query_excerpt": (query.stdout or query.stderr)[:1200].strip(),
+            "query_excerpt": display_text(
+                (query.stdout or query.stderr)[:1200], root
+            ).strip(),
             "symbol": symbol,
             "expected_source": expected_source,
             "matched_node": source_match,
@@ -697,13 +701,13 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
         protected = {
             rel: _sha256(fixture / rel)
             for rel in [
-                "AGENTS.md",
                 "CONTEXT.md",
                 "docs/adr/0001-use-events.md",
                 "docs/site/index.md",
                 "docs/wiki/core/existing-knowledge.md",
             ]
         }
+        agents_before = (fixture / "AGENTS.md").read_text(encoding="utf-8")
         setup = run(
             [
                 sys.executable,
@@ -717,6 +721,7 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
             for path in semantic_dir.glob("*.md")
         }
         protected_after = {rel: _sha256(fixture / rel) for rel in protected}
+        agents_after = (fixture / "AGENTS.md").read_text(encoding="utf-8")
 
         fixture_checks = {
             "git_repository": (fixture / ".git").is_dir(),
@@ -740,6 +745,7 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
         safety_checks = {
             "setup_exit_zero": setup.returncode == 0,
             "existing_content_unchanged": protected == protected_after,
+            "existing_agent_instructions_preserved": agents_before in agents_after,
             "semantic_file_set_unchanged": before_semantic == after_semantic,
             "raw_docs_not_copied_to_semantic": set(after_semantic) == set(before_semantic),
         }
@@ -771,7 +777,9 @@ def evaluate_setup_fixture(root: Path) -> CategoryResult:
                 ),
                 "setup_exit_code": setup.returncode,
                 "setup_detection": detected_line,
-                "setup_output": (setup.stdout or setup.stderr)[-1600:].strip(),
+                "setup_output": display_text(
+                    (setup.stdout or setup.stderr)[-1600:], fixture
+                ).strip(),
                 "safety_checks": safety_checks,
                 "baseline_observation": (
                     "Current setup detection reports only its existing narrow raw-source "
@@ -812,12 +820,16 @@ def write_reports(
     required_failures = [
         result.name for result in categories if result.required and not result.passed
     ]
+    try:
+        displayed_config = config_path.relative_to(root).as_posix()
+    except ValueError:
+        displayed_config = str(config_path)
     report = {
         "schema_version": 1,
         "generated_at": now.isoformat(),
-        "repository": str(root),
+        "repository": root.name,
         "commit": _git_output(root, ["rev-parse", "HEAD"]) or None,
-        "config": str(config_path),
+        "config": displayed_config,
         "status": "pass" if not required_failures else "fail",
         "exit_code": 0 if not required_failures else 1,
         "required_failures": required_failures,
