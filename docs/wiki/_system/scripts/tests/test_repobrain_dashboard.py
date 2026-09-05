@@ -61,6 +61,7 @@ class DashboardHtmlTests(unittest.TestCase):
         for suffix in dashboard.SKILL_SUFFIXES:
             self.assertIn(f"repobrain-{suffix}", html)
         self.assertIn("./repobrain graph query", html)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", html)
 
     def test_missing_and_stale_states_include_copyable_remediation(self) -> None:
         html = dashboard.render_html(
@@ -131,12 +132,64 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("Graph artifact is unreadable", html)
         self.assertIn("./repobrain graph sync --force", html)
 
-    def test_command_catalog_covers_canonical_skills(self) -> None:
-        names = {item["id"] for item in dashboard.command_catalog()}
+    def test_command_catalog_splits_cli_from_playbooks(self) -> None:
+        by_id = {item["id"]: item for item in dashboard.command_catalog()}
         for suffix in dashboard.SKILL_SUFFIXES:
-            self.assertIn(f"repobrain-{suffix}", names)
+            self.assertIn(f"repobrain-{suffix}", by_id)
+        self.assertEqual(by_id["cli-retrieve"]["group"], "command")
+        self.assertEqual(by_id["repobrain-retrieve"]["group"], "skill")
+        self.assertEqual(by_id["repobrain-retrieve"]["kind"], "wraps-cli")
+        self.assertEqual(by_id["repobrain-query"]["kind"], "playbook")
+        self.assertEqual(by_id["repobrain-navigate"]["kind"], "playbook")
+        self.assertEqual(by_id["repobrain-query"]["command"], "")
+        self.assertEqual(by_id["repobrain-navigate"]["command"], "")
+        retrieve_cmd = by_id["cli-retrieve"]["command"]
+        self.assertNotEqual(by_id["repobrain-query"]["command"], retrieve_cmd)
+        self.assertIn("Playbook — no ./repobrain query verb.", by_id["repobrain-query"]["note"])
 
-    def test_cli_html_writes_local_dashboard(self) -> None:
+    def test_render_html_separates_commands_and_skills(self) -> None:
+        html = dashboard.render_html(
+            {
+                "generated_at": "2026-09-05T00:00:00Z",
+                "doctor_score": 100,
+                "eval_status": "pass",
+                "eval_passed": 1,
+                "eval_total": 1,
+                "usage": {},
+                "graphify": {"artifact": {"state": "ready"}, "freshness": {"source": "fresh"}},
+                "sources": {"manifest": {"present": True, "entries": 1}, "conversion": {}},
+                "host": "Trell",
+                "commands": dashboard.command_catalog(),
+            }
+        )
+        commands_at = html.index('id="dash-commands"')
+        skills_at = html.index('id="dash-skills"')
+        self.assertLess(commands_at, skills_at)
+        commands_block = html[commands_at:skills_at]
+        skills_block = html[skills_at:]
+        self.assertIn("<h3>repobrain-query</h3>", skills_block)
+        self.assertNotIn("<h3>repobrain-query</h3>", commands_block)
+        self.assertIn("Playbook — no ./repobrain query verb.", skills_block)
+        self.assertIn("Playbook — no ./repobrain navigate verb.", skills_block)
+
+    def test_cheatsheet_splits_skills_and_commands(self) -> None:
+        text = (dashboard.PATHS.system / "docs" / "CHEATSHEET.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("## Commands", text)
+        self.assertIn("## Skills", text)
+        self.assertLess(text.index("## Commands"), text.index("## Skills"))
+        self.assertIn("There is no `./repobrain query`", text)
+        self.assertIn("playbook only", text)
+        self.assertIn("wraps CLI", text)
+        self.assertIn("file://", text)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", text)
+
+    def test_dashboard_file_uri_is_file_scheme(self) -> None:
+        uri = dashboard.dashboard_file_uri(Path("/Users/devintucker/code/trell/docs/wiki/_system/generated/dashboard/index.html"))
+        self.assertTrue(uri.startswith("file://"))
+        self.assertIn("index.html", uri)
+        self.assertNotIn("https://users/", uri)
         code = main(["dashboard", "html"])
         self.assertEqual(code, 0)
         path = dashboard.PATHS.dashboard_dir / "index.html"
@@ -145,6 +198,8 @@ class DashboardHtmlTests(unittest.TestCase):
         self.assertIn("Health and exploration", text)
         self.assertIn("Doctor", text)
         self.assertIn("data-tab=\"graph\"", text)
+        self.assertIn("ERR_NAME_NOT_RESOLVED", text)
+        self.assertIn("file://", text)
 
 
 if __name__ == "__main__":

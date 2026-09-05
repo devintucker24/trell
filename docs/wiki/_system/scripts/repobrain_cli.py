@@ -124,10 +124,10 @@ def _dashboard(argv: list[str]) -> int:
         print(f"RepoBrain HTML dashboard: {html_path} ({html_state})")
         return 0
     if args.dashboard_command == "html":
-        from repobrain_dashboard import write_dashboard
+        from repobrain_dashboard import print_dashboard_location, write_dashboard
 
         path = write_dashboard()
-        print(path)
+        print_dashboard_location(path)
         return 0
     return _delegate("graph", ["export-html"])
 
