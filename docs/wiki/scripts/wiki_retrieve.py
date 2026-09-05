@@ -368,6 +368,11 @@ def main() -> None:
                 "anchor": chunk["anchor"],
                 "heading": chunk["heading"],
                 "excerpt": chunk["text"][:500].replace("\n", " ").strip(),
+                "provenance": {
+                    "kind": _provenance_kind(rel, semantic),
+                    "path": rel,
+                    "page_id": meta.get("id"),
+                },
                 "why": _why(lex, g_eff, tscore, fboost),
             })
 
@@ -414,7 +419,14 @@ def main() -> None:
 
     if args.json:
         import json
-        payload = {"query": args.query, "as_of": args.as_of, "lane": args.lane, "hits": packed}
+        payload = {
+            "query": args.query,
+            "as_of": args.as_of,
+            "lane": args.lane,
+            "packed_tokens": used,
+            "budget_tokens": args.budget_tokens,
+            "hits": packed,
+        }
         if code_note:
             payload["code_graph"] = code_note
         print(json.dumps(payload, indent=2))
@@ -435,6 +447,19 @@ def main() -> None:
     if args.code and code_note.get("query_output"):
         print("## code graph (Graphify)")
         print(code_note["query_output"])
+
+
+def _provenance_kind(rel: str, semantic_dirs: tuple[str, ...]) -> str:
+    top = rel.split("/", 1)[0]
+    if top in semantic_dirs:
+        return "compiled"
+    if top == "raw":
+        return "raw"
+    if top == "episodic":
+        return "episodic"
+    if top == "temporal":
+        return "temporal"
+    return "meta"
 
 
 def _code_graph_note(query: str, run: bool = False) -> dict:
