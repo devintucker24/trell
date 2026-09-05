@@ -49,7 +49,7 @@
     },
     "freshness": {
       "built_commit": "3b15cc6a224f72002bd365d9734f0c4adffd43b4",
-      "current_commit": "9c2da313b9589e5712899aad3bd207a506e368b2",
+      "current_commit": "fc061cd6246d4602d621c47999954421bf849fe1",
       "commit": "stale",
       "source": "fresh",
       "method": "git-diff",
@@ -66,17 +66,21 @@
     "manifest": {
       "path": "/workspace/docs/wiki/_system/generated/sources/manifest.json",
       "present": true,
-      "generated_at": "2026-09-05T13:29:45Z",
-      "entries": 433
+      "generated_at": "2026-09-05T14:28:46Z",
+      "entries": 436
     },
     "changes": {
       "added": [],
       "deleted": [],
-      "modified": []
+      "modified": [
+        "examples/repobrain-sources/sample.csv",
+        "examples/repobrain-sources/sample.html"
+      ]
     },
     "conversion": {
-      "native": 402,
-      "graphify-delegate": 31
+      "native": 403,
+      "graphify-delegate": 31,
+      "converted": 2
     },
     "converter": {
       "name": "markitdown",
