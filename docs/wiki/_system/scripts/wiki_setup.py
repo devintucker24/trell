@@ -104,16 +104,19 @@ updated: '{today}'
 tags: [index, navigation]
 domain: meta
 summary: Master catalog of the {name} RepoBrain corpus for agent navigation.
-nodes:
-  - id: wiki-index
-    kind: concept
-    label: Wiki Index
-edges: []
 related:
   - "[[SCHEMA]]"
   - "[[_system/docs/ROUTER]]"
   - "[[_system/docs/FRAMEWORK]]"
   - "[[_system/docs/CHEATSHEET]]"
+nodes:
+  - id: wiki-index
+    kind: concept
+    label: Wiki Index
+edges:
+  - from: wiki-index
+    to: wiki-schema
+    rel: depends_on
 agent:
   priority: critical
   read_when:
@@ -148,6 +151,42 @@ LOG_STUB = """# RepoBrain operations log (append-only)
 
 - Ran `repobrain setup` in this repo
 - Fill `HOST.yaml` anchor; review any graphify-seed draft pages
+"""
+
+TIMELINE_STUB = """---
+id: timeline
+title: Timeline
+type: meta
+status: active
+created: '{today}'
+updated: '{today}'
+tags: [temporal, timeline]
+domain: temporal
+summary: Chronological log of RepoBrain and host corpus changes.
+nodes:
+  - id: memory-temporal
+    kind: concept
+    label: Temporal Memory
+edges:
+  - from: memory-temporal
+    to: memory-episodic
+    rel: related_to
+related:
+  - "[[episodic/INDEX]]"
+  - "[[_system/docs/FRAMEWORK]]"
+agent:
+  priority: medium
+  read_when:
+    - reconstructing what changed and when
+  maintain:
+    - append a row for every structural or claim change
+---
+
+# Timeline
+
+## {today}
+
+- — | schema | wiki-setup | pack bootstrap | [[_system/docs/FRAMEWORK]]
 """
 
 SEED_PAGE = """---
@@ -371,7 +410,7 @@ def write_stubs(host: dict, dry: bool) -> list[str]:
     if not timeline.exists() and not dry:
         timeline.parent.mkdir(parents=True, exist_ok=True)
         timeline.write_text(
-            f"# Timeline\n\n## {TODAY}\n\n- — | schema | wiki-setup | pack bootstrap | [[FRAMEWORK]]\n",
+            TIMELINE_STUB.format(today=TODAY),
             encoding="utf-8",
         )
         wrote.append("temporal/TIMELINE.md")

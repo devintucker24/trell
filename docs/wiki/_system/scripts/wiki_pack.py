@@ -100,7 +100,7 @@ def cmd_export(dest_repo: Path) -> None:
         else:
             _copy_tree(src, dest_system / rel)
 
-    for rel in ["inbox/README.md", "episodic/INDEX.md"]:
+    for rel in ["inbox/README.md"]:
         src = WIKI / rel
         if src.exists():
             _copy_tree(src, dest_wiki / rel)
@@ -110,6 +110,12 @@ def cmd_export(dest_repo: Path) -> None:
         inbox_template.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(PATHS.templates / "inbox-item.md", inbox_template)
         print("wrote stub inbox/_TEMPLATE.md")
+
+    episodic_index = dest_wiki / "episodic" / "INDEX.md"
+    if not episodic_index.exists():
+        episodic_index.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(PATHS.templates / "episodic-index.md", episodic_index)
+        print("wrote stub episodic/INDEX.md")
 
     for src_rel, dest_rel in [
         ("HOST.template.yaml", "config/HOST.yaml"),

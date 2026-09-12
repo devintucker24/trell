@@ -189,6 +189,11 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "eval-queries.yaml"
                 ).exists()
             )
+            episodic = (
+                destination / "docs" / "wiki" / "episodic" / "INDEX.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("2026-09-04-brain-memory-upgrade", episodic)
+            self.assertIn("compiled wiki truth", episodic)
 
 
 if __name__ == "__main__":
