@@ -49,6 +49,57 @@ class RepoBrainEvalTests(unittest.TestCase):
 
         self.assertGreaterEqual(score, 1.0)
 
+    def test_synonym_tokens_do_not_match_without_overlap(self) -> None:
+        score = lexical_score(
+            ["holding", "pen", "rough", "drafts"],
+            {
+                "id": "inbox-readme",
+                "title": "Wiki Inbox — Drop Zone for Unprocessed Knowledge",
+                "tags": ["inbox", "triage", "ingest"],
+                "summary": "Human/agent drop zone. Nothing here is wiki truth.",
+                "agent": {"read_when": ["adding new material to the wiki"]},
+            },
+            {
+                "heading": "Inbox",
+                "text": "This folder is the only approved on-ramp for messy new material.",
+            },
+            "inbox/README.md",
+        )
+        self.assertLess(score, 0.25)
+
+    def test_read_when_alias_recovers_a_paraphrase(self) -> None:
+        score = lexical_score(
+            ["holding", "pen"],
+            {"agent": {"read_when": ["holding pen for rough drafts", "inbox drop"]}},
+            {"heading": "Inbox", "text": "drop zone for unprocessed knowledge"},
+            "inbox/README.md",
+        )
+        self.assertGreaterEqual(score, 0.5)
+
+    def test_unknown_tokens_are_not_strong_lexical_hits(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPTS / "wiki_retrieve.py"),
+                "qzxv plernwick",
+                "--k",
+                "5",
+                "--budget-tokens",
+                "600",
+                "--json",
+                "--no-log",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(proc.stdout)
+        self.assertTrue(payload["hits"], "recency floor still emits hits")
+        for hit in payload["hits"][:3]:
+            self.assertLess(hit["lex"], 0.25)
+            self.assertNotIn("lexical", hit.get("why") or "")
+
     def test_generated_eval_reports_are_not_corpus_pages(self) -> None:
         self.assertFalse(
             is_wiki_content_page(

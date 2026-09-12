@@ -239,11 +239,14 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             self.assertIn("/repobrain-query", how)
             self.assertIn("/repobrain-retrieve", how)
             self.assertIn("Do not collapse", how)
+            self.assertIn("does **not** expand synonyms", how)
+            self.assertIn("why: temporal-fit", how)
             using = (
                 destination / "docs" / "wiki" / "_system" / "docs" / "USING.md"
             ).read_text(encoding="utf-8")
             self.assertIn("[0.833] inbox/README.md", using)
             self.assertIn("Do **not** rename this to `/repobrain-retrieve`", using)
+            self.assertIn("does not know synonyms", using.replace("\n", " "))
             inbox = (
                 destination / "docs" / "wiki" / "inbox" / "README.md"
             ).read_text(encoding="utf-8")

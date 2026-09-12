@@ -28,9 +28,14 @@ Useful flags:
 - `--include-sources` — include bounded, non-authoritative excerpts from the
   committed Git-tracked source inventory
 
-3. Open **only** the top 1–3 paths (or the matching `##` section).
-4. Claim-graph one-hop: frontmatter `edges` / `_system/generated/claim-graph.yaml`.
-5. Code/structure questions: **do not** invent a second AST graph.
+3. If top hits have `lex` ~0 and `why` is only `temporal-fit`, that is a
+   **miss** (recency floor), not a match. Rephrase using nouns from
+   `docs/wiki/_system/config/router-seeds.md` or from seed pages already
+   opened. Do not treat those hits as answers. Retrieve does not expand
+   synonyms.
+4. Open **only** the top 1–3 paths (or the matching `##` section).
+5. Claim-graph one-hop: frontmatter `edges` / `_system/generated/claim-graph.yaml`.
+6. Code/structure questions: **do not** invent a second AST graph.
 
 ```bash
 ./repobrain graph query "<same or narrower question>"
@@ -42,8 +47,8 @@ If `graphify-out/graph.json` is missing, run `./repobrain graph sync` and
 query again. Do not skip Graphify and dump `src/*.rs`. Open only named
 `source_file`s. `src/` remains ground truth; Graphify is the index.
 
-6. Answer with citations `[[folder/page]]`. Prefer filing durable answers back (query skill).
-7. Log: `## [YYYY-MM-DD] retrieve | <slug>`
+7. Answer with citations `[[folder/page]]`. Prefer filing durable answers back (query skill).
+8. Log: `## [YYYY-MM-DD] retrieve | <slug>`
 
 ## Scoring (v0 file-native)
 | Signal | Weight |
@@ -73,3 +78,4 @@ inbox triage candidate; they never rewrite a compiled claim. Graphify ranks
 - Skipping retrieve and loading an entire domain folder
 - Treating episodic hits as semantic truth without consolidation
 - Ignoring `--as-of` when the user asked a when/history question
+- Treating `temporal-fit` / `lex` ~0 hits as a synonym match

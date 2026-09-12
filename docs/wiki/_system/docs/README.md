@@ -5,7 +5,7 @@ Start here:
 | Doc | Audience |
 |-----|----------|
 | [QUICKSTART.md](QUICKSTART.md) | Install into a host repo |
-| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | Retrieve scoring, `/repobrain-query`, two graphs |
+| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | Retrieve scoring, synonyms/misses, `/repobrain-query`, two graphs |
 | [USING.md](USING.md) | Ask, inbox, doctor — with real retrieve output |
 | [GRAPHIFY.md](GRAPHIFY.md) | Optional code-graph adapter |
 

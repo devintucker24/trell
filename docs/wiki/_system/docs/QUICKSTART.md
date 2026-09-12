@@ -24,6 +24,7 @@ Then in **your** project:
 1. Edit `docs/wiki/_system/config/HOST.yaml`: set `name` and `anchor` from
    this repo's README. `anchor` is one paragraph agents must not dilute.
 2. Map a few keywords in `docs/wiki/_system/config/router-seeds.md`.
+   Retrieve does not expand synonyms; this table is the alias map.
 3. `./repobrain doctor`
 4. `./repobrain retrieve "what is this repo" --budget-tokens 1500`
 

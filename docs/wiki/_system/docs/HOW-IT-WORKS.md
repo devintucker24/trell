@@ -107,6 +107,64 @@ How to read one hit:
 `--json` adds the same hits as objects (`path`, `score`, `excerpt`,
 `provenance`, …) plus `packed_tokens` vs `budget_tokens`.
 
+### If the question does not match word for word
+
+Retrieve does **not** expand synonyms, stem words, or call an embedding
+model. It splits the question into tokens (and drops stop words like `how` /
+`what` / `vs`), then looks for those strings in title, tags, `read_when`,
+path, heading, and body.
+
+You do **not** need the whole sentence on the page. Any overlapping token
+helps. You **do** need at least one of those tokens to exist on the page or
+in its frontmatter.
+
+Same empty host, a paraphrase that never uses inbox words:
+
+```text
+# retrieve: 'holding pen for rough drafts'
+# lane=all as_of=none hits=5 ~tokens=655
+# code-graph: missing graphify-out/graph.json — repobrain graph sync
+
+1. [0.289] inbox/README.md › Rules
+   id=inbox-readme type=meta lex=0.1389 graph=0.0 temporal=0.835
+   why: temporal-fit
+   1. **Drop first, organize later.** …
+
+2. [0.220] INDEX.md › host-app wiki index
+   id=wiki-index type=index lex=0.0 graph=0.0 temporal=0.835
+   why: temporal-fit
+   Agent bootstrap: `AGENTS.md` → `docs/wiki/_system/docs/ROUTER.md` → retrieve. …
+```
+
+That is a **miss**, not an answer. Combined score can still clear the 0.08
+floor from recency + type prior, so you still get a hit list. Read `lex` and
+`why`:
+
+| You see | Means |
+|---------|-------|
+| `lex` near 1.0 and `why` includes `lexical` | Words matched |
+| `why` is only `temporal-fit` and `lex` is ~0 | Recency noise. Rephrase. |
+| `why` includes `read_when/tags` | An alias you planted in YAML fired |
+
+A mixed paraphrase (`staging area for messy notes`) can still rank inbox
+because `messy` is in the body and `notes` is in `read_when` — not because
+retrieve knows “staging area” means inbox.
+
+What to do on a miss:
+
+1. Rephrase using nouns from `docs/wiki/_system/config/router-seeds.md` or
+   from a seed page ROUTER already opened. That table is the synonym map;
+   the CLI does not have one.
+2. Put aliases on the compiled page (`tags` and `agent.read_when`).
+3. Inbox a synonym note and ingest it if the concept is real but unnamed.
+4. `/repobrain-query` must not write an essay from `temporal-fit`-only hits.
+   Say the corpus did not match, then rephrase.
+
+Short tokens are substring matches (`pen` inside `pending`). Prefer
+distinctive nouns. Claim-graph hops cannot rescue a zero-overlap query:
+graph score is gated by lexical match, and graph seeds themselves need
+token overlap on node ids/labels.
+
 ## Skills: retrieve vs query (do not rename)
 
 There are already **two** skills. Do not collapse `/repobrain-query` into
@@ -151,7 +209,8 @@ Canonical playbook: [`repobrain-query/SKILL.md`](../skills/repobrain-query/SKILL
    - when / as-of → `--as-of` and/or `--lane temporal`
    - who-calls / lexer / parser → `./repobrain graph query` (sync first if
      `graphify-out/graph.json` is missing)
-3. Read 2–6 top **sections**.
+3. Read 2–6 top **sections**. If `why` is only `temporal-fit` and `lex` is
+   ~0, rephrase from router-seeds — do not answer from recency noise.
 4. Answer: verdict first, citations `[[folder/page]]`, no invented stats.
 5. If the answer should last, ingest it onto a compiled page (`type: synthesis`
    or an existing page). Episodes are not truth until consolidated.

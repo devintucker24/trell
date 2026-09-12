@@ -43,6 +43,14 @@ Open the **top paths**, not the whole wiki. `› Inbox` is a heading. `why`
 tells you it matched words, sat near a claim-graph neighbor, and was still
 valid in time. `code-graph: missing` is fine: wiki hits still ranked.
 
+You do **not** need a word-for-word match of the whole question. You **do**
+need overlapping tokens (or aliases in `tags` / `read_when`). Retrieve does
+not know synonyms. If `why` is only `temporal-fit` and `lex` is ~0, that
+hit list is recency noise — rephrase from
+`docs/wiki/_system/config/router-seeds.md`, or plant the alias on the page.
+Do not answer from those hits. Details:
+[HOW-IT-WORKS.md](HOW-IT-WORKS.md#if-the-question-does-not-match-word-for-word).
+
 Lanes:
 
 ```bash
