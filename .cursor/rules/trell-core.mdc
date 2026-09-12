@@ -22,6 +22,6 @@ Whenever a request touches Trell architecture, concepts, memory, or documentatio
 | **User shares notes, URLs, or asks to "Inbox this"** | `repobrain-triage` → `repobrain-ingest` | Create `docs/wiki/inbox/YYYY-MM-DD-<slug>.md`, then triage and ingest |
 | **Audit or verify knowledge health** ("wiki doctor", broken links, orphans) | `repobrain-doctor` → `repobrain-heal` | `./repobrain doctor`, then follow the heal skill if score < 95 |
 | **Combined audit & fix** ("lint the wiki") | `repobrain-lint` | Run doctor, heal findings, re-run doctor |
-| **Code wiring / who-calls / where-defined** | `repobrain graph` | `./repobrain graph query "<query>"` |
+| **Code wiring / who-calls / where-defined / lexer / parser** | `./repobrain graph query` | Run `./repobrain graph query "<query>"`. If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query. Open named `source_file`s only — do not dump `src/`. |
 | **Code changes affecting epistemic semantics** | `repobrain-maintain` | Sync `docs/wiki/core/`, Graphify, and the claim graph |
 | **Export / install RepoBrain in another repo** | `repobrain-setup` + `FRAMEWORK.md` | Export the engine, then run `./repobrain setup` |

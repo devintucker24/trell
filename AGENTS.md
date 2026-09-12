@@ -23,7 +23,13 @@ they have been reconciled into the reviewed corpus.
 
 ## Workflow
 
-For compiler work, use `src/`, examples, and tests; run `cargo test`.
+For compiler **edits**, use `src/`, examples, and tests; run `cargo test`.
+
+For compiler **questions** (lexer, parser, who-calls, where defined):
+
+1. `./repobrain graph query "<symbol or question>"`
+2. If `graphify-out/graph.json` is missing, run `./repobrain graph sync` and query again. Do not skip Graphify and dump `src/*.rs`.
+3. Open only the `source_file` Graphify names. `src/` is ground truth; Graphify is the index.
 
 For knowledge, memory, research, or RepoBrain work:
 

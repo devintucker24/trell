@@ -25,7 +25,9 @@ Graphify (code), not this playbook.
 
    - Decisions/sessions → add `--lane episodic`
    - When/as-of/changed → `--as-of YYYY-MM-DD` and/or `--lane temporal`
-   - “Where in the compiler / who calls X” → `./repobrain graph query` (and retrieve `--code` if you want both)
+   - Lexer / parser / who-calls / syntax implementation → run
+     `./repobrain graph query`. If `graphify-out/graph.json` is missing,
+     `./repobrain graph sync` then query. Open named `source_file`s only.
 3. Read 2–6 top pages/sections (not the whole wiki).
 4. Answer with:
    - Direct verdict first
@@ -47,6 +49,7 @@ Graphify (code), not this playbook.
 - Do not restate abandoned research sketches as current product truth.
 - Do not skip epistemic dual-track rule when explaining Trell.
 - Do not dump INDEX + SCHEMA + a whole domain into context.
+- Do not skip `./repobrain graph query` when `graphify-out/graph.json` is missing.
 - Do not treat episodes as semantic truth until consolidated.
 
 Operator manual: `docs/wiki/_system/docs/OPERATOR.md`

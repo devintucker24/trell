@@ -141,7 +141,7 @@ with those hits** (essay vs map). They are not extra search backends.
 |---|---|
 | Setup | Install or refresh RepoBrain in this repo with `./repobrain setup`. Do not dump the wiki. |
 | Retrieve | Retrieve evidence for: … Use `./repobrain retrieve` within Router budgets. Cite paths. |
-| Graph | Query Graphify for how … is wired. Do not treat graph HTML as compiled wiki claims. |
+| Graph | Query Graphify for how … is wired with `./repobrain graph query`. If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query. Open named `source_file`s. |
 | Sources | Scan Git-tracked sources and convert configured local formats. Keep derived Markdown non-authoritative. |
 | Doctor | Run RepoBrain doctor and remediate critical/high findings without inventing taxonomy. |
 | Eval | Run `./repobrain eval` and explain any failed category from the latest report. |
@@ -183,4 +183,5 @@ with those hits** (essay vs map). They are not extra search backends.
 - Dashboard not clickable / `https://users/...` / `ERR_NAME_NOT_RESOLVED` → run
   `./repobrain dashboard html --serve` and click the `http://127.0.0.1:...` URL.
 - Stale Graphify → `./repobrain graph sync`.
+- Missing `graphify-out/graph.json` → `./repobrain graph sync`, then `./repobrain graph query`. Do not skip Graphify and open all of `src/`.
 - Deep operator detail → `OPERATOR.md`, not this page.
