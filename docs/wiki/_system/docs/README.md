@@ -5,8 +5,8 @@ Start here:
 | Doc | Audience |
 |-----|----------|
 | [QUICKSTART.md](QUICKSTART.md) | Install into a host repo |
-| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | Engine vs host, two graphs, optional Graphify |
-| [USING.md](USING.md) | Retrieve, inbox, doctor |
+| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | Retrieve scoring, `/repobrain-query`, two graphs |
+| [USING.md](USING.md) | Ask, inbox, doctor — with real retrieve output |
 | [GRAPHIFY.md](GRAPHIFY.md) | Optional code-graph adapter |
 
 Agents after install: [ROUTER.md](ROUTER.md), then retrieve. Schema:

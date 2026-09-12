@@ -235,6 +235,15 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
             self.assertIn("https://github.com/Graphify-Labs/graphify", how)
             self.assertIn("You do not have to install or use Graphify", how)
+            self.assertIn("./repobrain retrieve", how)
+            self.assertIn("/repobrain-query", how)
+            self.assertIn("/repobrain-retrieve", how)
+            self.assertIn("Do not collapse", how)
+            using = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "USING.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("[0.833] inbox/README.md", using)
+            self.assertIn("Do **not** rename this to `/repobrain-retrieve`", using)
             inbox = (
                 destination / "docs" / "wiki" / "inbox" / "README.md"
             ).read_text(encoding="utf-8")
