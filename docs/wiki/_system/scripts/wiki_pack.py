@@ -100,10 +100,11 @@ def cmd_export(dest_repo: Path) -> None:
         else:
             _copy_tree(src, dest_system / rel)
 
-    for rel in ["inbox/README.md"]:
-        src = WIKI / rel
-        if src.exists():
-            _copy_tree(src, dest_wiki / rel)
+    inbox_readme = dest_wiki / "inbox" / "README.md"
+    if not inbox_readme.exists():
+        inbox_readme.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(PATHS.templates / "inbox-readme.md", inbox_readme)
+        print("wrote stub inbox/README.md")
 
     inbox_template = dest_wiki / "inbox" / "_TEMPLATE.md"
     if not inbox_template.exists():

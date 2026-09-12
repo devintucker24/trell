@@ -23,7 +23,7 @@ def sample_corpus_query() -> str:
     )
     if (host or {}).get("name") == "Trell":
         return "belief certain verify"
-    return "portable knowledge engine install another repository"
+    return "inbox drop zone unprocessed knowledge"
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -45,6 +45,7 @@ class RepoBrainCliTests(unittest.TestCase):
         for command in (
             "setup",
             "install",
+            "bootstrap",
             "retrieve",
             "graph",
             "source",
@@ -83,8 +84,8 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertTrue(payload["hits"])
         self.assertLessEqual(len(payload["hits"]), 1)
 
-    def test_install_help_is_exposed(self) -> None:
-        proc = run_cli("install", "--help")
+    def test_bootstrap_help_is_exposed(self) -> None:
+        proc = run_cli("bootstrap", "--help")
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertIn("dest_repo", proc.stdout)
 

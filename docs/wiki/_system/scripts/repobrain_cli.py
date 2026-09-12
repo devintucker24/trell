@@ -23,6 +23,7 @@ OPERATORS = {
 COMMAND_HELP = {
     "setup": "initialize RepoBrain in the current repository",
     "install": "copy this engine into another repository",
+    "bootstrap": "install this engine into a repository and run setup",
     "retrieve": "retrieve evidence from the repository corpus",
     "graph": "sync and query the Graphify code graph",
     "source": "inspect source-inventory capabilities and artifacts",
@@ -162,6 +163,30 @@ def _install(argv: list[str]) -> int:
     return 0
 
 
+def _bootstrap(argv: list[str]) -> int:
+    from wiki_pack import cmd_export
+
+    parser = argparse.ArgumentParser(
+        prog="repobrain bootstrap",
+        description="Copy this engine into a host repository and run setup.",
+    )
+    parser.add_argument("dest_repo", type=Path)
+    parser.add_argument("--no-graphify", action="store_true")
+    parser.add_argument("--no-sources", action="store_true")
+    args = parser.parse_args(argv)
+    dest = args.dest_repo.resolve()
+    dest.mkdir(parents=True, exist_ok=True)
+    cmd_export(dest)
+    cli = dest / "repobrain"
+    cli.chmod(0o755)
+    setup = [str(cli), "setup"]
+    if args.no_graphify:
+        setup.append("--no-graphify")
+    if args.no_sources:
+        setup.append("--no-sources")
+    return subprocess.run(setup, cwd=dest, check=False).returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv and argv[0] == "sources":
@@ -181,6 +206,8 @@ def main(argv: list[str] | None = None) -> int:
         return _doctor(remainder)
     if args.command == "install":
         return _install(remainder)
+    if args.command == "bootstrap":
+        return _bootstrap(remainder)
     return _delegate(args.command, remainder)
 
 

@@ -86,7 +86,7 @@ class DashboardHtmlTests(unittest.TestCase):
                     "failures": [{"path": "docs/a.pdf", "diagnostic": "broken <tag>"}],
                     "policy": {},
                 },
-                "host": "Trell",
+                "host": "Example",
                 "commands": [],
                 "hot_pages": [],
                 "unused_pages": [],
@@ -126,7 +126,7 @@ class DashboardHtmlTests(unittest.TestCase):
                     "cli": {"compatible": False, "diagnostic": "wrong version"},
                 },
                 "sources": {"manifest": {"present": True, "entries": 1}, "conversion": {}},
-                "host": "Trell",
+                "host": "Example",
                 "commands": dashboard.command_catalog(),
                 "graph_src": None,
             }
@@ -160,7 +160,7 @@ class DashboardHtmlTests(unittest.TestCase):
                 "usage": {},
                 "graphify": {"artifact": {"state": "ready"}, "freshness": {"source": "fresh"}},
                 "sources": {"manifest": {"present": True, "entries": 1}, "conversion": {}},
-                "host": "Trell",
+                "host": "Example",
                 "commands": dashboard.command_catalog(),
             }
         )

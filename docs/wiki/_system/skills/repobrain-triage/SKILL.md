@@ -33,7 +33,7 @@ Update the item's frontmatter:
 
 | Field | How to choose |
 |-------|----------------|
-| `suggested_domain` | Which existing folder? `core` `theory` `applications` `market` `roadmap` `meta` |
+| `suggested_domain` | Existing folder from `HOST.yaml` `domains` (plus `meta`). Do not invent a folder that is not listed there. |
 | `suggested_type` | `concept` `application` `market` `roadmap` `synthesis` `raw-pointer` |
 | `suggested_action` | see decision tree below |
 | `priority` | impact on host thesis / safety / product |

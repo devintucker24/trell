@@ -26,16 +26,21 @@ Graphify (code), not this playbook.
    - Lexer / parser / who-calls / syntax implementation → run
      `./repobrain graph query`. If `graphify-out/graph.json` is missing,
      `./repobrain graph sync` then query. Open named `source_file`s only.
-3. Read 2–6 top pages/sections (not the whole wiki).
-4. Answer with:
+3. If top hits have `lex` ~0 and `why` is only `temporal-fit`, **stop**.
+   Retrieve does not expand synonyms. Rephrase from
+   `docs/wiki/_system/config/router-seeds.md` and retrieve again. If it
+   still misses, say the corpus did not match — do not invent an answer
+   from recency noise.
+4. Read 2–6 top pages/sections (not the whole wiki).
+5. Answer with:
    - Direct verdict first
    - Citations as `[[folder/page]]`
    - Code snippets only from wiki or host examples
-5. **File back** valuable answers:
+6. **File back** valuable answers:
    - Expand an existing page, OR
    - Create `docs/wiki/<domain>/<slug>.md` with `type: synthesis`
-6. Log: `## [YYYY-MM-DD] query | <slug>`
-7. Telemetry:
+7. Log: `## [YYYY-MM-DD] query | <slug>`
+8. Telemetry:
 
 ```bash
 ./repobrain usage log --op query --query "<question>" \
@@ -49,6 +54,8 @@ Graphify (code), not this playbook.
 - Do not dump INDEX + SCHEMA + a whole domain into context.
 - Do not skip `./repobrain graph query` when `graphify-out/graph.json` is missing.
 - Do not treat episodes as semantic truth until consolidated.
+- Do not answer from retrieve hits whose `why` is only `temporal-fit` and
+  `lex` is ~0. That is recency, not a synonym match.
 
 Operator manual: `docs/wiki/_system/docs/OPERATOR.md`
 Router: `docs/wiki/_system/docs/ROUTER.md`

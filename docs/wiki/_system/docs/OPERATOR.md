@@ -60,13 +60,12 @@ agent:
 |   HOST.yaml (project overlay)  ·  thin .cursor/.claude launchers    |
 ├─────────────────────────────────────────────────────────────────┤
 | LAYER 2 — WIKI (LLM-owned, compounding)                         |
-|   docs/wiki/**/*.md  ·  ROUTER.md  ·  INDEX.md  ·  GRAPH.yaml   |
+|   docs/wiki/**/*.md  ·  INDEX.md  ·  HOST.yaml domains          |
 |   episodic/ · temporal/ · inbox/ → triage → ingested pages      |
-|   Syntheses, concepts, applications, market, roadmap            |
 |   Every page has YAML frontmatter with nodes + edges            |
 ├─────────────────────────────────────────────────────────────────┤
 | LAYER 1 — RAW (immutable source of truth)                       |
-|   docs/wiki/raw/  ·  THESIS.md  ·  examples/*.trell  ·  src/    |
+|   docs/wiki/raw/  ·  README.md  ·  HOST.yaml code_roots         |
 |   Agents READ raw sources; they NEVER silently rewrite them     |
 |   as if they were wiki pages. Code changes go through normal    |
 |   engineering PRs; wiki pages are the compiled knowledge layer. |

@@ -81,6 +81,6 @@ Edge vocabulary: [[SCHEMA]] — `depends_on`, `implements`, `reduces_via`, `enfo
 
 ## Agent recipes
 
-1. **Doctrine:** retrieve wiki → open 1–3 pages. Example hop: `belief-type` → `reduces_via` → `certain-type`.
-2. **Compiler wiring:** Graphify query/path. Example: `Type` in `ast.rs` → `TypeChecker` in `typecheck.rs`.
+1. **Doctrine:** retrieve wiki → open 1–3 pages. Example hop: a hub node → `depends_on` → a supporting page.
+2. **Code wiring:** Graphify query/path. Example: a symbol in `src/` → a callee listed in `graphify-out`.
 3. **Do not** cite Graphify INFERRED edges as host thesis. Do not cite seed pages (`graphify-seed`) as truth.

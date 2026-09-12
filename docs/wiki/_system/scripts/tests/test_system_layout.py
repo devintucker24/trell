@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 
@@ -37,8 +39,8 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
         self.assertTrue(is_wiki_content_page("INDEX.md", "INDEX.md"))
         self.assertTrue(
             is_wiki_content_page(
-                "core/epistemic-foundations.md",
-                "epistemic-foundations.md",
+                "inbox/README.md",
+                "README.md",
             )
         )
         self.assertFalse(
@@ -56,6 +58,9 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
         self.assertFalse((ROOT / "docs" / "wiki" / "scripts").exists())
 
     def test_harness_launchers_point_to_canonical_skills(self) -> None:
+        launcher = ROOT / ".cursor" / "skills" / "repobrain-brain" / "SKILL.md"
+        if not launcher.is_file():
+            self.skipTest("host harness launchers not installed")
         for harness in (".cursor", ".claude", ".agents"):
             canonical = (
                 ROOT / harness / "skills" / "repobrain-brain" / "SKILL.md"
@@ -194,6 +199,122 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
             self.assertNotIn("2026-09-04-brain-memory-upgrade", episodic)
             self.assertIn("compiled wiki truth", episodic)
+            operator = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "OPERATOR.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("examples/*.trell", operator)
+            self.assertNotIn("COLREGs", operator)
+            framework = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "FRAMEWORK.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("./repobrain bootstrap", framework)
+            self.assertNotIn("(or Trell)", framework)
+            self.assertNotIn("Plug-in checklist", framework)
+            self.assertIn("## Install checklist", framework)
+            schema = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "SCHEMA.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("typecheck.rs", schema)
+            self.assertNotIn("belief reduces to certain", schema)
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "INSTALL.md"
+                ).exists()
+            )
+            quickstart = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "QUICKSTART.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("./repobrain bootstrap", quickstart)
+            how = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "HOW-IT-WORKS.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("https://github.com/Graphify-Labs/graphify", how)
+            self.assertIn("You do not have to install or use Graphify", how)
+            self.assertIn("./repobrain retrieve", how)
+            self.assertIn("/repobrain-query", how)
+            self.assertIn("/repobrain-retrieve", how)
+            self.assertIn("Do not collapse", how)
+            self.assertIn("does **not** expand synonyms", how)
+            self.assertIn("why: temporal-fit", how)
+            using = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "USING.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("[0.833] inbox/README.md", using)
+            self.assertIn("Do **not** rename this to `/repobrain-retrieve`", using)
+            self.assertIn("does not know synonyms", using.replace("\n", " "))
+            inbox = (
+                destination / "docs" / "wiki" / "inbox" / "README.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("2026-09-04-brain-memory-upgrade", inbox)
+
+    def test_bootstrap_copies_engine_without_host_corpus(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="repobrain-bootstrap-") as tmp:
+            destination = Path(tmp) / "host-app"
+            destination.mkdir()
+            (destination / "README.md").write_text("# Host App\n", encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    str(ROOT / "repobrain"),
+                    "bootstrap",
+                    str(destination),
+                    "--no-graphify",
+                    "--no-sources",
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertTrue((destination / "repobrain").exists())
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "SCHEMA.md"
+                ).exists()
+            )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "core"
+                    / "epistemic-foundations.md"
+                ).exists()
+            )
+            host = (
+                destination / "docs" / "wiki" / "_system" / "config" / "HOST.yaml"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("Trell", host)
+            loaded = yaml.safe_load(host)
+            self.assertEqual(loaded.get("semantic_dirs") or [], [])
+            self.assertNotIn("core", loaded.get("domains") or [])
+            self.assertFalse((loaded.get("graphify") or {}).get("enabled"))
+            self.assertFalse(
+                (destination / "docs" / "wiki" / "core").exists()
+            )
+            self.assertTrue((destination / "AGENTS.md").exists())
+            agents = (destination / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("./repobrain retrieve", agents)
+            self.assertNotIn("Paste into the host project's AGENTS.md", agents)
+            self.assertTrue(
+                (
+                    destination
+                    / ".cursor"
+                    / "skills"
+                    / "repobrain-setup"
+                    / "SKILL.md"
+                ).exists()
+            )
 
 
 if __name__ == "__main__":

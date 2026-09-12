@@ -54,7 +54,7 @@ status: draft|active|stale|deprecated
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 tags: [string, ...]        # lowercase kebab or single words
-domain: core|theory|applications|market|roadmap|meta|episodic|temporal
+domain: meta|episodic|temporal|<HOST.yaml domains>
 summary: string            # <= 160 chars, one sentence
 nodes:                     # graph nodes this page owns or defines
   - id: string
@@ -68,7 +68,7 @@ edges:                     # typed relations (may reference nodes on other pages
 related:                   # wikilink strings
   - "[[path/page]]"
 implements_code:           # optional binding to repo paths
-  - src/typecheck.rs
+  - src/lib.rs
 temporal:                  # optional — required for episode pages; encouraged on claims that can go stale
   observed_at: YYYY-MM-DD  # when we learned / wrote this
   valid_from: YYYY-MM-DD   # when the claim became true
@@ -88,7 +88,7 @@ agent:
 ```
 
 ### Validation rules
-1. `id` must match the filename stem when practical (e.g. `epistemic-foundations.md` → `epistemic-foundations` or prefixed `core-epistemic-foundations`).
+1. `id` must match the filename stem when practical (e.g. `overview.md` → `overview`).
 2. Every edge endpoint must exist in page nodes or the generated claim graph.
 3. `rel` must be from the allowed vocabulary above.
 4. `updated` must bump on every substantive edit.
@@ -100,12 +100,12 @@ agent:
 
 | Prefix (optional) | Example | Use |
 |-------------------|---------|-----|
-| none / concept | `belief-type` | Core concepts |
-| `app-` | `app-maritime-colregs` | Application niches |
-| `comp-` | `comp-langchain` | Competitors |
-| `reg-` | `reg-eu-ai-act` | Regulations |
-| `phase-` | `phase-1-beachhead` | Roadmap phases |
-| `tech-` | `tech-xgrammar` | External technologies |
+| none / concept | `wiki-index` | Hub concepts |
+| `app-` | `app-checkout` | Application niches |
+| `comp-` | `comp-other-tool` | Competitors |
+| `reg-` | `reg-example` | Regulations |
+| `phase-` | `phase-1` | Roadmap phases |
+| `tech-` | `tech-example` | External technologies |
 
 ---
 
@@ -115,7 +115,7 @@ agent:
 |-------|-------------------|
 | `depends_on` | from needs to |
 | `implements` | from implements to (often code → concept) |
-| `reduces_via` | belief reduces to certain via mechanism |
+| `reduces_via` | from reduces to to via a stated mechanism |
 | `enforces` | guard/contract enforces invariant |
 | `extends` | future form extends present |
 | `applies_to` | concept applies to niche |
@@ -155,16 +155,15 @@ Shape:
 version: 1
 updated: YYYY-MM-DD
 nodes:
-  - id: belief-type
-    kind: type
-    page: core/epistemic-foundations
-    label: belief<T>
+  - id: wiki-index
+    kind: concept
+    page: INDEX.md
+    label: Wiki Index
 edges:
-  - from: belief-type
-    to: certain-type
-    rel: reduces_via
-    via: guard-verify
-    page: core/epistemic-foundations
+  - from: wiki-index
+    to: wiki-schema
+    rel: depends_on
+    page: INDEX.md
 ```
 
 After editing nodes/edges, run `python3 docs/wiki/_system/scripts/sync_graph.py`.
@@ -176,10 +175,10 @@ Protocol: `docs/wiki/_system/docs/GRAPH.md`.
 ## 5. Dataview / Agent Query Hints
 
 Agents can filter pages by:
-- `type: application` + `tags: contains maritime`
+- `type: concept` + `domain:` from `HOST.yaml`
+- `status: active` or `status: stale` for lint targets
 - `agent.priority: critical`
-- `status: stale` for lint targets
-- nodes with `kind: competitor` for market maps
+- `temporal.valid_until` relative to `--as-of`
 
 ---
 
@@ -262,15 +261,14 @@ Keep third-party skills outside `_system/skills/`; harness directories contain a
 
 ## 8. Known Tags (reuse before inventing)
 
-Prefer these. Add new recurring tags here when promoted from inbox.
+Engine/meta tags (portable): `inbox`, `triage`, `ingest`, `schema`, `graph`,
+`index`, `raw`, `health`, `router`, `memory`, `episodic`, `temporal`,
+`retrieval`, `usage`, `telemetry`, `repobrain`, `framework`, `host`,
+`graphify`, `setup`.
 
-**Core / theory:** `epistemic-types`, `belief`, `certain`, `syntax`, `natural-trell`, `speculation`, `guards`, `contracts`, `quorum`, `type-theory`, `bayesian`, `affine-types`, `zk-snark`, `hardware`, `npu`
-
-**Applications:** `maritime`, `colregs`, `healthcare`, `finance`, `fedwire`, `grid`, `security`, `iam`, `satellites`, `pattern`, `three-beat`
-
-**Market / roadmap:** `market`, `regulation`, `insurance`, `personas`, `adoption`, `roadmap`, `phases`, `vision`
-
-**Meta:** `inbox`, `triage`, `ingest`, `schema`, `graph`, `index`, `raw`, `health`, `simulation`, `router`, `context-engineering`, `memory`, `episodic`, `temporal`, `retrieval`, `rag`, `usage`, `telemetry`, `repobrain`, `wiki-brain`, `framework`, `host`, `graphify`, `setup`
+Host pages choose additional tags. Do not copy another project's tag list
+into a new install. Promote recurring host tags here only when they become
+pack-wide.
 
 One-off adjectives do **not** belong in `tags:` — put them in the body.
 
