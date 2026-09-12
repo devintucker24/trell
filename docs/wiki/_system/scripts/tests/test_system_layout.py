@@ -284,6 +284,7 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             self.assertTrue((destination / "AGENTS.md").exists())
             agents = (destination / "AGENTS.md").read_text(encoding="utf-8")
             self.assertIn("./repobrain retrieve", agents)
+            self.assertNotIn("Paste into the host project's AGENTS.md", agents)
             self.assertTrue(
                 (
                     destination

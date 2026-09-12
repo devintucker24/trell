@@ -482,11 +482,16 @@ def maybe_patch_agents(dry: bool, name: str = "") -> str:
     if not fragment.exists():
         return "no AGENTS fragment"
     title = name or ROOT.name
+    frag = fragment.read_text(encoding="utf-8")
+    lines = frag.splitlines()
+    if lines and lines[0].startswith("# Paste into"):
+        frag = "\n".join(lines[1:]).lstrip()
+        if frag and not frag.endswith("\n"):
+            frag += "\n"
     if not agents.exists():
         if not dry:
             agents.write_text(
-                f"# AGENTS.md — {title}\n\n"
-                + fragment.read_text(encoding="utf-8"),
+                f"# AGENTS.md — {title}\n\n" + frag,
                 encoding="utf-8",
             )
         return "wrote AGENTS.md"
@@ -498,7 +503,7 @@ def maybe_patch_agents(dry: bool, name: str = "") -> str:
     ):
         return "AGENTS.md already wired"
     if not dry:
-        agents.write_text(text.rstrip() + "\n\n" + fragment.read_text(encoding="utf-8"), encoding="utf-8")
+        agents.write_text(text.rstrip() + "\n\n" + frag, encoding="utf-8")
     return "appended AGENTS.fragment.md"
 
 
