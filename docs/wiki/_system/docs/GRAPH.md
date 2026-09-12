@@ -73,18 +73,9 @@ python3 docs/wiki/_system/scripts/sync_graph.py
 
 This index exists so retrieve can hop `reduces_via` / `contradicts` without parsing every page. Source of truth for those rels is **page frontmatter**, not this dump.
 
-## Claim hubs (this host, for one-hop recipes)
+## Claim hubs
 
-| Node | Kind | Why it matters |
-|------|------|----------------|
-| `belief-type` | type | Center of epistemic system |
-| `certain-type` | type | Grounded track |
-| `guard-verify` | primitive | Only legal reduction path |
-| `speculative-execution` | engine | when/fork runtime |
-| `natural-trell-syntax` | primitive | Surface syntax |
-| `three-beat-safety-pattern` | concept | Universal application pattern |
-| `ten-year-vision` | concept | Strategic north star |
-| `phase-4-iso-silicon` | phase | Hardware endgame |
+Host claim hubs live on compiled pages (`nodes` / `edges` in frontmatter). Retrieve them; do not treat this engine file as the host ontology.
 
 Edge vocabulary: [[SCHEMA]] — `depends_on`, `implements`, `reduces_via`, `enforces`, `extends`, `applies_to`, `competes_with`, `accelerates`, `regulated_by`, `owned_by`, `milestone_of`, `contradicts`, `related_to`.
 
@@ -92,4 +83,4 @@ Edge vocabulary: [[SCHEMA]] — `depends_on`, `implements`, `reduces_via`, `enfo
 
 1. **Doctrine:** retrieve wiki → open 1–3 pages. Example hop: `belief-type` → `reduces_via` → `certain-type`.
 2. **Compiler wiring:** Graphify query/path. Example: `Type` in `ast.rs` → `TypeChecker` in `typecheck.rs`.
-3. **Do not** cite Graphify INFERRED edges as Trell thesis. Do not cite seed pages (`graphify-seed`) as truth.
+3. **Do not** cite Graphify INFERRED edges as host thesis. Do not cite seed pages (`graphify-seed`) as truth.

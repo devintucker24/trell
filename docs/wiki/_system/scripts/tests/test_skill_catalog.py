@@ -85,10 +85,10 @@ class SkillCatalogConsistencyTests(unittest.TestCase):
                 text = launcher.read_text(encoding="utf-8")
                 self.assertIn(f"docs/wiki/_system/skills/{name}/SKILL.md", text)
 
-    def test_compiler_router_seed_requires_graph_query(self) -> None:
-        seeds = (PATHS.config / "router-seeds.md").read_text(encoding="utf-8")
-        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    def test_engine_docs_require_graph_query_protocol(self) -> None:
+        agents_fragment = (PATHS.templates / "AGENTS.fragment.md").read_text(
+            encoding="utf-8"
+        )
         router = (PATHS.system / "docs" / "ROUTER.md").read_text(encoding="utf-8")
         cheatsheet = (PATHS.system / "docs" / "CHEATSHEET.md").read_text(
             encoding="utf-8"
@@ -99,6 +99,23 @@ class SkillCatalogConsistencyTests(unittest.TestCase):
         query = (PATHS.skills / "repobrain-query" / "SKILL.md").read_text(
             encoding="utf-8"
         )
+        self.assertIn("./repobrain graph query", agents_fragment)
+        self.assertIn("./repobrain graph sync", router)
+        self.assertIn("graphify-out/graph.json", cheatsheet)
+        self.assertIn("./repobrain graph query", retrieve)
+        self.assertIn("graph sync", retrieve)
+        self.assertIn("./repobrain graph query", query)
+        self.assertIn("graph sync", query)
+
+    def test_compiler_router_seed_requires_graph_query(self) -> None:
+        import yaml
+
+        host = yaml.safe_load((PATHS.config / "HOST.yaml").read_text(encoding="utf-8"))
+        if (host or {}).get("name") != "Trell":
+            self.skipTest("Trell host overlay")
+        seeds = (PATHS.config / "router-seeds.md").read_text(encoding="utf-8")
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("./repobrain graph query", seeds)
         self.assertIn("graph sync", seeds)
         self.assertIn("Natural Trell", seeds)
@@ -110,13 +127,6 @@ class SkillCatalogConsistencyTests(unittest.TestCase):
         self.assertIn("Do not skip Graphify", agents)
         self.assertIn("./repobrain graph query", claude)
         self.assertIn("graph sync", claude)
-        self.assertIn("./repobrain graph sync", router)
-        self.assertIn("graphify-out/graph.json", cheatsheet)
-        self.assertIn("./repobrain graph sync", cheatsheet)
-        self.assertIn("./repobrain graph query", retrieve)
-        self.assertIn("graph sync", retrieve)
-        self.assertIn("./repobrain graph query", query)
-        self.assertIn("graph sync", query)
 
 
 if __name__ == "__main__":

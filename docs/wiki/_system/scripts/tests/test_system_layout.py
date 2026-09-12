@@ -139,6 +139,61 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "epistemic-foundations.md"
                 ).exists()
             )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "scripts"
+                    / "tests"
+                    / "test_system_layout.py"
+                ).exists()
+            )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "scripts"
+                    / "apply_frontmatter_and_sync_graph.py"
+                ).exists()
+            )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "brain-gap-analysis-2026-09-04.md"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "inbox"
+                    / "_TEMPLATE.md"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "config"
+                    / "eval-queries.yaml"
+                ).exists()
+            )
+            episodic = (
+                destination / "docs" / "wiki" / "episodic" / "INDEX.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("2026-09-04-brain-memory-upgrade", episodic)
+            self.assertIn("compiled wiki truth", episodic)
 
 
 if __name__ == "__main__":

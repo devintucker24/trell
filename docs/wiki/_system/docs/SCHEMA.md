@@ -1,6 +1,6 @@
 ---
 id: wiki-schema
-title: Trell Wiki Frontmatter & Graph Schema
+title: RepoBrain Frontmatter & Graph Schema
 type: schema
 status: active
 created: 2026-09-04

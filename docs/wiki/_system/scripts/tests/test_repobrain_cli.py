@@ -2,12 +2,28 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import unittest
 from pathlib import Path
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[5]
 CLI = ROOT / "repobrain"
+SCRIPTS = ROOT / "docs" / "wiki" / "_system" / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+
+
+def sample_corpus_query() -> str:
+    host = yaml.safe_load(
+        (ROOT / "docs" / "wiki" / "_system" / "config" / "HOST.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    if (host or {}).get("name") == "Trell":
+        return "belief certain verify"
+    return "portable knowledge engine install another repository"
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -28,6 +44,7 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertIn("RepoBrain technical CLI", proc.stdout)
         for command in (
             "setup",
+            "install",
             "retrieve",
             "graph",
             "source",
@@ -54,7 +71,7 @@ class RepoBrainCliTests(unittest.TestCase):
     def test_retrieve_delegates_json_output(self) -> None:
         proc = run_cli(
             "retrieve",
-            "belief certain verify",
+            sample_corpus_query(),
             "--k",
             "1",
             "--json",
@@ -66,6 +83,11 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertTrue(payload["hits"])
         self.assertLessEqual(len(payload["hits"]), 1)
 
+    def test_install_help_is_exposed(self) -> None:
+        proc = run_cli("install", "--help")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("dest_repo", proc.stdout)
+
     def test_graph_operator_exit_status_is_propagated(self) -> None:
         proc = run_cli("graph", "not-a-command")
 
@@ -74,9 +96,13 @@ class RepoBrainCliTests(unittest.TestCase):
 
     def test_graph_status_json_uses_public_cli_seam(self) -> None:
         proc = run_cli("graph", "status", "--json")
+        payload = json.loads(proc.stdout)
+        if not payload.get("cli", {}).get("compatible"):
+            self.skipTest("Graphify CLI not installed")
+        if payload.get("artifact", {}).get("state") != "ready":
+            self.skipTest("graphify-out/graph.json is not built")
 
         self.assertEqual(proc.returncode, 0, proc.stderr)
-        payload = json.loads(proc.stdout)
         self.assertTrue(payload["cli"]["compatible"])
         self.assertEqual(payload["artifact"]["state"], "ready")
         self.assertIn("EXTRACTED", payload["artifact"]["confidence"])

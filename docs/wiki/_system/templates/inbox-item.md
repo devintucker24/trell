@@ -30,7 +30,7 @@ agent:
 ## Source
 - Origin:
 - Date seen:
-- Why it might matter to Trell:
+- Why it might matter to this repo:
 
 ## Raw notes / paste
 <!-- paste freely; messy is fine -->

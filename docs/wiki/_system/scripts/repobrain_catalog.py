@@ -40,6 +40,7 @@ PLAYBOOK_ONLY = frozenset(
 # Public CLI verbs from repobrain_cli.COMMAND_HELP (plus source/dashboard subcommands).
 CLI_VERBS = (
     "setup",
+    "install",
     "retrieve",
     "graph",
     "source",
@@ -120,6 +121,16 @@ CLI_COMMANDS = (
         "description": "Initialize or refresh RepoBrain in this repository.",
         "command": "./repobrain setup",
         "prompt": SKILL_PROMPTS["setup"],
+    },
+    {
+        "id": "cli-install",
+        "name": "install",
+        "description": "Copy this engine into another repository.",
+        "command": "./repobrain install /path/to/host-repo",
+        "prompt": (
+            "Install RepoBrain into another repository with "
+            "./repobrain install /path/to/host-repo then ./repobrain setup."
+        ),
     },
     {
         "id": "cli-retrieve",

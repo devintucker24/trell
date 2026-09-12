@@ -82,19 +82,45 @@ def cmd_export(dest_repo: Path) -> None:
                 src,
                 dest_system / rel,
                 dirs_exist_ok=True,
-                ignore=shutil.ignore_patterns("tests", "__pycache__"),
+                ignore=shutil.ignore_patterns(
+                    "__pycache__",
+                    "apply_frontmatter_and_sync_graph.py",
+                ),
+            )
+        elif rel == "docs":
+            shutil.copytree(
+                src,
+                dest_system / rel,
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns(
+                    "__pycache__",
+                    "brain-gap-analysis-*.md",
+                ),
             )
         else:
             _copy_tree(src, dest_system / rel)
 
-    for rel in ["inbox/README.md", "episodic/INDEX.md"]:
+    for rel in ["inbox/README.md"]:
         src = WIKI / rel
         if src.exists():
             _copy_tree(src, dest_wiki / rel)
 
+    inbox_template = dest_wiki / "inbox" / "_TEMPLATE.md"
+    if not inbox_template.exists():
+        inbox_template.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(PATHS.templates / "inbox-item.md", inbox_template)
+        print("wrote stub inbox/_TEMPLATE.md")
+
+    episodic_index = dest_wiki / "episodic" / "INDEX.md"
+    if not episodic_index.exists():
+        episodic_index.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(PATHS.templates / "episodic-index.md", episodic_index)
+        print("wrote stub episodic/INDEX.md")
+
     for src_rel, dest_rel in [
         ("HOST.template.yaml", "config/HOST.yaml"),
         ("router-seeds.template.md", "config/router-seeds.md"),
+        ("eval-queries.template.yaml", "config/eval-queries.yaml"),
     ]:
         dest = dest_system / dest_rel
         if dest.exists():
@@ -107,7 +133,8 @@ def cmd_export(dest_repo: Path) -> None:
     print(f"Exported RepoBrain engine → {dest_system}")
     print("Next: in the destination repository run")
     print("  ./repobrain setup")
-    print("(fills host config, launchers, and Graphify; optional --seed-pages)")
+    print("or, from this engine checkout:")
+    print("  ./repobrain install /path/to/host-repo")
 
 
 def harness_roots() -> tuple[Path, ...]:
@@ -152,11 +179,15 @@ def main() -> None:
         description="RepoBrain engine export and harness launchers"
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
-    export = sub.add_parser("export")
+    export = sub.add_parser(
+        "export",
+        aliases=["install"],
+        help="copy this engine into another repository",
+    )
     export.add_argument("dest_repo", type=Path)
     sub.add_parser("install-launchers")
     args = parser.parse_args()
-    if args.cmd == "export":
+    if args.cmd in ("export", "install"):
         cmd_export(args.dest_repo.resolve())
     else:
         cmd_install_launchers()

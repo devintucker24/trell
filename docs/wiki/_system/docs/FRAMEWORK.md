@@ -79,15 +79,23 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 | `.cursor/skills/repobrain-*` | **host adapter** | Thin launchers → canonical playbooks |
 | Root `skills/` | **not used** | Do not duplicate the pack here |
 
-## Export (from this repo)
+## Install into another repository
+
+Upstream engine: [github.com/devintucker24/RepoBrain](https://github.com/devintucker24/RepoBrain).
+
+From a RepoBrain (or Trell) checkout that already has this engine:
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo
+./repobrain install /path/to/your-project
+cd /path/to/your-project
+./repobrain setup
 ```
 
-Creates `other-repo/repobrain` and `other-repo/docs/wiki/_system/` with portable files plus stub host config. It does **not** copy Trell `core/`, `applications/`, or other host corpus pages.
+Equivalent: `python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/your-project`.
 
-Then **in the other repo** run setup (this is the agent install skill):
+This copies `repobrain` and `docs/wiki/_system/` plus stub host config. It does **not** copy the source host's compiled corpus (`core/`, `applications/`, product pages).
+
+Then **in the destination repo** run setup:
 
 ```bash
 ./repobrain setup --seed-pages
@@ -111,7 +119,7 @@ The wiki does **not** ship a homegrown code knowledge graph. Graphify already do
 
 Agents query Graphify for “what calls what”. They retrieve wiki pages for “what we assert”. Do not dump either file into context.
 
-`graphify export wiki` produces crawlable community/god-node markdown under `graphify-out/wiki/`. Those articles are **regenerated structure**, not SCHEMA frontmatter, not Trell thesis. Do not ingest them as doctrine.
+`graphify export wiki` produces crawlable community/god-node markdown under `graphify-out/wiki/`. Those articles are **regenerated structure**, not SCHEMA frontmatter, not host thesis. Do not ingest them as doctrine.
 
 ## Are corpus pages auto-generated?
 
@@ -119,7 +127,7 @@ Agents query Graphify for “what calls what”. They retrieve wiki pages for �
 
 **Setup seeds:** once, and only on an empty host, `wiki_setup.py --seed-pages` writes `status: draft` stubs tagged `graphify-seed` pointing at `implements_code`. An agent must fill claims from source; until then they are not wiki truth.
 
-**Compiled corpus** (`core/`, `theory/`, host domains): **no**. Those are authored through inbox → triage → ingest (same PR, human review). Graphify cannot invent `certain` vs `belief` or `reduces_via`. Setup organizes folders and config so that work is small, not so that the thesis is hallucinated from the AST.
+**Compiled corpus** (host domain folders): **no**. Those are authored through inbox → triage → ingest (same PR, human review). Graphify cannot invent host doctrine or `reduces_via`. Setup organizes folders and config so that work is small, not so that the thesis is hallucinated from the AST.
 
 ## Plug-in checklist
 

@@ -32,7 +32,7 @@ STOP = {
     "how", "what", "when", "why", "does", "do", "did", "about", "into", "vs",
     "keep", "keeps", "keeping", "under", "over", "into", "using", "use", "used",
     "make", "made", "get", "got", "can", "could", "should", "would", "may",
-    "safe",  # too generic across all Trell apps; prefer domain nouns
+    "safe",  # too generic across most host apps; prefer domain nouns
 }
 
 TYPE_PRIOR = {

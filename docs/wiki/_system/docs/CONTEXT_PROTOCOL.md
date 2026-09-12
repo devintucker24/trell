@@ -114,7 +114,7 @@ temporal:
 2. Prefer section chunks over whole pages.
 3. Cap quotes: ≤ 40 lines or ≤ 800 tokens per page unless editing that page.
 4. Collapse duplicates: keep the canonical semantic page.
-5. Episodic before semantic for “what did we decide?”; semantic before episodic for “what is Trell?”; temporal first for “when / as-of / changed.”
+5. Episodic before semantic for “what did we decide?”; semantic before episodic for “what is this project?”; temporal first for “when / as-of / changed.”
 6. Code (`src/`) over wiki when asking how the compiler behaves *today*.
 
 ## Reranking (file-native)

@@ -36,7 +36,7 @@ Update the item's frontmatter:
 | `suggested_domain` | Which existing folder? `core` `theory` `applications` `market` `roadmap` `meta` |
 | `suggested_type` | `concept` `application` `market` `roadmap` `synthesis` `raw-pointer` |
 | `suggested_action` | see decision tree below |
-| `priority` | impact on Trell thesis / safety / market |
+| `priority` | impact on host thesis / safety / product |
 | `triage_status` | `classified` → then `routed` when handoff to ingest is clear |
 
 ### 4. Decision tree (`suggested_action`)
@@ -53,7 +53,7 @@ Does this strengthen / update an EXISTING page?
           NO  →
             Needs new folder/type/rel/domain?
               YES → needs-human (DO NOT CREATE FOLDER; propose in card)
-              NO  → discard (irrelevant to Trell thesis)
+              NO  → discard (irrelevant to host thesis)
 ```
 
 ### 5. Tag normalization

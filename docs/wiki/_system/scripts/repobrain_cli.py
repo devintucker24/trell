@@ -22,6 +22,7 @@ OPERATORS = {
 
 COMMAND_HELP = {
     "setup": "initialize RepoBrain in the current repository",
+    "install": "copy this engine into another repository",
     "retrieve": "retrieve evidence from the repository corpus",
     "graph": "sync and query the Graphify code graph",
     "source": "inspect source-inventory capabilities and artifacts",
@@ -148,6 +149,19 @@ def _dashboard(argv: list[str]) -> int:
     return _delegate("graph", ["export-html"])
 
 
+def _install(argv: list[str]) -> int:
+    from wiki_pack import cmd_export
+
+    parser = argparse.ArgumentParser(
+        prog="repobrain install",
+        description="Copy this RepoBrain engine into another repository.",
+    )
+    parser.add_argument("dest_repo", type=Path)
+    args = parser.parse_args(argv)
+    cmd_export(args.dest_repo.resolve())
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv and argv[0] == "sources":
@@ -165,6 +179,8 @@ def main(argv: list[str] | None = None) -> int:
         return _dashboard(remainder)
     if args.command == "doctor":
         return _doctor(remainder)
+    if args.command == "install":
+        return _install(remainder)
     return _delegate(args.command, remainder)
 
 

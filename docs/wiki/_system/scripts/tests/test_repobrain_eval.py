@@ -23,6 +23,17 @@ from wiki_retrieve import lexical_score
 from wiki_usage import STRONG_HIT, WEAK_HIT
 
 
+def sample_corpus_query() -> str:
+    host = yaml.safe_load(
+        (ROOT / "docs" / "wiki" / "_system" / "config" / "HOST.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    if (host or {}).get("name") == "Trell":
+        return "belief certain verify guard"
+    return "portable knowledge engine install another repository"
+
+
 class RepoBrainEvalTests(unittest.TestCase):
     def test_score_classes_reuse_usage_thresholds(self) -> None:
         self.assertEqual(SCORE_FLOORS["relevant"], WEAK_HIT)
@@ -51,7 +62,7 @@ class RepoBrainEvalTests(unittest.TestCase):
             [
                 sys.executable,
                 str(SCRIPTS / "wiki_retrieve.py"),
-                "belief certain verify guard",
+                sample_corpus_query(),
                 "--budget-tokens",
                 "600",
                 "--json",
@@ -74,6 +85,8 @@ class RepoBrainEvalTests(unittest.TestCase):
         )
 
     def test_code_graph_evidence_stays_separate_from_claim_hits(self) -> None:
+        if not (ROOT / "graphify-out" / "graph.json").exists():
+            self.skipTest("graphify-out/graph.json is not built")
         proc = subprocess.run(
             [
                 str(ROOT / "repobrain"),
@@ -204,6 +217,10 @@ class RepoBrainEvalTests(unittest.TestCase):
             self.assertTrue(report["categories"][0]["remediation"])
 
     def test_busy_docs_fixture_preserves_sources_and_existing_corpus(self) -> None:
+        from source_pipeline import markitdown_info
+
+        if not markitdown_info().get("compatible"):
+            self.skipTest("markitdown==0.1.7 is required for live source conversion")
         result = evaluate_setup_fixture(ROOT)
 
         self.assertTrue(result.passed, result.evidence)

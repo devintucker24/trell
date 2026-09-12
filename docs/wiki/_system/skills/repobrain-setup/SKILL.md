@@ -11,7 +11,7 @@ description: Stand up the portable RepoBrain engine in this repo (or after expor
 - Agent lands in a checkout that has the pack but empty `HOST.yaml` / no launchers
 - User says “set up RepoBrain” or the historical aliases “set up the wiki” / “make this portable” / “bootstrap the brain”
 
-Do **not** use this to rewrite Trell doctrine pages. Setup is idempotent and will not clobber a filled corpus.
+Do **not** use this to rewrite host doctrine pages. Setup is idempotent and will not clobber a filled corpus.
 
 ## What “minimal” means
 
@@ -36,7 +36,7 @@ From a repo that already has the RepoBrain engine:
 If the pack is not in the dest repo yet, run this **from the source RepoBrain repository**:
 
 ```bash
-python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/other-repo
+./repobrain install /path/to/other-repo
 # then in the other repo:
 ./repobrain setup --seed-pages
 ```
@@ -74,7 +74,7 @@ Flags:
 | `_system/generated/sources/manifest.json` | **Yes** — inventory of Git-tracked project sources | Source pipeline |
 | `_system/generated/sources/cache/` | **Yes, ignored** — local derived Markdown | MarkItDown adapter |
 
-Graphify cannot emit Trell-style `reduces_via` / `contradicts`. Do not treat god-node articles as the thesis.
+Graphify cannot emit host-thesis relations such as `reduces_via` / `contradicts`. Do not treat god-node articles as the thesis.
 
 ## After setup (agent)
 
