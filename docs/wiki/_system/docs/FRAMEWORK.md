@@ -75,7 +75,7 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 | `docs/wiki/_system/templates/` | **engine** | Setup/export templates |
 | `docs/wiki/_system/config/` | **host config** | Host overlay, router seeds, eval contract |
 | `docs/wiki/_system/generated/` | **generated** | Claim graph, doctor/eval/usage summaries |
-| `docs/wiki/core/` … domain folders | **host** | Compiled knowledge |
+| `docs/wiki/<domain>/` | **host** | Compiled knowledge |
 | `.cursor/skills/repobrain-*` | **host adapter** | Thin launchers → canonical playbooks |
 | Root `skills/` | **not used** | Do not duplicate the pack here |
 
@@ -129,7 +129,7 @@ Agents query Graphify for “what calls what”. They retrieve wiki pages for �
 
 **Compiled corpus** (host domain folders): **no**. Those are authored through inbox → triage → ingest (same PR, human review). Graphify cannot invent host doctrine or `reduces_via`. Setup organizes folders and config so that work is small, not so that the thesis is hallucinated from the AST.
 
-## Plug-in checklist
+## Install checklist
 
 1. `docs/wiki/` exists with skills + scripts + SCHEMA/OPERATOR/ROUTER.
 2. `HOST.yaml` lists `domains` and `semantic_dirs` you actually have.

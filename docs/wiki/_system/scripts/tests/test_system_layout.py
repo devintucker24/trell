@@ -207,6 +207,13 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
             self.assertIn("./repobrain bootstrap", framework)
             self.assertNotIn("(or Trell)", framework)
+            self.assertNotIn("Plug-in checklist", framework)
+            self.assertIn("## Install checklist", framework)
+            schema = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "SCHEMA.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("typecheck.rs", schema)
+            self.assertNotIn("belief reduces to certain", schema)
             self.assertTrue(
                 (
                     destination

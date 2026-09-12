@@ -68,7 +68,7 @@ edges:                     # typed relations (may reference nodes on other pages
 related:                   # wikilink strings
   - "[[path/page]]"
 implements_code:           # optional binding to repo paths
-  - src/typecheck.rs
+  - src/lib.rs
 temporal:                  # optional — required for episode pages; encouraged on claims that can go stale
   observed_at: YYYY-MM-DD  # when we learned / wrote this
   valid_from: YYYY-MM-DD   # when the claim became true
@@ -115,7 +115,7 @@ agent:
 |-------|-------------------|
 | `depends_on` | from needs to |
 | `implements` | from implements to (often code → concept) |
-| `reduces_via` | belief reduces to certain via mechanism |
+| `reduces_via` | from reduces to to via a stated mechanism |
 | `enforces` | guard/contract enforces invariant |
 | `extends` | future form extends present |
 | `applies_to` | concept applies to niche |
