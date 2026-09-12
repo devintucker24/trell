@@ -37,8 +37,8 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
         self.assertTrue(is_wiki_content_page("INDEX.md", "INDEX.md"))
         self.assertTrue(
             is_wiki_content_page(
-                "core/epistemic-foundations.md",
-                "epistemic-foundations.md",
+                "inbox/README.md",
+                "README.md",
             )
         )
         self.assertFalse(
