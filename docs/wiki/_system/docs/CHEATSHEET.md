@@ -85,6 +85,7 @@ These are the public `./repobrain` verbs. There is no `./repobrain query` or
 
 ```bash
 ./repobrain setup
+./repobrain install /path/to/host-repo
 ./repobrain retrieve "<question>" --budget-tokens 3500
 ./repobrain retrieve "<question>" --include-sources
 ./repobrain graph sync

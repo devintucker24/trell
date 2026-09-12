@@ -28,6 +28,7 @@ class RepoBrainCliTests(unittest.TestCase):
         self.assertIn("RepoBrain technical CLI", proc.stdout)
         for command in (
             "setup",
+            "install",
             "retrieve",
             "graph",
             "source",
@@ -65,6 +66,11 @@ class RepoBrainCliTests(unittest.TestCase):
         payload = json.loads(proc.stdout)
         self.assertTrue(payload["hits"])
         self.assertLessEqual(len(payload["hits"]), 1)
+
+    def test_install_help_is_exposed(self) -> None:
+        proc = run_cli("install", "--help")
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("dest_repo", proc.stdout)
 
     def test_graph_operator_exit_status_is_propagated(self) -> None:
         proc = run_cli("graph", "not-a-command")

@@ -139,6 +139,27 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "epistemic-foundations.md"
                 ).exists()
             )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "scripts"
+                    / "tests"
+                    / "test_system_layout.py"
+                ).exists()
+            )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "scripts"
+                    / "apply_frontmatter_and_sync_graph.py"
+                ).exists()
+            )
 
 
 if __name__ == "__main__":

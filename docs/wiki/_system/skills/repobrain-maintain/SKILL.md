@@ -1,13 +1,13 @@
 ---
 name: repobrain-maintain
-description: Keep compiled RepoBrain claims in sync with the compiler/examples/THESIS, regenerate the claim graph from frontmatter, and refresh the Graphify code graph after src changes.
+description: Keep compiled RepoBrain claims in sync with host code and docs, regenerate the claim graph from frontmatter, and refresh the Graphify code graph after source changes.
 ---
 
 # Skill: RepoBrain Maintain
 
 ## When to use
-- Parser/lexer/typechecker/interpreter semantics change
-- New `examples/*.trell` added
+- Parser/lexer/runtime or equivalent host semantics change
+- New examples added under `HOST.yaml` `code_roots`
 - Roadmap or market thesis updates
 - Code moved/renamed (Graphify graph stale)
 - Need to regenerate `_system/generated/claim-graph.yaml`

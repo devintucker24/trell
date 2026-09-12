@@ -1,6 +1,6 @@
 ---
 name: repobrain-ingest
-description: Ingest triaged inbox items or approved sources into the Trell RepoBrain corpus — merge/create pages, raw pointers, frontmatter nodes/edges, GRAPH sync, INDEX, log. Use after triage, or when user names an explicit target page.
+description: Ingest triaged inbox items or approved sources into the host RepoBrain corpus — merge/create pages, raw pointers, frontmatter nodes/edges, GRAPH sync, INDEX, log. Use after triage, or when user names an explicit target page.
 ---
 
 # Skill: RepoBrain Ingest
@@ -29,7 +29,7 @@ If material is still a chat paste / URL / unknown blob → run **`repobrain-tria
 
 #### `merge-existing`
 1. Open target page(s) listed in triage.
-2. Integrate claims; preserve dual-track Trell thesis (don't dilute).
+2. Integrate claims; preserve the host `HOST.yaml` `anchor` (don't dilute).
 3. Bump `updated`; add `nodes`/`edges`/`related` as needed.
 4. If contradiction with old claims → add `rel: contradicts` or rewrite with note in log.
 

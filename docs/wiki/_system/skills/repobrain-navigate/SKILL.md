@@ -11,7 +11,7 @@ CLI command. Corpus lookup is `./repobrain retrieve`.
 ## When to use
 - User asks "where is X documented?" vs "where is X in the code?"
 - Agent needs epistemic/types/applications/market/roadmap context
-- Starting any Trell research session
+- Starting a research session on this repository
 
 ## Two graphs (do not mix)
 
@@ -42,13 +42,11 @@ If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query.
 Open named `source_file`s; Graphify is the index into `src/`.
 
 5. Open only pages whose `agent.read_when` matches, plus the `source_file` Graphify names.
-6. Prefer `agent.priority: critical|high` doctrine pages. Graphify wiki export (`graphify export wiki`) is structural, not Trell thesis.
+6. Prefer `agent.priority: critical|high` doctrine pages. Graphify wiki export (`graphify export wiki`) is structural, not host thesis.
 
-## Claim-graph hubs (this host)
-- Hub concepts: `belief-type`, `certain-type`, `speculative-execution`, `natural-trell-syntax`
-- Application entry: `three-beat-safety-pattern`
-- Market entry: `comp-langchain`, `reg-eu-ai-act`
-- Future: `phase-4-iso-silicon`
+## Claim-graph hubs
+
+Read high-priority compiled pages and their frontmatter `nodes`. Do not hard-code host hubs in this skill.
 
 ## Output
 Return wikilinks + one-line `summary` from frontmatter, and/or Graphify node + `source_file`. Do not dump entire pages unless asked.

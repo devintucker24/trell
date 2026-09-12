@@ -1,6 +1,6 @@
 ---
 name: repobrain-query
-description: Answer questions from the Trell RepoBrain corpus with citations. Prefer retrieve skill first; compile valuable answers into synthesis pages so explorations compound.
+description: Answer questions from the host RepoBrain corpus with citations. Prefer retrieve skill first; compile valuable answers into synthesis pages so explorations compound.
 ---
 
 # Skill: RepoBrain Query
@@ -10,9 +10,7 @@ command. Corpus lookup is `./repobrain retrieve`. `./repobrain graph query` is
 Graphify (code), not this playbook.
 
 ## When to use
-- Conceptual questions about Trell
-- "What industries use this?" / "What's the 10-year plan?" / "How does belief work?"
-- Comparing Trell to LangChain/BAML/Weft
+- Conceptual questions about the host project
 - Continuity questions ("what did we decide?") — also check episodic/temporal
 
 ## Procedure
@@ -32,7 +30,7 @@ Graphify (code), not this playbook.
 4. Answer with:
    - Direct verdict first
    - Citations as `[[folder/page]]`
-   - Code snippets only from wiki or `examples/*.trell`
+   - Code snippets only from wiki or host examples
 5. **File back** valuable answers:
    - Expand an existing page, OR
    - Create `docs/wiki/<domain>/<slug>.md` with `type: synthesis`
@@ -47,7 +45,7 @@ Graphify (code), not this playbook.
 ## Anti-patterns
 - Do not invent market share % without sources.
 - Do not restate abandoned research sketches as current product truth.
-- Do not skip epistemic dual-track rule when explaining Trell.
+- Do not skip the host `anchor` in `HOST.yaml` when explaining the project.
 - Do not dump INDEX + SCHEMA + a whole domain into context.
 - Do not skip `./repobrain graph query` when `graphify-out/graph.json` is missing.
 - Do not treat episodes as semantic truth until consolidated.

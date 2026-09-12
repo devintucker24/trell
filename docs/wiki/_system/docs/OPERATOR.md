@@ -95,8 +95,8 @@ from `docs/wiki/_system/docs/ROUTER.md`, then retrieve.
 | Type | Path | Mutability | Purpose |
 |------|------|------------|---------|
 | `index` | `docs/wiki/INDEX.md` | Rewrite on every structural change | Master catalog |
-| `concept` | `docs/wiki/core/`, `docs/wiki/theory/` | Rewriteable | Ideas, type systems, engines |
-| `application` | `docs/wiki/applications/` | Rewriteable | Domain niches + Trell code |
+| `concept` | host semantic dirs (often `docs/wiki/core/`) | Rewriteable | Ideas and invariants |
+| `application` | host domain folders | Rewriteable | How the project is used |
 | `market` | `docs/wiki/market/` | Rewriteable | Competitors, regulation, personas |
 | `roadmap` | `docs/wiki/roadmap/` | Rewriteable | Vision + phased milestones |
 | `engine` | `docs/wiki/_system/` | Human+agent co-evolve | Operators and generated state |
@@ -245,18 +245,9 @@ When `src/` or `examples/` change epistemic semantics:
 
 ---
 
-## 8. What Trell Is (Brain Anchor — Do Not Dilute)
+## 8. Host thesis (do not dilute)
 
-Trell is an **epistemic programming language**:
-- Dual-track types: `certain T` vs `belief<T>`
-- Epistemic reduction only via `verify`/`require` + `guard`
-- Speculative semantic execution: `when`/`fork` with rollback
-- Model contracts + quorums
-- Natural Trell: colon + indent + `end`
-
-**Goal:** Become the authority layer between stochastic models and irreversible actuators (ships, surgery, grids, treasury) — the Ada/Rust of the AI era by ~2036.
-
-If a wiki edit weakens this thesis without evidence, reject it in lint.
+The host project's thesis lives in `AGENTS.md` and `HOST.yaml` `anchor`. This operator manual is host-agnostic. If a wiki edit weakens the host anchor without evidence, reject it in lint.
 
 ---
 
@@ -298,8 +289,8 @@ This enables: `grep "^## \[" docs/wiki/log.md | tail -20`
 
 ## 11. Non-Goals for Wiki Agents
 
-- Do not replace LangChain-style connector catalogs in the wiki as if Trell were an SDK.
-- Do not cite abandoned `docs/research/` sketches as Trell product truth unless reconciled into wiki with explicit status.
+- Do not replace host product docs with unrelated connector catalogs.
+- Do not cite abandoned research sketches as compiled truth unless reconciled into wiki with explicit status.
 - Do not invent unverifiable market share numbers; prefer qualitative competitive maps + regulatory drivers.
 - Do not delete log entries (append-only).
 - Do not invent new wiki folders/types/rels from a single inbox note — triage to `needs-human` and update SCHEMA first.

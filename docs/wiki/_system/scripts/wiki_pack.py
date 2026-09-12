@@ -82,7 +82,10 @@ def cmd_export(dest_repo: Path) -> None:
                 src,
                 dest_system / rel,
                 dirs_exist_ok=True,
-                ignore=shutil.ignore_patterns("tests", "__pycache__"),
+                ignore=shutil.ignore_patterns(
+                    "__pycache__",
+                    "apply_frontmatter_and_sync_graph.py",
+                ),
             )
         else:
             _copy_tree(src, dest_system / rel)
@@ -107,7 +110,8 @@ def cmd_export(dest_repo: Path) -> None:
     print(f"Exported RepoBrain engine → {dest_system}")
     print("Next: in the destination repository run")
     print("  ./repobrain setup")
-    print("(fills host config, launchers, and Graphify; optional --seed-pages)")
+    print("or, from this engine checkout:")
+    print("  ./repobrain install /path/to/host-repo")
 
 
 def harness_roots() -> tuple[Path, ...]:
@@ -152,11 +156,15 @@ def main() -> None:
         description="RepoBrain engine export and harness launchers"
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
-    export = sub.add_parser("export")
+    export = sub.add_parser(
+        "export",
+        aliases=["install"],
+        help="copy this engine into another repository",
+    )
     export.add_argument("dest_repo", type=Path)
     sub.add_parser("install-launchers")
     args = parser.parse_args()
-    if args.cmd == "export":
+    if args.cmd in ("export", "install"):
         cmd_export(args.dest_repo.resolve())
     else:
         cmd_install_launchers()

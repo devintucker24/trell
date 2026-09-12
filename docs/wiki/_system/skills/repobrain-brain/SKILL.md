@@ -5,7 +5,7 @@ description: Operate the portable RepoBrain engine over a host corpus — setup,
 
 # RepoBrain — Parent Skill (host-agnostic)
 
-This family implements the **Karpathy LLM Wiki** pattern as a **file RAG + multi-lane memory** system. Domain content (this repo: Trell) is an *instance*; the operator kit is reusable.
+This family implements the **Karpathy LLM Wiki** pattern as a **file RAG + multi-lane memory** system. Domain content in the host repo is an *instance*; this operator kit is reusable.
 
 **Canonical playbooks:** `docs/wiki/_system/skills/*/SKILL.md`
 **Adapters only:** `.cursor/skills/repobrain-*` · `.claude/skills/repobrain-*` · `.agents/skills/repobrain-*`  

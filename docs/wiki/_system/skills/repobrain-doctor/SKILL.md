@@ -28,8 +28,8 @@ This writes:
 ### 2. Manual deep checks (optional, if scanner flags issues)
 | Check | How |
 |-------|-----|
-| Thesis dilution | Spot-check that core pages still assert dual-track non-coercion |
-| Code drift | Compare Natural Trell claims to `src/parser.rs` / examples |
+| Thesis dilution | Spot-check that core pages still match `HOST.yaml` `anchor` |
+| Code drift | Compare compiled claims to files under `HOST.yaml` `code_roots` |
 | Contradictions | Follow any `rel: contradicts` edges in GRAPH.yaml |
 | Inbox SLA | `docs/wiki/inbox/*.md` still `triage_status: pending` too long? |
 

@@ -1,6 +1,6 @@
 ---
 name: repobrain-label
-description: Normalize YAML frontmatter, tags, node ids, and edge relation vocabulary across the Trell RepoBrain corpus. Use when pages lack metadata or graph labels are inconsistent.
+description: Normalize YAML frontmatter, tags, node ids, and edge relation vocabulary across the host RepoBrain corpus. Use when pages lack metadata or graph labels are inconsistent.
 ---
 
 # Skill: RepoBrain Label
