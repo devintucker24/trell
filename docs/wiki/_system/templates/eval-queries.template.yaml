@@ -1,0 +1,25 @@
+# Host eval contract. Copy to config/eval-queries.yaml and point
+# expect_sources at reviewed corpus pages in this repository.
+version: 2
+updated: 2026-09-12
+budgets:
+  top_k: 8
+  minimum_score_class: strong
+  tier0_tokens: 2000
+  retrieved_tokens: 3500
+  total_context_tokens: 9500
+tier0:
+  paths:
+    - AGENTS.md
+    - docs/wiki/_system/docs/ROUTER.md
+graphify:
+  symbol: cmd_export
+  source_file: wiki_pack.py
+queries:
+  - id: what-is-this-repo
+    q: "What is this repository and how do agents retrieve knowledge?"
+    minimum_score_class: strong
+    expect_sources:
+      - path: INDEX.md
+        max_rank: 8
+        provenance: meta

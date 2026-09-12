@@ -136,6 +136,10 @@ Do not dump this INDEX.
 
 Fill `HOST.yaml` `anchor`, then ingest real pages via inbox → triage → ingest.
 Seed/draft pages (if any) are **not** compiled doctrine until reviewed.
+
+## Engine skills
+
+{skills_rows}
 """
 
 LOG_STUB = """# RepoBrain operations log (append-only)
@@ -327,13 +331,27 @@ def write_host_if_missing(detected: dict, dry: bool) -> str:
     return "wrote HOST.yaml from detection"
 
 
+def _skills_index_rows() -> str:
+    from repobrain_catalog import SKILL_SUFFIXES
+
+    lines = ["| Skill | Playbook |", "|---|---|"]
+    for suffix in SKILL_SUFFIXES:
+        name = f"repobrain-{suffix}"
+        lines.append(f"| `{name}` | `_system/skills/{name}/SKILL.md` |")
+    return "\n".join(lines)
+
+
 def write_stubs(host: dict, dry: bool) -> list[str]:
     wrote = []
     index = WIKI / "INDEX.md"
     if not index.exists():
         if not dry:
             index.write_text(
-                INDEX_STUB.format(name=host.get("name") or ROOT.name, today=TODAY),
+                INDEX_STUB.format(
+                    name=host.get("name") or ROOT.name,
+                    today=TODAY,
+                    skills_rows=_skills_index_rows(),
+                ),
                 encoding="utf-8",
             )
         wrote.append("INDEX.md")

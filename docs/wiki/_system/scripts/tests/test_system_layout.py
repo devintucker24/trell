@@ -160,6 +160,35 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "apply_frontmatter_and_sync_graph.py"
                 ).exists()
             )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "brain-gap-analysis-2026-09-04.md"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "inbox"
+                    / "_TEMPLATE.md"
+                ).exists()
+            )
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "config"
+                    / "eval-queries.yaml"
+                ).exists()
+            )
 
 
 if __name__ == "__main__":

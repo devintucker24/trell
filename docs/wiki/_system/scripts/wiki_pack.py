@@ -87,6 +87,16 @@ def cmd_export(dest_repo: Path) -> None:
                     "apply_frontmatter_and_sync_graph.py",
                 ),
             )
+        elif rel == "docs":
+            shutil.copytree(
+                src,
+                dest_system / rel,
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns(
+                    "__pycache__",
+                    "brain-gap-analysis-*.md",
+                ),
+            )
         else:
             _copy_tree(src, dest_system / rel)
 
@@ -95,9 +105,16 @@ def cmd_export(dest_repo: Path) -> None:
         if src.exists():
             _copy_tree(src, dest_wiki / rel)
 
+    inbox_template = dest_wiki / "inbox" / "_TEMPLATE.md"
+    if not inbox_template.exists():
+        inbox_template.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(PATHS.templates / "inbox-item.md", inbox_template)
+        print("wrote stub inbox/_TEMPLATE.md")
+
     for src_rel, dest_rel in [
         ("HOST.template.yaml", "config/HOST.yaml"),
         ("router-seeds.template.md", "config/router-seeds.md"),
+        ("eval-queries.template.yaml", "config/eval-queries.yaml"),
     ]:
         dest = dest_system / dest_rel
         if dest.exists():
