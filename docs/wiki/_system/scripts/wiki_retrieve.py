@@ -4,7 +4,7 @@
 Usage:
   ./repobrain retrieve "what is this repo"
   ./repobrain retrieve "what did we decide about memory" --lane episodic
-  ./repobrain retrieve "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
+  ./repobrain retrieve "how does setup work" --as-of 2026-09-04 --budget-tokens 3500
 """
 
 from __future__ import annotations
@@ -51,7 +51,7 @@ TYPE_PRIOR = {
 }
 
 LANE_DIRS = {
-    "semantic": ("core", "theory", "applications", "market", "roadmap"),
+    "semantic": (),  # filled from HOST.yaml semantic_dirs
     "episodic": ("episodic",),
     "temporal": ("temporal",),
     "meta": ("_meta",),
@@ -290,7 +290,7 @@ def main() -> None:
 
     t0 = time.perf_counter()
     host = load_host()
-    semantic = tuple(host.get("semantic_dirs") or LANE_DIRS["semantic"])
+    semantic = tuple(host.get("semantic_dirs") or ())
     lane_map = {**LANE_DIRS, "semantic": semantic}
 
     as_of = parse_day(args.as_of) if args.as_of else None

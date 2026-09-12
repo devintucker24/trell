@@ -260,7 +260,7 @@ def detect() -> dict:
         languages = sorted(exts)
     return {
         "name": name,
-        "code_roots": code_roots or ["src/"],
+        "code_roots": code_roots,
         "raw": raw,
         "languages": languages,
     }
@@ -331,25 +331,26 @@ def write_host_if_missing(detected: dict, dry: bool) -> str:
     data = yaml.safe_load(template.read_text(encoding="utf-8")) if template.exists() else {}
     data = data or {}
     data["name"] = detected["name"]
-    data["code_roots"] = detected["code_roots"]
+    data["code_roots"] = detected["code_roots"] or ["src/"]
     data["raw"] = detected["raw"]
-    data.setdefault("domains", ["core", "meta", "episodic", "temporal"])
-    data["semantic_dirs"] = [d for d in data.get("domains", []) if d not in ("meta", "episodic", "temporal")]
-    if not data["semantic_dirs"]:
-        data["semantic_dirs"] = ["core"]
-        if "core" not in data["domains"]:
-            data["domains"] = ["core"] + list(data["domains"])
+    data.setdefault("domains", ["meta", "episodic", "temporal"])
+    if data.get("semantic_dirs") is None:
+        data["semantic_dirs"] = [
+            d
+            for d in data.get("domains", [])
+            if d not in ("meta", "episodic", "temporal")
+        ]
+    graphify_roots = [
+        t.rstrip("/")
+        for t in detected["code_roots"]
+        if t.rstrip("/") not in ("examples", "tests")
+    ][:3]
     data["graphify"] = {
-        "enabled": True,
+        "enabled": bool(graphify_roots),
         "requirement": "graphifyy>=0.9.54,<0.10",
         "code_only": True,
         "out": "graphify-out",
-        "roots": [
-            t.rstrip("/")
-            for t in detected["code_roots"]
-            if t.rstrip("/") not in ("examples", "tests")
-        ][:3]
-        or ["src"],
+        "roots": graphify_roots,
         "excludes": [
             "**/target/**",
             "**/node_modules/**",
@@ -419,7 +420,7 @@ def write_stubs(host: dict, dry: bool) -> list[str]:
 
 def semantic_page_count(host: dict) -> int:
     n = 0
-    for d in host.get("semantic_dirs") or ["core"]:
+    for d in host.get("semantic_dirs") or []:
         folder = WIKI / d
         if not folder.is_dir():
             continue
@@ -431,12 +432,15 @@ def seed_pages(host: dict, dry: bool, force: bool) -> list[str]:
     from wiki_graphify import load_code_graph, seedable_god_nodes, graph_json_path
 
     wrote = []
+    semantic = [d for d in (host.get("semantic_dirs") or []) if d]
+    if not semantic:
+        return wrote
     if semantic_page_count(host) > 2 and not force:
         return wrote
     if not graph_json_path().exists():
         return wrote
     graph = load_code_graph()
-    domain = (host.get("semantic_dirs") or ["core"])[0]
+    domain = semantic[0]
     dest = WIKI / domain
     if not dry:
         dest.mkdir(parents=True, exist_ok=True)
@@ -472,11 +476,20 @@ def install_launchers(dry: bool) -> None:
     subprocess.run([sys.executable, str(script), "install-launchers"], cwd=ROOT, check=False)
 
 
-def maybe_patch_agents(dry: bool) -> str:
+def maybe_patch_agents(dry: bool, name: str = "") -> str:
     agents = ROOT / "AGENTS.md"
     fragment = PATHS.templates / "AGENTS.fragment.md"
-    if not agents.exists() or not fragment.exists():
-        return "no AGENTS.md"
+    if not fragment.exists():
+        return "no AGENTS fragment"
+    title = name or ROOT.name
+    if not agents.exists():
+        if not dry:
+            agents.write_text(
+                f"# AGENTS.md — {title}\n\n"
+                + fragment.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+        return "wrote AGENTS.md"
     text = agents.read_text(encoding="utf-8")
     if (
         "repobrain retrieve" in text
@@ -557,7 +570,11 @@ def main() -> None:
 
     host_action = write_host_if_missing(detected, dry)
     print(f"HOST.yaml: {host_action}")
-    host = load_host() if not dry else {**detected, "semantic_dirs": ["core"], "name": detected["name"]}
+    host = load_host() if not dry else {
+        **detected,
+        "semantic_dirs": [],
+        "name": detected["name"],
+    }
     if not host.get("name"):
         host["name"] = detected["name"]
 
@@ -570,7 +587,7 @@ def main() -> None:
     print("gitignore: " + gitignore_graphify(dry))
     print("gitignore: " + gitignore_source_cache(dry))
     print("gitignore: " + gitignore_html_dashboard(dry))
-    print("AGENTS.md: " + maybe_patch_agents(dry))
+    print("AGENTS.md: " + maybe_patch_agents(dry, host.get("name") or detected["name"]))
     if not dry:
         install_launchers(dry)
         print("launchers: installed canonical repobrain-* skills")

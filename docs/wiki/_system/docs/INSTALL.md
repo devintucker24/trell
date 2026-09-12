@@ -66,8 +66,8 @@ pages.
 7. Stop. Remaining pages are written via inbox → triage → ingest.
 
 Done when: ./repobrain --help works, HOST.yaml has a real anchor, doctor has
-no critical/high findings you introduced, and docs/wiki/core/ is empty or
-only host drafts.
+no critical/high findings you introduced, and this repo has no other project's
+compiled wiki pages.
 ```
 
 ## From a RepoBrain clone (humans)

@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 
@@ -272,6 +274,16 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                 destination / "docs" / "wiki" / "_system" / "config" / "HOST.yaml"
             ).read_text(encoding="utf-8")
             self.assertNotIn("Trell", host)
+            loaded = yaml.safe_load(host)
+            self.assertEqual(loaded.get("semantic_dirs") or [], [])
+            self.assertNotIn("core", loaded.get("domains") or [])
+            self.assertFalse((loaded.get("graphify") or {}).get("enabled"))
+            self.assertFalse(
+                (destination / "docs" / "wiki" / "core").exists()
+            )
+            self.assertTrue((destination / "AGENTS.md").exists())
+            agents = (destination / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertIn("./repobrain retrieve", agents)
             self.assertTrue(
                 (
                     destination
