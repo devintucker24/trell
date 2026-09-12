@@ -141,7 +141,7 @@ with those hits** (essay vs map). They are not extra search backends.
 
 | Task | Prompt |
 |---|---|
-| Bootstrap | Follow `docs/wiki/_system/docs/INSTALL.md`. If `./repobrain` is missing, clone RepoBrain and run `./repobrain bootstrap "$PWD"`. Do not copy another host's wiki pages. |
+| Bootstrap | Follow `docs/wiki/_system/docs/QUICKSTART.md`. If `./repobrain` is missing, clone RepoBrain and run `./repobrain bootstrap "$PWD"`. Do not copy another host's wiki pages. |
 | Setup | Install or refresh RepoBrain in this repo with `./repobrain setup`. Do not dump the wiki. |
 | Retrieve | Retrieve evidence for: … Use `./repobrain retrieve` within Router budgets. Cite paths. |
 | Graph | Query Graphify for how … is wired with `./repobrain graph query`. If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query. Open named `source_file`s. |

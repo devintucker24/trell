@@ -226,6 +226,15 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
                     / "INSTALL.md"
                 ).exists()
             )
+            quickstart = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "QUICKSTART.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("./repobrain bootstrap", quickstart)
+            how = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "HOW-IT-WORKS.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("https://github.com/Graphify-Labs/graphify", how)
+            self.assertIn("You do not have to install or use Graphify", how)
             inbox = (
                 destination / "docs" / "wiki" / "inbox" / "README.md"
             ).read_text(encoding="utf-8")

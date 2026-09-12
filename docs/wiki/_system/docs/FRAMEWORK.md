@@ -83,8 +83,8 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 
 Upstream engine: [github.com/devintucker24/RepoBrain](https://github.com/devintucker24/RepoBrain).
 
-Paste the prompt in `docs/wiki/_system/docs/INSTALL.md` into an agent in the
-**host** repo. Or from a RepoBrain clone:
+Install: [QUICKSTART.md](QUICKSTART.md). Paste the prompt there into an agent
+in the **host** repo. Or from a RepoBrain clone:
 
 ```bash
 ./repobrain bootstrap /path/to/your-project
@@ -105,8 +105,8 @@ That fills `HOST.yaml` from the repo layout, installs launchers, gitignores `gra
 
 Playbook: `docs/wiki/_system/skills/repobrain-setup/SKILL.md`.
 
-Graphify is optional. Supported versions and the exact install command are in
-`docs/wiki/_system/docs/GRAPHIFY.md`.
+Graphify is optional. Wiki retrieve does not use it. The adapter and upstream
+repo are in [`GRAPHIFY.md`](GRAPHIFY.md).
 
 ## Two graphs (machines, not humans)
 

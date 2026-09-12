@@ -6,7 +6,7 @@ description: Stand up the portable RepoBrain engine in this repo (or after expor
 # Skill: RepoBrain Setup
 
 ## When to use
-- The host repo has no `./repobrain` yet (paste INSTALL.md / run bootstrap)
+- The host repo has no `./repobrain` yet (paste QUICKSTART.md / run bootstrap)
 - First install of RepoBrain in a **new repo**
 - After `./repobrain install` or `./repobrain bootstrap`
 - User says “set up RepoBrain” / “install the brain”
@@ -15,7 +15,7 @@ Do **not** use this to rewrite host doctrine pages. Setup is idempotent and will
 
 ## Pack missing in this repo
 
-Follow `docs/wiki/_system/docs/INSTALL.md`. If this file is not on disk yet,
+Follow `docs/wiki/_system/docs/QUICKSTART.md`. If this file is not on disk yet,
 clone the engine then bootstrap:
 
 ```bash
