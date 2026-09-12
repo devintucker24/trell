@@ -2,7 +2,7 @@
 """RepoBrain retrieve — file-native hybrid lexical + graph + temporal rerank.
 
 Usage:
-  ./repobrain retrieve "maritime colregs belief"
+  ./repobrain retrieve "what is this repo"
   ./repobrain retrieve "what did we decide about memory" --lane episodic
   ./repobrain retrieve "epistemic types" --as-of 2026-09-04 --budget-tokens 3500
 """
@@ -224,7 +224,7 @@ def frontmatter_boost(query_tokens: set[str], meta: dict) -> float:
     tags = set(tokenize(" ".join(meta.get("tags") or [])))
     summary = set(tokenize(str(meta.get("summary") or "")))
     overlap = len(query_tokens & (tags | summary | set(tokenize(read_when))))
-    # also raw substring hits in read_when (e.g. COLREGs)
+    # also raw substring hits in read_when (e.g. domain nouns in agent hints)
     rw_hits = sum(1 for t in query_tokens if t in read_when)
     pri = {"critical": 1.0, "high": 0.85, "medium": 0.6, "low": 0.4}.get(
         (meta.get("agent") or {}).get("priority", "medium"), 0.6

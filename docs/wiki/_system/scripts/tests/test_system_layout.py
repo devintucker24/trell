@@ -56,6 +56,9 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
         self.assertFalse((ROOT / "docs" / "wiki" / "scripts").exists())
 
     def test_harness_launchers_point_to_canonical_skills(self) -> None:
+        launcher = ROOT / ".cursor" / "skills" / "repobrain-brain" / "SKILL.md"
+        if not launcher.is_file():
+            self.skipTest("host harness launchers not installed")
         for harness in (".cursor", ".claude", ".agents"):
             canonical = (
                 ROOT / harness / "skills" / "repobrain-brain" / "SKILL.md"
@@ -194,6 +197,83 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             ).read_text(encoding="utf-8")
             self.assertNotIn("2026-09-04-brain-memory-upgrade", episodic)
             self.assertIn("compiled wiki truth", episodic)
+            operator = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "OPERATOR.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("examples/*.trell", operator)
+            self.assertNotIn("COLREGs", operator)
+            framework = (
+                destination / "docs" / "wiki" / "_system" / "docs" / "FRAMEWORK.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn("./repobrain bootstrap", framework)
+            self.assertNotIn("(or Trell)", framework)
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "INSTALL.md"
+                ).exists()
+            )
+            inbox = (
+                destination / "docs" / "wiki" / "inbox" / "README.md"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("2026-09-04-brain-memory-upgrade", inbox)
+
+    def test_bootstrap_copies_engine_without_host_corpus(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="repobrain-bootstrap-") as tmp:
+            destination = Path(tmp) / "host-app"
+            destination.mkdir()
+            (destination / "README.md").write_text("# Host App\n", encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    str(ROOT / "repobrain"),
+                    "bootstrap",
+                    str(destination),
+                    "--no-graphify",
+                    "--no-sources",
+                ],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertTrue((destination / "repobrain").exists())
+            self.assertTrue(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "_system"
+                    / "docs"
+                    / "SCHEMA.md"
+                ).exists()
+            )
+            self.assertFalse(
+                (
+                    destination
+                    / "docs"
+                    / "wiki"
+                    / "core"
+                    / "epistemic-foundations.md"
+                ).exists()
+            )
+            host = (
+                destination / "docs" / "wiki" / "_system" / "config" / "HOST.yaml"
+            ).read_text(encoding="utf-8")
+            self.assertNotIn("Trell", host)
+            self.assertTrue(
+                (
+                    destination
+                    / ".cursor"
+                    / "skills"
+                    / "repobrain-setup"
+                    / "SKILL.md"
+                ).exists()
+            )
 
 
 if __name__ == "__main__":

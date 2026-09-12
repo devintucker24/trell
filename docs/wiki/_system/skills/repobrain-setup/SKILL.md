@@ -6,12 +6,29 @@ description: Stand up the portable RepoBrain engine in this repo (or after expor
 # Skill: RepoBrain Setup
 
 ## When to use
+- The host repo has no `./repobrain` yet (paste INSTALL.md / run bootstrap)
 - First install of RepoBrain in a **new repo**
-- After `wiki_pack.py export /path/to/other-repo`
-- Agent lands in a checkout that has the pack but empty `HOST.yaml` / no launchers
-- User says “set up RepoBrain” or the historical aliases “set up the wiki” / “make this portable” / “bootstrap the brain”
+- After `./repobrain install` or `./repobrain bootstrap`
+- User says “set up RepoBrain” / “install the brain”
 
 Do **not** use this to rewrite host doctrine pages. Setup is idempotent and will not clobber a filled corpus.
+
+## Pack missing in this repo
+
+Follow `docs/wiki/_system/docs/INSTALL.md`. If this file is not on disk yet,
+clone the engine then bootstrap:
+
+```bash
+git clone --depth 1 https://github.com/devintucker24/RepoBrain.git /tmp/RepoBrain
+/tmp/RepoBrain/repobrain bootstrap "$PWD"
+```
+
+## From a RepoBrain clone
+
+```bash
+./repobrain bootstrap /path/to/host-repo
+# or: ./bootstrap.sh /path/to/host-repo
+```
 
 ## What “minimal” means
 
@@ -50,7 +67,7 @@ Flags:
 
 ## What the script does
 
-1. Detect repo name (git remote), `src/`/`lib/`/… code roots, `README.md`/`THESIS.md`
+1. Detect repo name (git remote), `src/`/`lib/`/… code roots, `README.md`
 2. Write or **merge** `HOST.yaml` (never overwrite a filled file; may append `graphify:`)
 3. Create `inbox/`, `episodic/`, `temporal/`, `raw/`, `host/`, domain folders from HOST
 4. Stub `INDEX.md` / `log.md` / router-seeds **if missing**
@@ -69,7 +86,7 @@ Flags:
 | Code/structure graph `graphify-out/graph.json` | **Yes** — regenerate on code change | Graphify |
 | Graphify `--wiki` community/god-node articles | **Yes** — regenerated, not SCHEMA doctrine | Graphify |
 | Draft seed pages (`graphify-seed`) | **Once** at empty-repo setup | Setup script |
-| Compiled claim pages (`core/`, …) | **No** — agent-authored via inbox → ingest, then human-reviewed in the PR | Wiki |
+| Compiled claim pages (`HOST.yaml` `semantic_dirs`) | **No** — agent-authored via inbox → ingest | Wiki |
 | `_system/generated/claim-graph.yaml` | **Yes** — compiled from corpus frontmatter | `sync_graph.py` |
 | `_system/generated/sources/manifest.json` | **Yes** — inventory of Git-tracked project sources | Source pipeline |
 | `_system/generated/sources/cache/` | **Yes, ignored** — local derived Markdown | MarkItDown adapter |

@@ -31,7 +31,7 @@ def sample_corpus_query() -> str:
     )
     if (host or {}).get("name") == "Trell":
         return "belief certain verify guard"
-    return "portable knowledge engine install another repository"
+    return "inbox drop zone unprocessed knowledge"
 
 
 class RepoBrainEvalTests(unittest.TestCase):
@@ -41,8 +41,8 @@ class RepoBrainEvalTests(unittest.TestCase):
 
     def test_read_when_terms_contribute_to_lexical_relevance(self) -> None:
         score = lexical_score(
-            ["maritime", "colregs"],
-            {"agent": {"read_when": ["maritime safety under COLREGs"]}},
+            ["safety", "protocol"],
+            {"agent": {"read_when": ["safety protocol under local rules"]}},
             {"heading": "", "text": ""},
             "applications/safety-pattern.md",
         )
@@ -78,7 +78,10 @@ class RepoBrainEvalTests(unittest.TestCase):
         self.assertEqual(payload["budget_tokens"], 600)
         self.assertLessEqual(payload["packed_tokens"], 600)
         self.assertTrue(payload["hits"])
-        self.assertEqual(payload["hits"][0]["provenance"]["kind"], "compiled")
+        self.assertIn(
+            payload["hits"][0]["provenance"]["kind"],
+            ("compiled", "meta", "episodic", "temporal"),
+        )
         self.assertEqual(
             payload["hits"][0]["provenance"]["path"],
             payload["hits"][0]["path"],

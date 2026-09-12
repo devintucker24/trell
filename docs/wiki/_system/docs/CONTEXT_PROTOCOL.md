@@ -55,11 +55,11 @@ Turns the wiki into an efficient **file RAG + multi-lane memory** system — wit
 
 | Kind | Role | Location | Retrieval |
 |---|---|---|---|
-| **Semantic** | Stable concepts & claims | `core/`, `theory/`, `applications/`, `market/`, `roadmap/` | `wiki_retrieve` + graph hop |
+| **Semantic** | Stable concepts & claims | folders listed in `HOST.yaml` `semantic_dirs` | `wiki_retrieve` + graph hop |
 | **Episodic** | What happened / decided / failed | `docs/wiki/episodic/` | recency + task/tag match |
 | **Temporal** | When facts held; supersession; as-of | `temporal/TIMELINE.md` + `temporal:` frontmatter | `--as-of`, validity filter, timeline scan |
 | **Procedural** | How to operate | `AGENTS.md`, `docs/wiki/_system/skills/` | by skill / intent |
-| **Raw / provenance** | Immutable sources | `raw/`, `THESIS.md`, examples | via `sources` / `related` |
+| **Raw / provenance** | Immutable sources | `raw/`, README, paths in `HOST.yaml` `raw` | via `sources` / `related` |
 | **Working** | Current-task scratch | `episodic/session-current.md` (capped) | discard/consolidate after commit |
 
 Inbox and raw notes are **not** certain until ingested. Episodes are not semantic truth until consolidated.

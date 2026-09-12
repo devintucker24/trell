@@ -83,12 +83,12 @@ Matt Pocock (or any other) skills stay in `.cursor/skills/` of the **host** repo
 
 Upstream engine: [github.com/devintucker24/RepoBrain](https://github.com/devintucker24/RepoBrain).
 
-From a RepoBrain (or Trell) checkout that already has this engine:
+Paste the prompt in `docs/wiki/_system/docs/INSTALL.md` into an agent in the
+**host** repo. Or from a RepoBrain clone:
 
 ```bash
-./repobrain install /path/to/your-project
-cd /path/to/your-project
-./repobrain setup
+./repobrain bootstrap /path/to/your-project
+# equivalent: ./bootstrap.sh /path/to/your-project
 ```
 
 Equivalent: `python3 docs/wiki/_system/scripts/wiki_pack.py export /path/to/your-project`.

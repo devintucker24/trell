@@ -23,18 +23,9 @@ That **pulls** Graphify’s AST graph. Do not hand-edit `graphify-out/graph.json
 Use `sync --force` only to recover a corrupt or refactor-reduced graph. See
 `docs/wiki/_system/docs/GRAPHIFY.md` for adapter diagnostics and supported versions.
 
-Then update the few claim pages in the matrix below. Point at code with `implements_code:`; do not paste `src/` into wiki pages.
-
-## Sync matrix
-
-| Code / artifact change | Wiki pages to touch |
-|------------------------|---------------------|
-| Dual-track types | `core/epistemic-foundations`, `theory/epistemic-type-calculus` |
-| Natural syntax keywords | `core/natural-syntax-specification`, README, THESIS §Natural |
-| Fork/when semantics | `core/speculative-execution-engine` |
-| Guards/contracts/quorum | `core/contract-and-guard-system` |
-| New vertical example | matching `applications/*` + INDEX |
-| Competitor landscape | `market/competitive-analysis` |
+Then update the compiled pages that declare those symbols in `implements_code`.
+Do not paste source into wiki pages. Map paths from `HOST.yaml` `semantic_dirs`
+and `docs/wiki/_system/config/router-seeds.md`, not from another host's corpus.
 
 ## Claim-graph regenerate
 1. Scan wiki markdown with YAML frontmatter (skip `skills/`, `scripts/`, `pack/`).
@@ -46,7 +37,7 @@ Helper: `python3 docs/wiki/_system/scripts/sync_graph.py`
 ## Always
 - Bump page `updated`
 - Append maintain log entry
-- Run `cargo test` if claiming examples still compile
+- Run the host project's test command if claiming examples still compile
 
 Operator manual: `docs/wiki/_system/docs/OPERATOR.md`
 Router: `docs/wiki/_system/docs/ROUTER.md`

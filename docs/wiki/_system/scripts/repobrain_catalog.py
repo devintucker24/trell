@@ -41,6 +41,7 @@ PLAYBOOK_ONLY = frozenset(
 CLI_VERBS = (
     "setup",
     "install",
+    "bootstrap",
     "retrieve",
     "graph",
     "source",
@@ -130,6 +131,17 @@ CLI_COMMANDS = (
         "prompt": (
             "Install RepoBrain into another repository with "
             "./repobrain install /path/to/host-repo then ./repobrain setup."
+        ),
+    },
+    {
+        "id": "cli-bootstrap",
+        "name": "bootstrap",
+        "description": "Copy this engine into a host repository and run setup.",
+        "command": "./repobrain bootstrap /path/to/host-repo",
+        "prompt": (
+            "Follow docs/wiki/_system/docs/INSTALL.md. From a RepoBrain clone "
+            "run ./repobrain bootstrap /path/to/host-repo. If ./repobrain is "
+            "missing in the host, clone the engine first."
         ),
     },
     {

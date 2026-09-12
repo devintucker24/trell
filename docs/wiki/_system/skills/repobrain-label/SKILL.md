@@ -7,7 +7,7 @@ description: Normalize YAML frontmatter, tags, node ids, and edge relation vocab
 
 ## When to use
 - Pages missing frontmatter
-- Inconsistent tags (`Maritime` vs `maritime`)
+- Inconsistent tags (`Safety` vs `safety`)
 - Node ids not kebab-case
 - Unknown `rel` values on edges
 
