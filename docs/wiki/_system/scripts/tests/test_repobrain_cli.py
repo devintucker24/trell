@@ -27,8 +27,10 @@ def sample_corpus_query() -> str:
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    # Invoke via the interpreter so CI still works if the shebang bit is 0644
+    # (GitHub Contents API uploads do not preserve executable mode).
     return subprocess.run(
-        [str(CLI), *args],
+        [sys.executable, str(CLI), *args],
         cwd=ROOT,
         check=False,
         capture_output=True,

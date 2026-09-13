@@ -213,6 +213,7 @@ class RepoBrainEvalTests(unittest.TestCase):
             self.skipTest("graphify-out/graph.json is not built")
         proc = subprocess.run(
             [
+                sys.executable,
                 str(ROOT / "repobrain"),
                 "retrieve",
                 "TypeChecker",

@@ -272,6 +272,7 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             (destination / "README.md").write_text("# Host App\n", encoding="utf-8")
             proc = subprocess.run(
                 [
+                    sys.executable,
                     str(ROOT / "repobrain"),
                     "bootstrap",
                     str(destination),
