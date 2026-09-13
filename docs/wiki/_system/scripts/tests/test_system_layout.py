@@ -79,6 +79,18 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             self.assertTrue(canonical.exists())
             self.assertFalse((PATHS.skills / f"wiki-{suffix}" / "SKILL.md").exists())
 
+    def test_retrieve_and_query_skills_cap_misses_at_two_strikes(self) -> None:
+        retrieve = (PATHS.skills / "repobrain-retrieve" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        query = (PATHS.skills / "repobrain-query" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for body in (retrieve, query):
+            self.assertIn("Two-strike miss", body)
+            self.assertIn("Cap is two", body)
+            self.assertIn("Second miss", body)
+
     def test_export_resolves_from_arbitrary_destination(self) -> None:
         with tempfile.TemporaryDirectory(prefix="repobrain-layout-") as tmp:
             destination = Path(tmp) / "different-repository-name"
@@ -240,7 +252,8 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             self.assertIn("/repobrain-retrieve", how)
             self.assertIn("Do not collapse", how)
             self.assertIn("does **not** expand synonyms", how)
-            self.assertIn("why: temporal-fit", how)
+            self.assertIn("# miss: no-lexical-match", how)
+            self.assertIn("second miss", how.lower())
             using = (
                 destination / "docs" / "wiki" / "_system" / "docs" / "USING.md"
             ).read_text(encoding="utf-8")
@@ -259,6 +272,7 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             (destination / "README.md").write_text("# Host App\n", encoding="utf-8")
             proc = subprocess.run(
                 [
+                    sys.executable,
                     str(ROOT / "repobrain"),
                     "bootstrap",
                     str(destination),

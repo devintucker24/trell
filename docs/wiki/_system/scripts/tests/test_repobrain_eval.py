@@ -76,7 +76,7 @@ class RepoBrainEvalTests(unittest.TestCase):
         )
         self.assertGreaterEqual(score, 0.5)
 
-    def test_unknown_tokens_are_not_strong_lexical_hits(self) -> None:
+    def test_unknown_tokens_are_an_explicit_miss(self) -> None:
         proc = subprocess.run(
             [
                 sys.executable,
@@ -95,10 +95,80 @@ class RepoBrainEvalTests(unittest.TestCase):
             text=True,
         )
         payload = json.loads(proc.stdout)
-        self.assertTrue(payload["hits"], "recency floor still emits hits")
-        for hit in payload["hits"][:3]:
-            self.assertLess(hit["lex"], 0.25)
-            self.assertNotIn("lexical", hit.get("why") or "")
+        self.assertTrue(payload["miss"])
+        self.assertEqual(payload["miss_reason"], "no-lexical-match")
+        self.assertFalse(payload["hits"])
+        self.assertIn("skipped", payload)
+
+    def test_paraphrase_without_overlap_prints_miss_banner(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPTS / "wiki_retrieve.py"),
+                "holding pen for rough drafts",
+                "--k",
+                "8",
+                "--budget-tokens",
+                "800",
+                "--no-log",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("# miss: no-lexical-match", proc.stdout)
+        self.assertIn("hits=0", proc.stdout)
+        self.assertIn("second miss: stop", proc.stdout)
+        self.assertNotIn("\n1. [", proc.stdout)
+
+    def test_temporal_query_with_unknown_noun_is_still_a_miss(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPTS / "wiki_retrieve.py"),
+                "when did qzxvplernwick",
+                "--k",
+                "8",
+                "--budget-tokens",
+                "800",
+                "--json",
+                "--no-log",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(proc.stdout)
+        self.assertTrue(payload["miss"])
+        self.assertEqual(payload["miss_reason"], "no-lexical-match")
+        self.assertFalse(payload["hits"])
+
+    def test_short_token_does_not_match_graph_seed_substrings(self) -> None:
+        from wiki_retrieve import _token_in_text
+
+        self.assertFalse(_token_in_text("pen", "wiki-pending"))
+        self.assertTrue(_token_in_text("certain", "certainty"))
+        self.assertTrue(_token_in_text("inbox", "wiki-inbox drop zone"))
+
+    def test_short_token_does_not_substring_match(self) -> None:
+        score = lexical_score(
+            ["pen"],
+            {"title": "pending triage", "tags": [], "summary": "pending items"},
+            {"heading": "Rules", "text": "pending inbox items stay pending."},
+            "inbox/README.md",
+        )
+        self.assertEqual(score, 0.0)
+
+    def test_long_token_may_match_as_prefix(self) -> None:
+        score = lexical_score(
+            ["certain"],
+            {"title": "certainty", "tags": [], "summary": ""},
+            {"heading": "", "text": "belief is not certainty"},
+            "core/epistemic.md",
+        )
+        self.assertGreater(score, 0.0)
 
     def test_generated_eval_reports_are_not_corpus_pages(self) -> None:
         self.assertFalse(
@@ -143,6 +213,7 @@ class RepoBrainEvalTests(unittest.TestCase):
             self.skipTest("graphify-out/graph.json is not built")
         proc = subprocess.run(
             [
+                sys.executable,
                 str(ROOT / "repobrain"),
                 "retrieve",
                 "TypeChecker",
