@@ -240,7 +240,7 @@ class RepoBrainSystemLayoutTests(unittest.TestCase):
             self.assertIn("/repobrain-retrieve", how)
             self.assertIn("Do not collapse", how)
             self.assertIn("does **not** expand synonyms", how)
-            self.assertIn("why: temporal-fit", how)
+            self.assertIn("# miss: no-lexical-match", how)
             using = (
                 destination / "docs" / "wiki" / "_system" / "docs" / "USING.md"
             ).read_text(encoding="utf-8")

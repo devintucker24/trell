@@ -70,7 +70,7 @@ Do **not** auto-load full `INDEX.md`, full `SCHEMA.md`, full `OPERATOR.md`, the 
 
 After seeding, expand **one hop** via frontmatter `edges` (claim graph) — not whole categories. For code wiring use Graphify (`repobrain graph query`), not the claim graph.
 
-Retrieve matches **tokens**, not paraphrases. `router-seeds.md` is the synonym map (read it before retrieve). If hits are `why: temporal-fit` with `lex` ~0, rephrase from this table; do not treat recency as a match.
+Retrieve matches **tokens**, not paraphrases. `router-seeds.md` is the synonym map (read it before retrieve). Retrieve prints `# miss:` and suppresses recency-only rows when nothing matched (including `when did <unknown> change`). Rephrase from this table. Do not dump INDEX.
 
 ## Tier 2 — Retrieve + rerank (+ temporal)
 

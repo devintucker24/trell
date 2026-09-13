@@ -22,14 +22,14 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from repobrain_paths import PATHS, ROOT, WIKI, is_wiki_content_page, load_host
-from wiki_usage import log_event
+from wiki_usage import WEAK_HIT, log_event
 
 GRAPH_PATH = PATHS.claim_graph
 
 STOP = {
     "a", "an", "the", "and", "or", "of", "to", "in", "on", "for", "is", "are",
     "be", "as", "at", "by", "with", "from", "this", "that", "it", "we", "our",
-    "how", "what", "when", "why", "does", "do", "did", "about", "into", "vs",
+    "how", "what", "why", "does", "do", "did", "about", "into", "vs",
     "keep", "keeps", "keeping", "under", "over", "into", "using", "use", "used",
     "make", "made", "get", "got", "can", "could", "should", "would", "may",
     "safe",  # too generic across most host apps; prefer domain nouns
@@ -48,6 +48,12 @@ TYPE_PRIOR = {
     "index": 0.55,
     "raw-pointer": 0.4,
     "inbox-item": 0.2,
+}
+
+# Kept out of STOP so "when did X change" still marks the query time-sensitive.
+TEMPORAL_TOKENS = {
+    "when", "as-of", "asof", "changed", "since", "before", "after",
+    "history", "timeline", "supersede", "deprecated",
 }
 
 LANE_DIRS = {
@@ -154,7 +160,7 @@ def temporal_score(meta: dict, as_of: date | None, query_tokens: set[str]) -> fl
     updated = parse_day(meta.get("updated")) or valid_from
     observed = parse_day(temporal.get("observed_at")) or updated
 
-    time_sensitive = bool(query_tokens & {"when", "as-of", "asof", "changed", "since", "before", "after", "history", "timeline", "supersede", "deprecated"})
+    time_sensitive = bool(query_tokens & TEMPORAL_TOKENS)
 
     if as_of is not None:
         if valid_from and valid_from > as_of:
@@ -184,6 +190,18 @@ def temporal_score(meta: dict, as_of: date | None, query_tokens: set[str]) -> fl
     return min(1.0, 0.55 * base + 0.45 * recency)
 
 
+def _contains_token(t: str, field_tokens: set[str], raw: str) -> bool:
+    """Token overlap first. Substring only for longer tokens (avoids pen∈pending)."""
+    if t in field_tokens:
+        return True
+    return len(t) >= 5 and t in raw
+
+
+def _token_in_text(t: str, raw: str) -> bool:
+    raw_l = (raw or "").lower()
+    return _contains_token(t, set(tokenize(raw_l)), raw_l)
+
+
 def lexical_score(query_tokens: list[str], meta: dict, chunk: dict, path: str) -> float:
     if not query_tokens:
         return 0.0
@@ -193,30 +211,59 @@ def lexical_score(query_tokens: list[str], meta: dict, chunk: dict, path: str) -
     path_l = path.lower().replace("/", " ").replace("-", " ")
     heading = (chunk.get("heading") or "").lower()
     body = (chunk.get("text") or "")[:1600].lower()
+    title_toks = set(tokenize(titleish))
+    tag_toks = set(tokenize(tags))
+    read_toks = set(tokenize(read_when))
+    path_toks = set(tokenize(path_l))
+    heading_toks = set(tokenize(heading))
+    body_toks = set(tokenize(body))
     hits = 0.0
     heading_hits = 0
     for t in query_tokens:
         weight = 0.0
-        if t in titleish:
+        if _contains_token(t, title_toks, titleish):
             weight = max(weight, 2.4)
-        if t in tags:
+        if _contains_token(t, tag_toks, tags):
             weight = max(weight, 2.0)
-        if t in read_when:
+        if _contains_token(t, read_toks, read_when):
             weight = max(weight, 2.0)
-        if t in path_l:
+        if _contains_token(t, path_toks, path_l):
             weight = max(weight, 1.8)
-        if t in heading:
+        if _contains_token(t, heading_toks, heading):
             weight = max(weight, 2.8)  # section match is gold for chunking
             heading_hits += 1
-        elif t in body:
+        elif _contains_token(t, body_toks, body):
             weight = max(weight, 1.0)
         hits += weight
     # Prefer chunks whose heading absorbs multiple query nouns
     if heading_hits >= 2:
         hits += 1.5
-    elif heading_hits == 1 and any(t in heading for t in query_tokens if len(t) >= 5):
+    elif heading_hits == 1 and any(
+        t in heading_toks or (len(t) >= 5 and t in heading) for t in query_tokens
+    ):
         hits += 0.6
     return min(1.0, hits / (len(query_tokens) * 1.8))
+
+
+def _is_recency_noise(hit: dict) -> bool:
+    """True when the score is mostly recency/type prior, not a word match."""
+    lex = float(hit.get("lex") or 0.0)
+    why = hit.get("why") or ""
+    if lex >= WEAK_HIT:
+        return False
+    if "lexical" in why or "read_when/tags" in why:
+        return False
+    return True
+
+
+def _miss_reason(query_tokens: list[str], packed: list[dict]) -> str | None:
+    if not query_tokens:
+        return "empty-query"
+    if not packed:
+        return "no-lexical-match"
+    if _is_recency_noise(packed[0]):
+        return "recency-floor"
+    return None
 
 
 def frontmatter_boost(query_tokens: set[str], meta: dict) -> float:
@@ -224,8 +271,8 @@ def frontmatter_boost(query_tokens: set[str], meta: dict) -> float:
     tags = set(tokenize(" ".join(meta.get("tags") or [])))
     summary = set(tokenize(str(meta.get("summary") or "")))
     overlap = len(query_tokens & (tags | summary | set(tokenize(read_when))))
-    # also raw substring hits in read_when (e.g. domain nouns in agent hints)
-    rw_hits = sum(1 for t in query_tokens if t in read_when)
+    read_toks = set(tokenize(read_when))
+    rw_hits = sum(1 for t in query_tokens if _contains_token(t, read_toks, read_when))
     pri = {"critical": 1.0, "high": 0.85, "medium": 0.6, "low": 0.4}.get(
         (meta.get("agent") or {}).get("priority", "medium"), 0.6
     )
@@ -298,13 +345,20 @@ def main() -> None:
     q_set = set(q_tokens)
     graph = load_graph()
     edges = graph.get("edges") or []
+    time_sensitive = bool(q_set & TEMPORAL_TOKENS) or args.lane in ("temporal", "episodic")
+    content_tokens = [t for t in q_tokens if t not in TEMPORAL_TOKENS]
+    # Recency-only rows answer "what changed?" — not "when did qzxv change?".
+    keep_recency_floor = time_sensitive and not content_tokens
+    skipped_no_fm = 0
+    skipped_inbox = 0
 
     # seed nodes: tokens matching node ids/labels
     seed_nodes: set[str] = set()
     for n in graph.get("nodes") or []:
         nid = n.get("id", "")
-        label = str(n.get("label", "")).lower()
-        if any(t in nid.lower() or t in label for t in q_tokens):
+        label = str(n.get("label", ""))
+        blob = f"{nid} {label}"
+        if any(_token_in_text(t, blob) for t in q_tokens):
             seed_nodes.add(nid)
 
     lane_dirs = lane_map[args.lane]
@@ -325,8 +379,10 @@ def main() -> None:
         text = path.read_text(encoding="utf-8")
         meta, body = parse_fm(text)
         if not meta:
+            skipped_no_fm += 1
             continue
         if meta.get("type") == "inbox-item":
+            skipped_inbox += 1
             continue
 
         page_nodes = {n["id"] for n in (meta.get("nodes") or []) if isinstance(n, dict) and "id" in n}
@@ -344,6 +400,10 @@ def main() -> None:
 
         for chunk in section_chunks(body, rel):
             lex = lexical_score(q_tokens, meta, chunk, rel)
+            if content_tokens:
+                content_lex = lexical_score(content_tokens, meta, chunk, rel)
+                if content_lex <= 0.0:
+                    continue
             # Gate graph: don't let pure connectivity outrank weak lexical match
             g_eff = gprox * max(lex, 0.25)
             score = (
@@ -383,6 +443,20 @@ def main() -> None:
                 },
                 "why": _why(lex, g_eff, tscore, fboost),
             })
+
+    if not keep_recency_floor:
+        candidates = [c for c in candidates if not _is_recency_noise(c)]
+
+    if skipped_no_fm:
+        print(
+            f"skipped {skipped_no_fm} page(s) with no YAML frontmatter",
+            file=sys.stderr,
+        )
+    if skipped_inbox:
+        print(
+            f"skipped {skipped_inbox} inbox-item page(s) (not compiled truth)",
+            file=sys.stderr,
+        )
 
     if args.include_sources and not _is_code_query(args.query):
         try:
@@ -481,6 +555,7 @@ def main() -> None:
             print(f"source conflict triage unavailable: {exc}", file=sys.stderr)
 
     duration_ms = int((time.perf_counter() - t0) * 1000)
+    miss_reason = _miss_reason(q_tokens, packed)
     if not args.no_log:
         log_event(
             "retrieve",
@@ -493,6 +568,8 @@ def main() -> None:
             top_score=packed[0]["score"] if packed else 0.0,
             duration_ms=duration_ms,
             hit_paths=[c["path"] for c in packed[:8]],
+            miss=bool(miss_reason),
+            miss_reason=miss_reason,
             source="script",
         )
 
@@ -508,7 +585,18 @@ def main() -> None:
             "budget_tokens": args.budget_tokens,
             "hits": packed,
             "conflicts": conflicts,
+            "miss": bool(miss_reason),
+            "miss_reason": miss_reason,
+            "skipped": {
+                "no_frontmatter": skipped_no_fm,
+                "inbox_item": skipped_inbox,
+            },
         }
+        if miss_reason:
+            payload["next"] = (
+                "rephrase from docs/wiki/_system/config/router-seeds.md; "
+                "inbox items and _system/docs are not retrieved"
+            )
         if code_note:
             payload["code_graph"] = code_note
         print(json.dumps(payload, indent=2))
@@ -516,6 +604,12 @@ def main() -> None:
 
     print(f"# retrieve: {args.query!r}")
     print(f"# lane={args.lane} as_of={args.as_of or 'none'} hits={len(packed)} ~tokens={used}")
+    if miss_reason:
+        print(f"# miss: {miss_reason}")
+        print(
+            "# next: rephrase from docs/wiki/_system/config/router-seeds.md; "
+            "inbox items and _system/docs are not retrieved"
+        )
     if code_note.get("status"):
         print(f"# code-graph: {code_note['status']}")
     print()
@@ -570,7 +664,12 @@ def _code_graph_note(query: str, run: bool = False) -> dict:
         return {}
     path = graph_json_path()
     if not path.exists():
-        return {"status": "missing graphify-out/graph.json — repobrain graph sync"}
+        return {
+            "status": (
+                "missing graphify-out/graph.json — "
+                "./repobrain graph sync; do not dump src/"
+            )
+        }
     try:
         g = load_code_graph()
     except Exception as exc:  # noqa: BLE001

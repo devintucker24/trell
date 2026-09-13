@@ -28,11 +28,10 @@ Useful flags:
 - `--include-sources` — include bounded, non-authoritative excerpts from the
   committed Git-tracked source inventory
 
-3. If top hits have `lex` ~0 and `why` is only `temporal-fit`, that is a
-   **miss** (recency floor), not a match. Rephrase using nouns from
-   `docs/wiki/_system/config/router-seeds.md` or from seed pages already
-   opened. Do not treat those hits as answers. Retrieve does not expand
-   synonyms.
+3. If the header is `# miss:` or JSON `miss: true`, that is a **miss**.
+   Recency-only rows are suppressed. Rephrase using nouns from
+   `docs/wiki/_system/config/router-seeds.md` once. Do not dump INDEX.
+   Inbox items and `_system/docs` are not in the retrieve corpus.
 4. Open **only** the top 1–3 paths (or the matching `##` section).
 5. Claim-graph one-hop: frontmatter `edges` / `_system/generated/claim-graph.yaml`.
 6. Code/structure questions: **do not** invent a second AST graph.

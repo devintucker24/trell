@@ -179,10 +179,9 @@ with those hits** (essay vs map). They are not extra search backends.
 
 ## Troubleshooting
 
-- Weak retrieve (`why` only `temporal-fit`, `lex` ~0) → rephrase with
-  `router-seeds.md` nouns, or add `tags` / `read_when` aliases; do not
-  treat recency hits as an answer. Still missing → ingest a compiled page.
-  Do not paste whole `INDEX.md`.
+- Weak retrieve (`# miss:` / `miss: true`) → rephrase once with
+  `router-seeds.md` nouns, or add `tags` / `read_when` aliases. Do not dump
+  INDEX. Still missing → ingest a compiled page.
 - Raw vs compiled disagreement → inbox candidate; compiled stays authoritative.
 - Conversion `pending` → install the narrow MarkItDown extra for that format.
 - Conversion `blocked` → `allow_external` is required before URL/plugin/OCR flags.

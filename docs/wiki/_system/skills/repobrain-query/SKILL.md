@@ -26,11 +26,9 @@ Graphify (code), not this playbook.
    - Lexer / parser / who-calls / syntax implementation → run
      `./repobrain graph query`. If `graphify-out/graph.json` is missing,
      `./repobrain graph sync` then query. Open named `source_file`s only.
-3. If top hits have `lex` ~0 and `why` is only `temporal-fit`, **stop**.
-   Retrieve does not expand synonyms. Rephrase from
-   `docs/wiki/_system/config/router-seeds.md` and retrieve again. If it
-   still misses, say the corpus did not match — do not invent an answer
-   from recency noise.
+3. If the header is `# miss:` or JSON `miss: true`, **stop**. Do not open
+   recency hits. Rephrase from `router-seeds.md` once. If it still misses,
+   say the corpus did not match.
 4. Read 2–6 top pages/sections (not the whole wiki).
 5. Answer with:
    - Direct verdict first

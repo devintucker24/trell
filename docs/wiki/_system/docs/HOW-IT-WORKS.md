@@ -79,7 +79,7 @@ From an empty bootstrap (`host-app`, no Graphify, no Trell pages):
 ```text
 # retrieve: 'inbox drop zone unprocessed knowledge'
 # lane=all as_of=none hits=8 ~tokens=1019
-# code-graph: missing graphify-out/graph.json — repobrain graph sync
+# code-graph: missing graphify-out/graph.json — ./repobrain graph sync; do not dump src/
 
 1. [0.833] inbox/README.md › Inbox
    id=inbox-readme type=meta lex=1.0 graph=1.0 temporal=0.835
@@ -118,32 +118,27 @@ You do **not** need the whole sentence on the page. Any overlapping token
 helps. You **do** need at least one of those tokens to exist on the page or
 in its frontmatter.
 
-Same empty host, a paraphrase that never uses inbox words:
+Same empty host, a paraphrase that never uses inbox words now returns **no
+hits** instead of recency noise:
 
 ```text
 # retrieve: 'holding pen for rough drafts'
-# lane=all as_of=none hits=5 ~tokens=655
-# code-graph: missing graphify-out/graph.json — repobrain graph sync
-
-1. [0.289] inbox/README.md › Rules
-   id=inbox-readme type=meta lex=0.1389 graph=0.0 temporal=0.835
-   why: temporal-fit
-   1. **Drop first, organize later.** …
-
-2. [0.220] INDEX.md › host-app wiki index
-   id=wiki-index type=index lex=0.0 graph=0.0 temporal=0.835
-   why: temporal-fit
-   Agent bootstrap: `AGENTS.md` → `docs/wiki/_system/docs/ROUTER.md` → retrieve. …
+# lane=all as_of=none hits=0 ~tokens=0
+# miss: no-lexical-match
+# next: rephrase from docs/wiki/_system/config/router-seeds.md; inbox items and _system/docs are not retrieved
+# code-graph: missing graphify-out/graph.json — ./repobrain graph sync; do not dump src/
 ```
 
-That is a **miss**, not an answer. Combined score can still clear the 0.08
-floor from recency + type prior, so you still get a hit list. Read `lex` and
-`why`:
+That is a **miss**, not an answer. Combined score used to clear the 0.08
+floor from recency + type prior and still print 8 pages. Recency-only rows
+are suppressed unless the query is **only** time-sensitive (`when` /
+`changed` / `--lane temporal|episodic` with no extra nouns). `when did
+qzxv change` is still a miss. Read `lex`, `why`, and the `# miss:` line:
 
 | You see | Means |
 |---------|-------|
 | `lex` near 1.0 and `why` includes `lexical` | Words matched |
-| `why` is only `temporal-fit` and `lex` is ~0 | Recency noise. Rephrase. |
+| `# miss: no-lexical-match` / JSON `miss: true` | Stop. Rephrase from router-seeds. |
 | `why` includes `read_when/tags` | An alias you planted in YAML fired |
 
 A mixed paraphrase (`staging area for messy notes`) can still rank inbox
@@ -160,10 +155,10 @@ What to do on a miss:
 4. `/repobrain-query` must not write an essay from `temporal-fit`-only hits.
    Say the corpus did not match, then rephrase.
 
-Short tokens are substring matches (`pen` inside `pending`). Prefer
-distinctive nouns. Claim-graph hops cannot rescue a zero-overlap query:
-graph score is gated by lexical match, and graph seeds themselves need
-token overlap on node ids/labels.
+Tokens shorter than 5 characters must match a whole token (`pen` does not
+match `pending`). Length 5+ may match as a substring (`certain` can match
+`certainty`). Claim-graph hops cannot rescue a zero-overlap query: graph
+score is gated by lexical match, and graph seeds use the same token rule.
 
 ## Skills: retrieve vs query (do not rename)
 
@@ -209,8 +204,8 @@ Canonical playbook: [`repobrain-query/SKILL.md`](../skills/repobrain-query/SKILL
    - when / as-of → `--as-of` and/or `--lane temporal`
    - who-calls / lexer / parser → `./repobrain graph query` (sync first if
      `graphify-out/graph.json` is missing)
-3. Read 2–6 top **sections**. If `why` is only `temporal-fit` and `lex` is
-   ~0, rephrase from router-seeds — do not answer from recency noise.
+3. Read 2–6 top **sections**. If the header is `# miss:`, stop and rephrase
+   from router-seeds — do not dump INDEX.
 4. Answer: verdict first, citations `[[folder/page]]`, no invented stats.
 5. If the answer should last, ingest it onto a compiled page (`type: synthesis`
    or an existing page). Episodes are not truth until consolidated.
