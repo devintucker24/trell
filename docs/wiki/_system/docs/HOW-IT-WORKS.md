@@ -125,7 +125,7 @@ hits** instead of recency noise:
 # retrieve: 'holding pen for rough drafts'
 # lane=all as_of=none hits=0 ~tokens=0
 # miss: no-lexical-match
-# next: rephrase from docs/wiki/_system/config/router-seeds.md; inbox items and _system/docs are not retrieved
+# next: rephrase once from docs/wiki/_system/config/router-seeds.md; second miss: stop — compiled wiki has no match
 # code-graph: missing graphify-out/graph.json — ./repobrain graph sync; do not dump src/
 ```
 
@@ -138,22 +138,24 @@ qzxv change` is still a miss. Read `lex`, `why`, and the `# miss:` line:
 | You see | Means |
 |---------|-------|
 | `lex` near 1.0 and `why` includes `lexical` | Words matched |
-| `# miss: no-lexical-match` / JSON `miss: true` | Stop. Rephrase from router-seeds. |
+| `# miss: no-lexical-match` / JSON `miss: true` | First miss: rephrase once. Second miss: stop. |
 | `why` includes `read_when/tags` | An alias you planted in YAML fired |
 
 A mixed paraphrase (`staging area for messy notes`) can still rank inbox
 because `messy` is in the body and `notes` is in `read_when` — not because
 retrieve knows “staging area” means inbox.
 
-What to do on a miss:
+Two-strike miss (the agent loop):
 
-1. Rephrase using nouns from `docs/wiki/_system/config/router-seeds.md` or
-   from a seed page ROUTER already opened. That table is the synonym map;
-   the CLI does not have one.
-2. Put aliases on the compiled page (`tags` and `agent.read_when`).
-3. Inbox a synonym note and ingest it if the concept is real but unnamed.
-4. `/repobrain-query` must not write an essay from `temporal-fit`-only hits.
-   Say the corpus did not match, then rephrase.
+1. First retrieve. Hits → read those sections. Done looking up.
+2. First `# miss:` → rephrase **once** with nouns from
+   `docs/wiki/_system/config/router-seeds.md`. Retrieve that rephrase.
+3. Second miss → **stop**. Tell the user the compiled wiki has no matching
+   page. Then exactly one: `./repobrain graph query` (code/wiring), the one
+   ROUTER seed page for this intent, or inbox the question as a gap.
+   No third retrieve. Plant `tags` / `read_when` later if the concept is real.
+
+`/repobrain-query` does not write an essay from a miss.
 
 Tokens shorter than 5 characters must match a whole token (`pen` does not
 match `pending`). Length 5+ may match as a substring (`certain` can match
@@ -204,8 +206,9 @@ Canonical playbook: [`repobrain-query/SKILL.md`](../skills/repobrain-query/SKILL
    - when / as-of → `--as-of` and/or `--lane temporal`
    - who-calls / lexer / parser → `./repobrain graph query` (sync first if
      `graphify-out/graph.json` is missing)
-3. Read 2–6 top **sections**. If the header is `# miss:`, stop and rephrase
-   from router-seeds — do not dump INDEX.
+3. Read 2–6 top **sections**. Two-strike miss: first `# miss:` → rephrase
+   once from router-seeds; second miss → stop (one seed page or inbox the
+   gap). No INDEX dump.
 4. Answer: verdict first, citations `[[folder/page]]`, no invented stats.
 5. If the answer should last, ingest it onto a compiled page (`type: synthesis`
    or an existing page). Episodes are not truth until consolidated.

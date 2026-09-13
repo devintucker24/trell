@@ -119,6 +119,7 @@ class RepoBrainEvalTests(unittest.TestCase):
         )
         self.assertIn("# miss: no-lexical-match", proc.stdout)
         self.assertIn("hits=0", proc.stdout)
+        self.assertIn("second miss: stop", proc.stdout)
         self.assertNotIn("\n1. [", proc.stdout)
 
     def test_temporal_query_with_unknown_noun_is_still_a_miss(self) -> None:

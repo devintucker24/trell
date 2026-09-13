@@ -24,6 +24,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from repobrain_paths import PATHS, ROOT, WIKI, is_wiki_content_page, load_host
 from wiki_usage import WEAK_HIT, log_event
 
+MISS_NEXT = (
+    "rephrase once from docs/wiki/_system/config/router-seeds.md; "
+    "second miss: stop — compiled wiki has no match"
+)
+
 GRAPH_PATH = PATHS.claim_graph
 
 STOP = {
@@ -593,10 +598,7 @@ def main() -> None:
             },
         }
         if miss_reason:
-            payload["next"] = (
-                "rephrase from docs/wiki/_system/config/router-seeds.md; "
-                "inbox items and _system/docs are not retrieved"
-            )
+            payload["next"] = MISS_NEXT
         if code_note:
             payload["code_graph"] = code_note
         print(json.dumps(payload, indent=2))
@@ -606,10 +608,7 @@ def main() -> None:
     print(f"# lane={args.lane} as_of={args.as_of or 'none'} hits={len(packed)} ~tokens={used}")
     if miss_reason:
         print(f"# miss: {miss_reason}")
-        print(
-            "# next: rephrase from docs/wiki/_system/config/router-seeds.md; "
-            "inbox items and _system/docs are not retrieved"
-        )
+        print(f"# next: {MISS_NEXT}")
     if code_note.get("status"):
         print(f"# code-graph: {code_note['status']}")
     print()

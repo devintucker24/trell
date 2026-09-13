@@ -179,9 +179,9 @@ with those hits** (essay vs map). They are not extra search backends.
 
 ## Troubleshooting
 
-- Weak retrieve (`# miss:` / `miss: true`) → rephrase once with
-  `router-seeds.md` nouns, or add `tags` / `read_when` aliases. Do not dump
-  INDEX. Still missing → ingest a compiled page.
+- Weak retrieve (`# miss:` / `miss: true`) → two-strike: rephrase once with
+  `router-seeds.md` nouns. Second miss → stop, tell the human, inbox the
+  gap, or open one ROUTER seed page. No third retrieve.
 - Raw vs compiled disagreement → inbox candidate; compiled stays authoritative.
 - Conversion `pending` → install the narrow MarkItDown extra for that format.
 - Conversion `blocked` → `allow_external` is required before URL/plugin/OCR flags.

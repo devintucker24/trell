@@ -26,9 +26,11 @@ Graphify (code), not this playbook.
    - Lexer / parser / who-calls / syntax implementation → run
      `./repobrain graph query`. If `graphify-out/graph.json` is missing,
      `./repobrain graph sync` then query. Open named `source_file`s only.
-3. If the header is `# miss:` or JSON `miss: true`, **stop**. Do not open
-   recency hits. Rephrase from `router-seeds.md` once. If it still misses,
-   say the corpus did not match.
+3. **Two-strike miss.** Cap is two `./repobrain retrieve` calls.
+   First `# miss:` → rephrase **once** from `router-seeds.md`. Second miss →
+   stop. Tell the user the compiled wiki has no matching page. Then exactly
+   one next step: `./repobrain graph query` for code/wiring, the one ROUTER
+   seed page for this intent, or inbox the question as a gap.
 4. Read 2–6 top pages/sections (not the whole wiki).
 5. Answer with:
    - Direct verdict first
@@ -54,6 +56,7 @@ Graphify (code), not this playbook.
 - Do not treat episodes as semantic truth until consolidated.
 - Do not answer from retrieve hits whose `why` is only `temporal-fit` and
   `lex` is ~0. That is recency, not a synonym match.
+- A third retrieve after two misses.
 
 Operator manual: `docs/wiki/_system/docs/OPERATOR.md`
 Router: `docs/wiki/_system/docs/ROUTER.md`

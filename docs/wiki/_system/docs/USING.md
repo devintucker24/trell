@@ -46,9 +46,10 @@ valid in time. `code-graph: missing` is fine: wiki hits still ranked.
 You do **not** need a word-for-word match of the whole question. You **do**
 need overlapping tokens (or aliases in `tags` / `read_when`). Retrieve does
 not know synonyms. If the header is `# miss:` (JSON `miss: true`), recency
-noise was suppressed — rephrase from
-`docs/wiki/_system/config/router-seeds.md`, or plant the alias on the page.
-Do not dump INDEX. Details:
+noise was suppressed. **Two-strike:** rephrase once from
+`docs/wiki/_system/config/router-seeds.md`. Second miss → stop; the compiled
+wiki has no match. Then one ROUTER seed page, `graph query` (code), or inbox
+the gap. Details:
 [HOW-IT-WORKS.md](HOW-IT-WORKS.md#if-the-question-does-not-match-word-for-word).
 
 Lanes:

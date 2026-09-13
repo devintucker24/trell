@@ -28,11 +28,17 @@ Useful flags:
 - `--include-sources` — include bounded, non-authoritative excerpts from the
   committed Git-tracked source inventory
 
-3. If the header is `# miss:` or JSON `miss: true`, that is a **miss**.
-   Recency-only rows are suppressed. Rephrase using nouns from
-   `docs/wiki/_system/config/router-seeds.md` once. Do not dump INDEX.
+3. **Two-strike miss.** Cap is two `./repobrain retrieve` calls.
+   - Hits and no `# miss:` header → open the top 1–3 paths. Lookup is done.
+   - First `# miss:` / `miss: true` → rephrase **once** with nouns from
+     `docs/wiki/_system/config/router-seeds.md` (and the matching `--lane`).
+     Retrieve that rephrase.
+   - Second miss → stop. Tell the user the compiled wiki has no matching
+     page. Then exactly one next step: `./repobrain graph query` for
+     code/wiring (sync first if `graph.json` is missing), the one ROUTER
+     seed page for this intent, or inbox the question as a gap.
    Inbox items and `_system/docs` are not in the retrieve corpus.
-4. Open **only** the top 1–3 paths (or the matching `##` section).
+4. On a hit, open **only** the top 1–3 paths (or the matching `##` section).
 5. Claim-graph one-hop: frontmatter `edges` / `_system/generated/claim-graph.yaml`.
 6. Code/structure questions: **do not** invent a second AST graph.
 
@@ -78,3 +84,4 @@ inbox triage candidate; they never rewrite a compiled claim. Graphify ranks
 - Treating episodic hits as semantic truth without consolidation
 - Ignoring `--as-of` when the user asked a when/history question
 - Treating `temporal-fit` / `lex` ~0 hits as a synonym match
+- A third retrieve after two misses (new paraphrases, INDEX, or a whole folder)
