@@ -68,17 +68,26 @@ class SkillCatalogConsistencyTests(unittest.TestCase):
         cheatsheet = (PATHS.system / "docs" / "CHEATSHEET.md").read_text(
             encoding="utf-8"
         )
-        index = (PATHS.corpus / "INDEX.md").read_text(encoding="utf-8")
         operator = (PATHS.system / "docs" / "OPERATOR.md").read_text(encoding="utf-8")
+        install = (PATHS.system / "docs" / "INSTALL.md").read_text(encoding="utf-8")
         inbox = (PATHS.corpus / "inbox" / "README.md").read_text(encoding="utf-8")
         self.assertNotIn("wiki-triage", inbox)
         self.assertNotIn("wiki-ingest", inbox)
+        self.assertIn("./repobrain bootstrap", install)
+        index_path = PATHS.corpus / "INDEX.md"
+        index = index_path.read_text(encoding="utf-8") if index_path.exists() else ""
+        has_launchers = (
+            ROOT / ".cursor" / "skills" / "repobrain-brain" / "SKILL.md"
+        ).is_file()
         for suffix in SKILL_SUFFIXES:
             name = f"repobrain-{suffix}"
             self.assertTrue((PATHS.skills / name / "SKILL.md").exists(), name)
             self.assertIn(f"/repobrain-{suffix}", cheatsheet)
-            self.assertIn(name, index)
             self.assertIn(name, operator)
+            if index:
+                self.assertIn(name, index)
+            if not has_launchers:
+                continue
             for harness in (".cursor", ".claude", ".agents"):
                 launcher = ROOT / harness / "skills" / name / "SKILL.md"
                 self.assertTrue(launcher.is_file(), str(launcher))

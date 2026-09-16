@@ -9,7 +9,7 @@ tags: [inbox]
 domain: meta
 summary: "Unprocessed note — not wiki truth until triaged."
 triage_status: pending   # pending | classified | routed | ingested | rejected | needs-human
-suggested_domain: null   # core | theory | applications | market | roadmap | meta | null
+suggested_domain: null   # existing HOST.yaml domain, meta, or null
 suggested_type: null     # concept | application | market | roadmap | synthesis | raw-pointer | null
 suggested_action: null   # merge-existing | new-page | raw-only | discard | needs-human
 origin: null             # URL, file path, chat, or "user-paste"

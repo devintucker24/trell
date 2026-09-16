@@ -30,10 +30,16 @@ agent:
 
 # RepoBrain Graphify Adapter
 
-Graphify is RepoBrain's optional code-intelligence dependency. Graphify owns
-AST extraction, calls/imports, community analysis, graph operations, and HTML
-rendering. RepoBrain owns only configuration, invocation, normalized artifact
-inspection, freshness, and actionable diagnostics.
+Graphify is **optional**. Skip it unless you want a **code** graph (calls,
+imports, AST). Wiki retrieve, inbox, and doctor do not need it.
+
+Upstream project: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify).
+PyPI package: `graphifyy`. CLI: `graphify`.
+
+Graphify owns AST extraction, calls/imports, community analysis, graph
+operations, and HTML rendering. RepoBrain owns only configuration, invocation,
+normalized artifact inspection, freshness, and actionable diagnostics. That
+seam is the **adapter**. RepoBrain does not vendor Graphify source.
 
 ## Supported dependency
 

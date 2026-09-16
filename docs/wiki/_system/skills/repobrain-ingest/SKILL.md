@@ -7,8 +7,7 @@ description: Ingest triaged inbox items or approved sources into the host RepoBr
 
 ## When to use
 - After **triage** sets `suggested_action` to `merge-existing`, `new-page`, or `raw-only`
-- User explicitly: "update `market/competitive-analysis` with this"
-- Shipping a language feature that must sync docs (still prefer inbox if messy)
+- User explicitly names a target page to update
 
 ## Prerequisite
 If material is still a chat paste / URL / unknown blob → run **`repobrain-triage`** first (or drop into `docs/wiki/inbox/`).
@@ -34,7 +33,7 @@ If material is still a chat paste / URL / unknown blob → run **`repobrain-tria
 4. If contradiction with old claims → add `rel: contradicts` or rewrite with note in log.
 
 #### `new-page`
-1. Confirm domain folder already exists (`core|theory|applications|market|roadmap|meta|_meta|raw`).
+1. Confirm the domain folder already exists in `HOST.yaml` `domains` (and on disk). Do not invent a new top-level folder.
 2. Create `docs/wiki/<domain>/<kebab-slug>.md` with **full** SCHEMA frontmatter.
 3. Add INDEX one-liner if it's a lasting page.
 4. Link from ≥1 existing hub page (`related` both ways when possible).

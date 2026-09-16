@@ -7,7 +7,7 @@ description: Normalize YAML frontmatter, tags, node ids, and edge relation vocab
 
 ## When to use
 - Pages missing frontmatter
-- Inconsistent tags (`Maritime` vs `maritime`)
+- Inconsistent tags (`Safety` vs `safety`)
 - Node ids not kebab-case
 - Unknown `rel` values on edges
 
@@ -23,7 +23,7 @@ description: Normalize YAML frontmatter, tags, node ids, and edge relation vocab
 4. Log: `## [YYYY-MM-DD] label | <scope>`
 
 ## Allowed domains
-`core` | `theory` | `applications` | `market` | `roadmap` | `meta` | `episodic` | `temporal`
+Values listed in `HOST.yaml` `domains`, plus memory lanes `meta` | `episodic` | `temporal`. Do not copy another host's folder list.
 
 ## Allowed types
 `index` | `concept` | `application` | `market` | `roadmap` | `schema` | `meta` | `synthesis` | `raw-pointer` | `inbox-item` | `episode`

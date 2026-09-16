@@ -30,6 +30,11 @@ agent:
 
 Copy to `docs/wiki/_system/config/router-seeds.md` and replace the table.
 
+This table is the **synonym map**. `./repobrain retrieve` only scores token
+overlap; it does not expand “holding pen” into “inbox”. Put the words people
+and agents actually type in the left column, and open those seed pages
+**before** retrieve.
+
 | Intent signal | Seed pages (open these first) |
 |---|---|
 | _(your domain keywords)_ | `path/to/page.md` |

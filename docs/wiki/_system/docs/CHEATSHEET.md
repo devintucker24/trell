@@ -86,6 +86,7 @@ These are the public `./repobrain` verbs. There is no `./repobrain query` or
 ```bash
 ./repobrain setup
 ./repobrain install /path/to/host-repo
+./repobrain bootstrap /path/to/host-repo
 ./repobrain retrieve "<question>" --budget-tokens 3500
 ./repobrain retrieve "<question>" --include-sources
 ./repobrain graph sync
@@ -140,6 +141,7 @@ with those hits** (essay vs map). They are not extra search backends.
 
 | Task | Prompt |
 |---|---|
+| Bootstrap | Follow `docs/wiki/_system/docs/QUICKSTART.md`. If `./repobrain` is missing, clone RepoBrain and run `./repobrain bootstrap "$PWD"`. Do not copy another host's wiki pages. |
 | Setup | Install or refresh RepoBrain in this repo with `./repobrain setup`. Do not dump the wiki. |
 | Retrieve | Retrieve evidence for: … Use `./repobrain retrieve` within Router budgets. Cite paths. |
 | Graph | Query Graphify for how … is wired with `./repobrain graph query`. If `graphify-out/graph.json` is missing, `./repobrain graph sync` then query. Open named `source_file`s. |
@@ -177,7 +179,10 @@ with those hits** (essay vs map). They are not extra search backends.
 
 ## Troubleshooting
 
-- Weak retrieve → add or ingest a compiled page; do not paste whole `INDEX.md`.
+- Weak retrieve (`why` only `temporal-fit`, `lex` ~0) → rephrase with
+  `router-seeds.md` nouns, or add `tags` / `read_when` aliases; do not
+  treat recency hits as an answer. Still missing → ingest a compiled page.
+  Do not paste whole `INDEX.md`.
 - Raw vs compiled disagreement → inbox candidate; compiled stays authoritative.
 - Conversion `pending` → install the narrow MarkItDown extra for that format.
 - Conversion `blocked` → `allow_external` is required before URL/plugin/OCR flags.
